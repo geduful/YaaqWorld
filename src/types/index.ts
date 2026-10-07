@@ -20,16 +20,40 @@ export interface Profile extends BaseEntity {
   instagram: string | null;
   linkedin: string | null;
   tiktok: string | null;
+  whatsapp: string | null;
+  institution_id: string | null;
+  level: string | null;
   is_active: boolean;
+  email_verified: boolean;
+  last_sign_in_at: string | null;
+}
+
+// Institutions
+export interface Institution extends BaseEntity {
+  name: string;
+  short_name: string | null;
+  location: string | null;
+  is_active: boolean;
+  type: "university" | "polytechnic" | "college" | "training" | "other";
+}
+
+// Creator Types (extensible)
+export interface CreatorType extends BaseEntity {
+  name: string;
+  slug: string;
+  description: string | null;
+  icon: string | null;
+  is_active: boolean;
+  display_order: number;
 }
 
 // Members (public registration)
 export interface Member extends BaseEntity {
   profile_id: string; // References profiles.id
   student_id: string | null;
-  institution: string | null;
+  institution_id: string | null;
   program: string | null;
-  year: number | null;
+  level: string | null;
   interests: string[];
   joined_at: string;
 }
@@ -37,12 +61,23 @@ export interface Member extends BaseEntity {
 // Creators (content creators)
 export interface Creator extends BaseEntity {
   profile_id: string; // References profiles.id
-  specialties: ("photography" | "videography" | "editing" | "writing" | "hosting" | "social_media")[];
+  creator_type_id: string | null;
+  bio: string | null;
   portfolio_url: string | null;
-  equipment: string | null;
-  availability: "full_time" | "part_time" | "freelance" | "student";
+  additional_portfolio_url: string | null;
+  skills: string[];
+  availability: "full_time" | "part_time" | "freelance" | "student" | null;
+  is_public: boolean;
   rating: number;
   completed_projects: number;
+}
+
+// Creator Social Links
+export interface CreatorSocialLink extends BaseEntity {
+  creator_id: string;
+  platform: "instagram" | "tiktok" | "linkedin" | "portfolio" | "other";
+  url: string;
+  display_order: number;
 }
 
 // Team members (internal team)
@@ -258,4 +293,65 @@ export interface StructuredData {
   "@context": "https://schema.org";
   "@type": string;
   [key: string]: unknown;
+}
+
+// Registration Form Types
+export interface MemberRegistrationData {
+  fullName: string;
+  email: string;
+  whatsapp: string;
+  institutionId: string;
+  level: string;
+  password: string;
+  confirmPassword: string;
+  profilePhoto?: File | null;
+  instagram?: string;
+  linkedin?: string;
+  tiktok?: string;
+}
+
+export interface CreatorRegistrationData extends MemberRegistrationData {
+  creatorTypeId: string;
+  bio: string;
+  instagram: string;
+  tiktok: string;
+  linkedin: string;
+  portfolioUrl: string;
+  additionalPortfolioUrl?: string;
+  skills: string[];
+  availability: "full_time" | "part_time" | "freelance" | "student";
+}
+
+export interface LoginFormData {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export interface ForgotPasswordFormData {
+  email: string;
+}
+
+export interface ResetPasswordFormData {
+  password: string;
+  confirmPassword: string;
+}
+
+export interface ProfileUpdateData {
+  fullName?: string;
+  avatarUrl?: string | null;
+  whatsapp?: string | null;
+  bio?: string | null;
+  instagram?: string | null;
+  linkedin?: string | null;
+  tiktok?: string | null;
+  level?: string | null;
+  institutionId?: string | null;
+}
+
+// Password strength
+export interface PasswordStrength {
+  score: number; // 0-4
+  label: string;
+  color: string;
 }
