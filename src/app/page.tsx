@@ -1,0 +1,374 @@
+import { Metadata } from "next";
+import { MainLayout } from "@/components/layout/main-layout";
+import { VideoHero } from "@/components/home/video-hero";
+import { SectionHeader } from "@/components/ui/section-header";
+import { Stats } from "@/components/home/stats";
+import { ServiceCard } from "@/components/services/service-card";
+import { NewsCard } from "@/components/news/news-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { socialIcons } from "@/lib/icons";
+
+export const metadata: Metadata = {
+  title: "The Pulse of Ghanaian Campus Culture & Creative Storytelling",
+  description:
+    "YAAQ World captures the people, moments, events, and stories shaping Ghanaian campus culture through professional media production and creative storytelling. Photography, videography, event coverage, and campus tours.",
+};
+
+const homeStats = [
+  { label: "Campuses Covered", value: null, icon: <socialIcons.mapPinIcon className="h-8 w-8" /> },
+  { label: "Events Captured", value: null, icon: <socialIcons.star className="h-8 w-8" /> },
+  { label: "Registered Creators", value: null, icon: <socialIcons.users className="h-8 w-8" /> },
+  { label: "Media Partnerships", value: null, icon: <socialIcons.target className="h-8 w-8" /> },
+];
+
+const services = [
+  {
+    title: "Event Coverage",
+    description: "Professional coverage of campus events, SRC weeks, pageants, concerts, and youth gatherings with multi-camera setups and live streaming.",
+    href: "/booking",
+    icon: <socialIcons.video className="h-6 w-6" />,
+    category: "Core Service",
+  },
+  {
+    title: "Photography",
+    description: "Editorial and documentary photography capturing authentic campus moments, portraits, lifestyle, and behind-the-scenes stories.",
+    href: "/booking",
+    icon: <socialIcons.camera className="h-6 w-6" />,
+    category: "Core Service",
+  },
+  {
+    title: "Videography",
+    description: "Cinematic video production for documentaries, promotional content, social media, and brand storytelling with professional post-production.",
+    href: "/booking",
+    icon: <socialIcons.video className="h-6 w-6" />,
+    category: "Core Service",
+  },
+  {
+    title: "Campus Storytelling",
+    description: "Documenting the pulse of campus culture through street quizzes, student features, campus tours, and lifestyle content.",
+    href: "/media",
+    icon: <socialIcons.users className="h-6 w-6" />,
+    category: "Content",
+  },
+  {
+    title: "Brand Activations",
+    description: "Creative campus activations, influencer campaigns, and youth-focused brand experiences that resonate with the student demographic.",
+    href: "/booking",
+    icon: <socialIcons.target className="h-6 w-6" />,
+    category: "Partnership",
+  },
+  {
+    title: "Creative Consulting",
+    description: "Strategic creative direction, content strategy, and media consulting for brands and institutions targeting the youth market.",
+    href: "/booking",
+    icon: <socialIcons.star className="h-6 w-6" />,
+    category: "Consulting",
+  },
+];
+
+const latestNews = [
+  {
+    slug: "ktu-src-week-2024",
+    title: "KTU SRC Week 2024: A Week of Culture, Creativity & Community",
+    excerpt: "We covered the entire SRC Week — from the opening ceremony to the grand finale. Here's our recap of the moments that defined the week.",
+    category: "Campus Events",
+    publishedAt: "2024-03-15",
+    readTime: 5,
+  },
+  {
+    slug: "face-of-ktu-grand-finale",
+    title: "Behind the Lens: Face of KTU Grand Finale",
+    excerpt: "An exclusive look at the preparation, tension, and triumph of the Face of KTU pageant. Our team was there for every moment.",
+    category: "Pageants",
+    publishedAt: "2024-02-28",
+    readTime: 4,
+  },
+  {
+    slug: "campus-tour-ku",
+    title: "Campus Tour: Exploring Koforidua Technical University",
+    excerpt: "Join us as we take you through KTU's iconic spots, hidden gems, and student-favorite locations in our latest campus tour series.",
+    category: "Campus Tours",
+    publishedAt: "2024-02-10",
+    readTime: 3,
+  },
+];
+
+export default function HomePage() {
+  return (
+    <MainLayout>
+      <section className="relative min-h-screen flex items-center justify-center" aria-labelledby="hero-heading">
+        <VideoHero
+          src="/images/hero-video.mp4"
+          poster="/images/hero-poster.jpg"
+          fallback={
+            <div className="absolute inset-0 flex items-center justify-center bg-yaaq-navy">
+              <div className="text-center p-8">
+                <socialIcons.play className="h-16 w-16 mx-auto text-yaaq-gold/50" aria-hidden="true" />
+                <p className="mt-4 text-yaaq-gold/50 font-medium">YAAQ World Hero Video</p>
+              </div>
+            </div>
+          }
+        />
+        <div className="relative container-yaaq py-20 lg:py-32">
+          <div className="max-w-4xl animate-in stagger-1">
+            <span className="inline-block mb-6 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold bg-yaaq-gold/10 rounded-full">
+              Ghana's Premier Campus Media Brand
+            </span>
+            <h1
+              id="hero-heading"
+              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight text-balance"
+            >
+              The Pulse of Ghanaian Campus Culture & Creative Storytelling
+            </h1>
+            <p className="mt-6 text-lg sm:text-xl text-white/90 max-w-2xl leading-relaxed">
+              We capture the people, moments, events, and experiences shaping Ghanaian campus culture.
+              From SRC weeks to street quizzes, campus tours to pageants — we're there for every story.
+            </p>
+            <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <Link href="/team">
+                <Button size="xl" variant="gold" className="gap-2">
+                  Join YAAQ World
+                  <socialIcons.arrowRight className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/booking">
+                <Button size="xl" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+                  Book Our Media Team
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" aria-hidden="true">
+          <svg className="h-6 w-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </div>
+      </section>
+
+      <section className="section-py bg-background" aria-labelledby="intro-heading">
+        <div className="container-yaaq">
+          <div className="max-w-4xl mx-auto text-center">
+            <SectionHeader
+              tagline="Who We Are"
+              title="Capturing Campus Culture Since Day One"
+              description={
+                <>
+                  <p className="text-muted-foreground">
+                    YAAQ World is a Ghanaian campus media production and creative storytelling brand led by Mr. Abdul-Mumin,
+                    operating strongly within tertiary environments — particularly Koforidua Technical University (KTU) in
+                    Koforidua, Ghana.
+                  </p>
+                  <p className="mt-4 text-muted-foreground">
+                    Our core activities span campus media, student-life storytelling, photography, videography, lifestyle content,
+                    event coverage, campus tours, street quizzes, creative production, media partnerships, and youth event coverage.
+                    We don't just document events — we tell the stories that define a generation.
+                  </p>
+                </>
+              }
+            />
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {[
+                { icon: <socialIcons.camera className="h-6 w-6" />, title: "Authentic Storytelling", desc: "Real moments, real people, real stories from campus life." },
+                { icon: <socialIcons.video className="h-6 w-6" />, title: "Professional Production", desc: "Broadcast-quality equipment and post-production workflows." },
+                { icon: <socialIcons.users className="h-6 w-6" />, title: "Youth-First Perspective", desc: "Created by students, for students — we understand the culture." },
+              ].map((item, i) => (
+                <div key={item.title} className={`text-center animate-in stagger-${i + 1}`}>
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold">
+                    {item.icon}
+                  </div>
+                  <h3 className="font-display text-lg font-semibold text-foreground">{item.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-py bg-muted/30" aria-labelledby="services-heading">
+        <div className="container-yaaq">
+          <SectionHeader
+            id="services-heading"
+            tagline="What We Do"
+            title="Our Core Services"
+            description="Professional media production services tailored for campus events, youth brands, and creative storytelling."
+            action={
+              <Link href="/services">
+                <Button variant="outline">View All Services</Button>
+              </Link>
+            }
+          />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service, i) => (
+              <ServiceCard key={service.title} {...service} className={`animate-in stagger-${i + 1}`} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-py bg-background" aria-labelledby="experience-heading">
+        <div className="container-yaaq">
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
+            <div className="animate-in stagger-1">
+              <SectionHeader
+                id="experience-heading"
+                align="left"
+                tagline="The YAAQ World Experience"
+                title="More Than Media — We Document Culture"
+                description={
+                  <>
+                    <p className="text-muted-foreground">
+                      YAAQ World isn't just a media company — we're cultural archivists of the Ghanaian campus experience.
+                      Every frame we capture, every story we tell, becomes part of the collective memory of a generation.
+                    </p>
+                    <p className="mt-4 text-muted-foreground">
+                      From the electric energy of SRC Week to the quiet anticipation before a pageant crown is placed,
+                      from spontaneous street quiz battles to organized campus tours — we're there with professional equipment
+                      and an intuitive understanding of what makes these moments matter.
+                    </p>
+                  </>
+                }
+              />
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                {[
+                  "SRC Week Coverage",
+                  "Face of KTU Pageants",
+                  "Campus Tours",
+                  "Street Quizzes",
+                  "Behind the Scenes",
+                  "Student Features",
+                ].map((item, i) => (
+                  <div
+                    key={item}
+                    className={`p-4 rounded-xl bg-muted/50 border border-border animate-in stagger-${i + 1}`}
+                  >
+                    <p className="font-medium text-foreground">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="animate-in stagger-2 relative aspect-[4/3] rounded-2xl overflow-hidden bg-yaaq-navy">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <socialIcons.play className="h-20 w-20 text-white/50 hover:text-yaaq-gold transition-colors cursor-pointer" />
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-yaaq-navy to-transparent">
+                <p className="text-white/80 text-sm">Watch our story →</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-py bg-yaaq-navy text-white" aria-labelledby="stats-heading">
+        <div className="container-yaaq">
+          <SectionHeader
+            id="stats-heading"
+            tagline="Our Impact"
+            title="By the Numbers"
+            description="Real metrics from our work across Ghanaian campuses. Data-driven storytelling with measurable reach."
+          />
+          <Stats stats={homeStats} />
+          <p className="mt-8 text-center text-sm text-white/50">
+            * Verified metrics will be updated from our admin dashboard. Placeholder values shown above.
+          </p>
+        </div>
+      </section>
+
+      <section className="section-py bg-background" aria-labelledby="media-heading">
+        <div className="container-yaaq">
+          <SectionHeader
+            id="media-heading"
+            tagline="Featured Media"
+            title="Latest from Our Lens"
+            description="A curated selection of our recent photography, videography, and campus storytelling."
+            action={
+              <Link href="/media">
+                <Button variant="outline">Explore Media Hub</Button>
+              </Link>
+            }
+          />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { title: "KTU SRC Week Highlights", category: "Video", type: "video", duration: "3:42" },
+              { title: "Face of KTU 2024", category: "Photography", type: "image" },
+              { title: "Campus Tour: KTU Main Campus", category: "Campus Tours", type: "video", duration: "5:18" },
+              { title: "Street Quiz: Koforidua Edition", category: "Street Quizzes", type: "video", duration: "2:35" },
+            ].map((item, i) => (
+              <div
+                key={item.title}
+                className={`group overflow-hidden rounded-xl bg-muted animate-in stagger-${i + 1}`}
+              >
+                <div className="relative aspect-[16/9] bg-yaaq-navy">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {item.type === "video" && <socialIcons.play className="h-12 w-12 text-white/50" />}
+                    {item.type === "image" && <socialIcons.camera className="h-12 w-12 text-white/50" />}
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                    <span className="text-xs text-white/80">{item.category}</span>
+                  </div>
+                  {item.duration && (
+                    <div className="absolute bottom-3 right-3 px-2 py-1 text-xs bg-black/70 text-white rounded">
+                      {item.duration}
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <p className="font-display text-base font-semibold text-foreground">{item.title}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{item.category}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-py bg-muted/30" aria-labelledby="news-heading">
+        <div className="container-yaaq">
+          <SectionHeader
+            id="news-heading"
+            tagline="Latest Stories"
+            title="News & Updates"
+            description="Campus stories, event coverage, announcements, and behind-the-scenes insights from the YAAQ World team."
+            action={
+              <Link href="/news">
+                <Button variant="outline">View All News</Button>
+              </Link>
+            }
+          />
+          <div className="grid gap-6 md:grid-cols-3">
+            {latestNews.map((article, i) => (
+              <NewsCard key={article.slug} article={article} className={`animate-in stagger-${i + 1}`} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section-py bg-yaaq-navy text-white" aria-labelledby="cta-heading">
+        <div className="container-yaaq text-center">
+          <SectionHeader
+            id="cta-heading"
+            title="Have an Event, Campaign or Story Worth Capturing?"
+            description="From campus festivals to brand activations, student features to corporate partnerships — we bring professional media production and creative storytelling to every project."
+            action={
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/booking">
+                  <Button size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+                    Book Our Media Team
+<socialIcons.arrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/team">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10">
+                    Join YAAQ World
+                  </Button>
+                </Link>
+              </div>
+            }
+          />
+        </div>
+      </section>
+    </MainLayout>
+  );
+}
