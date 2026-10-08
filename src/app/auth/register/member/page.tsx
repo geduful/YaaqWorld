@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { AlertCircle, Eye, EyeOff, User, Mail, Phone, GraduationCap, Lock, Image
 import { calculatePasswordStrength, validateEmail, validatePhone, formatPhoneForInput } from "@/lib/validation";
 import { MemberRegistrationData } from "@/types";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { isUuid, loadInstitutions, InstitutionOption } from "@/lib/institutions";
 
 const institutions = [
   { id: "ktu", name: "Koforidua Technical University (KTU)", shortName: "KTU", location: "Koforidua, Eastern Region" },
@@ -70,6 +71,23 @@ export default function MemberRegisterPage() {
   const [profilePhotoPreview, setProfilePhotoPreview] = useState<string | null>(null);
 
   const supabase = getBrowserClient();
+
+  const [institutionOptions, setInstitutionOptions] = useState<InstitutionOption[]>(institutions);
+
+  useEffect(() => {
+    let active = true;
+    loadInstitutions(supabase, institutions).then(({ options, idMap }) => {
+      if (!active) return;
+      setInstitutionOptions(options);
+      setFormData((prev) => {
+        const mapped = idMap[prev.institutionId];
+        return mapped ? { ...prev, institutionId: mapped } : prev;
+      });
+    });
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
 
   const passwordStrength = calculatePasswordStrength(formData.password);
 
@@ -191,6 +209,8 @@ export default function MemberRegisterPage() {
 
     setIsLoading(true);
 
+    const institutionId = isUuid(formData.institutionId) ? formData.institutionId : null;
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -199,9 +219,9 @@ export default function MemberRegisterPage() {
           data: {
             full_name: formData.fullName,
             role: "member",
-            whatsapp: formData.whatsapp,
-            institution_id: formData.institutionId,
-            level: formData.level,
+            whatsapp: formData.whatsapp || null,
+            institution_id: institutionId,
+            level: formData.level || null,
           },
           emailRedirectTo: `${window.location.origin}/auth/verify-email`,
         },
@@ -219,9 +239,9 @@ export default function MemberRegisterPage() {
       if (data.user) {
         const profileUpdates: Record<string, string | null> = {
           full_name: formData.fullName,
-          whatsapp: formData.whatsapp,
-          institution_id: formData.institutionId,
-          level: formData.level,
+          whatsapp: formData.whatsapp || null,
+          institution_id: institutionId,
+          level: formData.level || null,
           role: "member",
         };
 
@@ -260,7 +280,7 @@ export default function MemberRegisterPage() {
           .from("members")
           .insert({
             profile_id: data.user.id,
-            institution_id: formData.institutionId,
+            institution_id: institutionId,
             level: formData.level,
             interests: [],
           });
@@ -270,7 +290,11 @@ export default function MemberRegisterPage() {
         }
       }
 
-      router.push("/auth/verify-email?email=" + encodeURIComponent(formData.email));
+      if (data.session) {
+        router.push("/");
+      } else {
+        router.push("/auth/verify-email?email=" + encodeURIComponent(formData.email));
+      }
     } catch (error) {
       console.error("Registration error:", error);
       setSubmitError("An unexpected error occurred. Please try again.");
@@ -401,7 +425,7 @@ export default function MemberRegisterPage() {
                       <SelectValue placeholder="Select your institution" />
                     </SelectTrigger>
                     <SelectContent>
-                      {institutions.map((inst) => (
+                      {institutionOptions.map((inst) => (
                         <SelectItem key={inst.id} value={inst.id}>
                           <div>
                             <p className="font-medium">{inst.name}</p>

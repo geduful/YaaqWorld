@@ -3,12 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Menu, X, ChevronDown, Bell, LayoutDashboard, LogOut, User } from "lucide-react";
+import { Menu, X, ChevronDown, Bell, LayoutDashboard, LogOut, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
+import { isAdminRole } from "@/lib/permissions";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -109,6 +110,17 @@ function UserMenu() {
             <Bell className="h-4 w-4" />
             Notifications
           </Link>
+          {isAdminRole(profile?.role) && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-yaaq-gold hover:bg-accent transition-colors"
+              onClick={() => setOpen(false)}
+              role="menuitem"
+            >
+              <ShieldCheck className="h-4 w-4" />
+              Admin
+            </Link>
+          )}
           <div className="border-t mt-1">
             <button
               className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
@@ -188,6 +200,14 @@ export function Header() {
                     Dashboard
                   </Button>
                 </Link>
+                {isAdminRole(profile?.role) && (
+                  <Link href="/admin">
+                    <Button variant="ghost" size="sm" className="gap-2 text-yaaq-gold">
+                      <ShieldCheck className="h-4 w-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/notifications">
                   <Button variant="ghost" size="icon" aria-label="Notifications">
                     <Bell className="h-4 w-4" />
@@ -253,6 +273,14 @@ export function Header() {
                       Dashboard
                     </Button>
                   </Link>
+                  {isAdminRole(profile?.role) && (
+                    <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" className="w-full justify-center gap-2 text-yaaq-gold">
+                        <ShieldCheck className="h-4 w-4" />
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
                   <div className="grid grid-cols-2 gap-3">
                     <Link href="/profile" onClick={() => setMobileMenuOpen(false)}>
                       <Button variant="outline" className="w-full justify-center gap-2">

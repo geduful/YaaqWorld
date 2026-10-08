@@ -106,6 +106,8 @@ export interface Service extends BaseEntity {
   image_url: string | null;
   features: string[];
   cta_text: string;
+  pricing_note: string | null; // null = inquiry-based pricing
+  is_featured: boolean;
   display_order: number;
   is_active: boolean;
 }
@@ -176,60 +178,125 @@ export interface Notification extends BaseEntity {
   metadata: Record<string, unknown> | null;
 }
 
-// Admin roles & permissions
+// Admin roles & permissions (Phase 3 permission-based model)
+// AdminRole keys map to admin_roles.key rows in the database.
 export type AdminRole = "super_admin" | "admin" | "editor" | "viewer";
 
-export interface AdminPermission {
-  resource: "members" | "creators" | "team" | "news" | "media" | "bookings" | "services" | "users" | "settings";
-  actions: ("create" | "read" | "update" | "delete" | "publish" | "manage")[];
+// Flat permission keys. Keep in sync with src/lib/permissions.ts and the
+// seed data in supabase/phase3-schema.sql (admin_permissions table).
+export type PermissionKey =
+  | "dashboard.view"
+  | "members.view"
+  | "members.manage"
+  | "creators.view"
+  | "creators.manage"
+  | "team.view"
+  | "team.manage"
+  | "services.view"
+  | "services.manage"
+  | "media.view"
+  | "media.manage"
+  | "news.view"
+  | "news.manage"
+  | "bookings.view"
+  | "bookings.manage"
+  | "notifications.view"
+  | "notifications.manage"
+  | "administrators.view"
+  | "administrators.manage"
+  | "settings.view"
+  | "settings.manage"
+  | "audit_logs.view";
+
+export type AdminStatus = "invited" | "active" | "suspended" | "revoked";
+export type InvitationStatus = "pending" | "accepted" | "expired" | "revoked";
+export type AnnouncementAudience = "all" | "members" | "creators" | "selected";
+export type AnnouncementStatus = "draft" | "published";
+
+// Administrator record (one row per official invited/granted by Super Admin)
+export interface Administrator extends BaseEntity {
+  profile_id: string | null;
+  email: string;
+  display_name: string | null;
+  role_id: string;
+  previous_role: "member" | "creator" | "admin" | null;
+  status: AdminStatus;
+  invited_by: string | null;
+  invited_at: string;
+  accepted_at: string | null;
+  suspended_at: string | null;
+  revoked_at: string | null;
+  last_activity_at: string | null;
 }
 
-export const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
-  super_admin: [
-    { resource: "members", actions: ["create", "read", "update", "delete"] },
-    { resource: "creators", actions: ["create", "read", "update", "delete"] },
-    { resource: "team", actions: ["create", "read", "update", "delete"] },
-    { resource: "news", actions: ["create", "read", "update", "delete", "publish"] },
-    { resource: "media", actions: ["create", "read", "update", "delete"] },
-    { resource: "bookings", actions: ["create", "read", "update", "delete", "manage"] },
-    { resource: "services", actions: ["create", "read", "update", "delete"] },
-    { resource: "users", actions: ["create", "read", "update", "delete", "manage"] },
-    { resource: "settings", actions: ["read", "update", "manage"] },
-  ],
-  admin: [
-    { resource: "members", actions: ["create", "read", "update"] },
-    { resource: "creators", actions: ["create", "read", "update"] },
-    { resource: "team", actions: ["create", "read", "update"] },
-    { resource: "news", actions: ["create", "read", "update", "publish"] },
-    { resource: "media", actions: ["create", "read", "update"] },
-    { resource: "bookings", actions: ["read", "update", "manage"] },
-    { resource: "services", actions: ["create", "read", "update"] },
-    { resource: "users", actions: ["read"] },
-    { resource: "settings", actions: ["read"] },
-  ],
-  editor: [
-    { resource: "members", actions: ["read"] },
-    { resource: "creators", actions: ["read"] },
-    { resource: "team", actions: ["read"] },
-    { resource: "news", actions: ["create", "read", "update"] },
-    { resource: "media", actions: ["create", "read", "update"] },
-    { resource: "bookings", actions: ["read"] },
-    { resource: "services", actions: ["read"] },
-    { resource: "users", actions: [] },
-    { resource: "settings", actions: [] },
-  ],
-  viewer: [
-    { resource: "members", actions: ["read"] },
-    { resource: "creators", actions: ["read"] },
-    { resource: "team", actions: ["read"] },
-    { resource: "news", actions: ["read"] },
-    { resource: "media", actions: ["read"] },
-    { resource: "bookings", actions: ["read"] },
-    { resource: "services", actions: ["read"] },
-    { resource: "users", actions: [] },
-    { resource: "settings", actions: [] },
-  ],
-};
+export interface AdminRoleRecord extends BaseEntity {
+  key: AdminRole;
+  name: string;
+  description: string | null;
+  is_system: boolean;
+}
+
+export interface AdminPermissionDef {
+  key: PermissionKey;
+  label: string;
+  category: string;
+  description: string | null;
+  sort_order: number;
+}
+
+export interface AdminPermissionGrant extends BaseEntity {
+  administrator_id: string;
+  permission_key: PermissionKey;
+  granted_by: string | null;
+}
+
+export interface AdminInvitation extends BaseEntity {
+  email: string;
+  display_name: string | null;
+  role_id: string;
+  permission_keys: PermissionKey[];
+  status: InvitationStatus;
+  administrator_id: string | null;
+  invited_by: string | null;
+  expires_at: string;
+  accepted_at: string | null;
+}
+
+// Audit log (immutable from the client; written by RPCs and triggers)
+export interface AuditLog {
+  id: string;
+  actor_user_id: string | null;
+  actor_label: string | null;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+// Admin announcements (fan-out to notifications happens on publish)
+export interface Announcement extends BaseEntity {
+  title: string;
+  message: string;
+  audience: AnnouncementAudience;
+  recipient_ids: string[];
+  status: AnnouncementStatus;
+  type: string;
+  action_url: string | null;
+  recipient_count: number;
+  published_at: string | null;
+  created_by: string | null;
+}
+
+// Platform settings (key/value JSON store)
+export interface PlatformSetting {
+  key: string;
+  value: unknown;
+  description: string | null;
+  updated_by: string | null;
+  updated_at: string;
+  created_at: string;
+}
 
 // API Response types
 export interface ApiResponse<T> {
@@ -354,4 +421,48 @@ export interface PasswordStrength {
   score: number; // 0-4
   label: string;
   color: string;
+}
+
+// Admin form types (Phase 3)
+export interface AdminInviteFormData {
+  email: string;
+  displayName: string;
+  roleKey: AdminRole;
+  permissions: PermissionKey[];
+}
+
+export interface TeamMemberFormData {
+  full_name: string;
+  role: string;
+  department: "executive" | "production" | "talent" | "digital";
+  bio: string;
+  moniker: string;
+  instagram: string;
+  linkedin: string;
+  tiktok: string;
+  display_order: number;
+  is_active: boolean;
+  image_url: string | null;
+}
+
+export interface ServiceFormData {
+  title: string;
+  slug: string;
+  description: string;
+  short_description: string;
+  category: "core" | "partnership" | "consulting" | "content";
+  cta_text: string;
+  pricing_note: string;
+  is_featured: boolean;
+  is_active: boolean;
+  display_order: number;
+  features: string[];
+}
+
+export interface AnnouncementFormData {
+  title: string;
+  message: string;
+  audience: AnnouncementAudience;
+  recipient_ids: string[];
+  publish_now: boolean;
 }

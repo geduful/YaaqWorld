@@ -13,9 +13,17 @@ export async function createServerAuthClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {
+            // Called from a Server Component during a token refresh;
+            // cookie writes are only allowed in Server Actions/Route
+            // Handlers. Middleware refreshes the session on every
+            // request and persists the rotated cookies, so ignoring
+            // this write is safe.
+          }
         },
       },
     }

@@ -164,20 +164,35 @@ CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications (user_id) W
 
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
+DECLARE
+  meta_role TEXT;
+  meta_institution TEXT;
 BEGIN
+  meta_role := NULLIF(NEW.raw_user_meta_data->>'role', '');
+  meta_institution := NULLIF(NEW.raw_user_meta_data->>'institution_id', '');
+
   INSERT INTO public.profiles (id, full_name, role, whatsapp, institution_id, level)
   VALUES (
     NEW.id,
-    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
-    COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'member'),
-    NEW.raw_user_meta_data->>'whatsapp',
-    (NEW.raw_user_meta_data->>'institution_id')::UUID,
-    NEW.raw_user_meta_data->>'level'
+    COALESCE(NULLIF(NEW.raw_user_meta_data->>'full_name', ''), ''),
+    COALESCE(
+      CASE
+        WHEN meta_role IN ('member', 'creator', 'admin', 'super_admin')
+          THEN meta_role::public.user_role
+      END,
+      'member'
+    ),
+    NULLIF(NEW.raw_user_meta_data->>'whatsapp', ''),
+    CASE
+      WHEN meta_institution ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        THEN meta_institution::uuid
+    END,
+    NULLIF(NEW.raw_user_meta_data->>'level', '')
   )
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created

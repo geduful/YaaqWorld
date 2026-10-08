@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard", "/profile", "/notifications", "/creator"];
+const protectedRoutes = ["/dashboard", "/profile", "/notifications", "/creator", "/admin"];
 const authRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password"];
 
 export async function middleware(request: NextRequest) {
@@ -64,6 +64,21 @@ export async function middleware(request: NextRequest) {
       .single();
 
     if (profile && !["creator", "admin", "super_admin"].includes(profile.role)) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  if (pathname.startsWith("/admin") && user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && !["admin", "super_admin"].includes(profile.role)) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
       url.search = "";

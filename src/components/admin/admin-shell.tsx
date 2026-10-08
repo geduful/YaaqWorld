@@ -7,50 +7,57 @@ import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Menu,
   X,
-  LayoutDashboard,
-  User,
-  Bell,
   LogOut,
-  Briefcase,
   Home,
-  Settings,
   ShieldCheck,
+  LayoutDashboard,
+  Users,
+  Star,
+  LayoutGrid,
+  Briefcase,
+  Megaphone,
+  UserCog,
+  ScrollText,
+  Settings,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { isAdminRole } from "@/lib/permissions";
 
-interface DashboardShellProps {
-  children: ReactNode;
-  variant?: "member" | "creator";
+export interface AdminNavItem {
+  name: string;
+  href: string;
+  icon: ReactNode;
 }
 
-export function DashboardShell({ children, variant = "member" }: DashboardShellProps) {
+export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
+  { name: "Overview", href: "/admin", icon: <LayoutDashboard className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Members", href: "/admin/members", icon: <Users className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Creators", href: "/admin/creators", icon: <Star className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Team", href: "/admin/team", icon: <LayoutGrid className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Services", href: "/admin/services", icon: <Briefcase className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Announcements", href: "/admin/notifications", icon: <Megaphone className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Administrators", href: "/admin/administrators", icon: <UserCog className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Audit Logs", href: "/admin/audit-logs", icon: <ScrollText className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Settings", href: "/admin/settings", icon: <Settings className="h-4 w-4" aria-hidden="true" /> },
+];
+
+interface AdminShellProps {
+  children: ReactNode;
+  visibleNav: string[];
+  isSuperAdmin: boolean;
+  adminName: string;
+}
+
+export function AdminShell({ children, visibleNav, isSuperAdmin, adminName }: AdminShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { profile, signOut } = useAuth();
+  const { profile, user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
-  const isCreator = variant === "creator" || profile?.role === "creator";
-  const showAdminLink = isAdminRole(profile?.role);
-
-  const navItems = isCreator
-    ? [
-        { name: "Dashboard", href: "/creator/dashboard", icon: LayoutDashboard },
-        { name: "My Profile", href: "/profile", icon: User },
-        { name: "Opportunities", href: "/creator/opportunities", icon: Briefcase },
-        { name: "Notifications", href: "/notifications", icon: Bell },
-        ...(showAdminLink ? [{ name: "Admin", href: "/admin", icon: ShieldCheck }] : []),
-      ]
-    : [
-        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-        { name: "My Profile", href: "/profile", icon: User },
-        { name: "Notifications", href: "/notifications", icon: Bell },
-        ...(showAdminLink ? [{ name: "Admin", href: "/admin", icon: ShieldCheck }] : []),
-      ];
+  const navItems = ADMIN_NAV_ITEMS.filter((item) => visibleNav.includes(item.href));
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -64,54 +71,55 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
   };
 
   const getInitials = () => {
-    if (profile?.full_name) {
-      return profile.full_name
+    const name = adminName || profile?.full_name;
+    if (name) {
+      return name
         .split(" ")
         .map((n) => n[0])
         .join("")
         .toUpperCase()
         .slice(0, 2);
     }
-    return "U";
+    return "A";
   };
 
-  const isActive = (href: string) =>
-    href === "/dashboard" || href === "/creator/dashboard"
-      ? pathname === href
-      : pathname.startsWith(href);
+  const isActive = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href));
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-40 border-b border-border bg-yaaq-navy/95 backdrop-blur-sm">
         <div className="container-yaaq">
           <div className="flex h-16 items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <button
-                className="md:hidden p-2 rounded-lg text-muted-foreground hover:bg-accent"
+                className="md:hidden p-2 rounded-lg text-white/70 hover:bg-white/10"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-expanded={mobileMenuOpen}
-                aria-controls="dashboard-menu"
+                aria-controls="admin-menu"
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               >
                 {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>
-              <Link href="/" className="flex items-center gap-2" aria-label="YAAQ World Home">
-                <span className="font-display text-lg font-bold text-foreground">
-                  YAAQ<span className="text-yaaq-gold">World</span>
+              <Link href="/admin" className="flex items-center gap-2" aria-label="Admin home">
+                <ShieldCheck className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                <span className="font-display text-lg font-bold text-white">
+                  YAAQ<span className="text-yaaq-gold">Admin</span>
                 </span>
               </Link>
-              {isCreator && (
-                <Badge variant="gold" className="hidden sm:inline-flex">Creator</Badge>
-              )}
+              <Badge variant="gold" className="hidden sm:inline-flex">
+                {isSuperAdmin ? "Super Admin" : "Administrator"}
+              </Badge>
             </div>
 
             <div className="hidden md:flex items-center gap-3">
-              <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <Link href="/" className="flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
+                <Home className="h-4 w-4" aria-hidden="true" />
+                Public Site
+              </Link>
+              <div className="flex items-center gap-2 pl-3 border-l border-white/15">
                 <div className="text-right hidden lg:block">
-                  <p className="text-sm font-medium text-foreground leading-tight">
-                    {profile?.full_name || "User"}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{profile?.role}</p>
+                  <p className="text-sm font-medium text-white leading-tight">{adminName || "Administrator"}</p>
+                  <p className="text-xs text-white/60">{user?.email ?? ""}</p>
                 </div>
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="" />
@@ -119,8 +127,14 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
                     {getInitials()}
                   </AvatarFallback>
                 </Avatar>
-              </Link>
-              <Button variant="ghost" size="sm" onClick={handleSignOut} isLoading={isSigningOut} className="gap-2">
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleSignOut}
+                isLoading={isSigningOut}
+                className="gap-2 text-white/80 hover:text-white hover:bg-white/10"
+              >
                 <LogOut className="h-4 w-4" />
                 Sign Out
               </Button>
@@ -128,8 +142,9 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
 
             <button
               className="md:hidden flex items-center gap-2"
-              onClick={() => router.push("/profile")}
-              aria-label="Open profile"
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              disabled={isSigningOut}
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="" />
@@ -141,41 +156,41 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
           </div>
 
           <nav
-            id="dashboard-menu"
+            id="admin-menu"
             className={cn(
-              "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-border",
-              mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+              "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-white/10",
+              mobileMenuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0",
             )}
-            aria-label="Dashboard navigation"
+            aria-label="Admin navigation"
           >
             <div className="py-3 space-y-1">
               {navItems.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.href}
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors",
                     isActive(item.href)
-                      ? "bg-yaaq-gold/10 text-yaaq-gold"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                      ? "bg-yaaq-gold/15 text-yaaq-gold"
+                      : "text-white/70 hover:bg-white/10 hover:text-white",
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <item.icon className="h-4 w-4" aria-hidden="true" />
+                  {item.icon}
                   {item.name}
                 </Link>
               ))}
-              <div className="pt-3 border-t border-border mt-3">
+              <div className="pt-3 border-t border-white/10 mt-3">
                 <Link
-                  href="/"
-                  className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+                  href="/dashboard"
+                  className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Home className="h-4 w-4" aria-hidden="true" />
-                  Public Site
+                  My Dashboard
                 </Link>
                 <button
-                  className="flex w-full items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10"
+                  className="flex w-full items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-300 hover:bg-red-500/10"
                   onClick={handleSignOut}
                   disabled={isSigningOut}
                 >
@@ -189,38 +204,34 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
       </header>
 
       <div className="flex-1 flex">
-        <aside className="hidden md:flex md:flex-col w-60 border-r border-border bg-muted/20 min-h-[calc(100vh-4rem)] sticky top-16" aria-label="Sidebar navigation">
-          <nav className="flex-1 p-4 space-y-1" aria-label="Dashboard sidebar">
+        <aside
+          className="hidden md:flex md:flex-col w-60 border-r border-border bg-muted/20 min-h-[calc(100vh-4rem)] sticky top-16"
+          aria-label="Admin sidebar"
+        >
+          <nav className="flex-1 p-4 space-y-1" aria-label="Admin sidebar navigation">
             {navItems.map((item) => (
               <Link
-                key={item.name}
+                key={item.href}
                 href={item.href}
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                   isActive(item.href)
                     ? "bg-yaaq-gold/10 text-yaaq-gold"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground",
                 )}
               >
-                <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                {item.icon}
                 {item.name}
               </Link>
             ))}
           </nav>
           <div className="p-4 border-t border-border">
             <Link
-              href="/"
+              href="/dashboard"
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               <Home className="h-4 w-4" aria-hidden="true" />
-              Public Site
-            </Link>
-            <Link
-              href="/profile"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-            >
-              <Settings className="h-4 w-4" aria-hidden="true" />
-              Settings
+              My Dashboard
             </Link>
           </div>
         </aside>

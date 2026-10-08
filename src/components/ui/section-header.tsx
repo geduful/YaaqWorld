@@ -31,9 +31,9 @@ export function SectionHeader({
         {title}
       </h2>
       {description && (
-        <p className="mt-4 max-w-2xl text-lg text-muted-foreground leading-relaxed mx-auto">
+        <div className="mt-4 max-w-2xl text-lg text-muted-foreground leading-relaxed mx-auto">
           {description}
-        </p>
+        </div>
       )}
       {action && (
         <div className="mt-8">{action}</div>

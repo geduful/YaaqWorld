@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { AlertCircle, Eye, EyeOff, X, Plus } from "lucide-react";
 import { calculatePasswordStrength, validateEmail, validatePhone, formatPhoneForInput, validateUrl, sanitizeUrl } from "@/lib/validation";
 import { CreatorRegistrationData } from "@/types";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { isUuid, loadInstitutions } from "@/lib/institutions";
 
 const institutions = [
   { id: "ktu", name: "Koforidua Technical University (KTU)", location: "Koforidua, Eastern Region" },
@@ -113,6 +114,23 @@ export default function CreatorRegisterPage() {
   const totalSteps = 3;
 
   const supabase = getBrowserClient();
+
+  const [institutionOptions, setInstitutionOptions] = useState(institutions);
+
+  useEffect(() => {
+    let active = true;
+    loadInstitutions(supabase, institutions).then(({ options, idMap }) => {
+      if (!active) return;
+      setInstitutionOptions(options);
+      setFormData((prev) => {
+        const mapped = idMap[prev.institutionId];
+        return mapped ? { ...prev, institutionId: mapped } : prev;
+      });
+    });
+    return () => {
+      active = false;
+    };
+  }, [supabase]);
 
   const passwordStrength = calculatePasswordStrength(formData.password);
 
@@ -262,6 +280,8 @@ export default function CreatorRegisterPage() {
 
     setIsLoading(true);
 
+    const institutionId = isUuid(formData.institutionId) ? formData.institutionId : null;
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -270,9 +290,9 @@ export default function CreatorRegisterPage() {
           data: {
             full_name: formData.fullName,
             role: "creator",
-            whatsapp: formData.whatsapp,
-            institution_id: formData.institutionId,
-            level: formData.level,
+            whatsapp: formData.whatsapp || null,
+            institution_id: institutionId,
+            level: formData.level || null,
           },
           emailRedirectTo: `${window.location.origin}/auth/verify-email`,
         },
@@ -290,9 +310,9 @@ export default function CreatorRegisterPage() {
       if (data.user) {
         const profileUpdates: Record<string, string | null> = {
           full_name: formData.fullName,
-          whatsapp: formData.whatsapp,
-          institution_id: formData.institutionId,
-          level: formData.level,
+          whatsapp: formData.whatsapp || null,
+          institution_id: institutionId,
+          level: formData.level || null,
           role: "creator",
         };
         if (formData.instagram) profileUpdates.instagram = sanitizeUrl(formData.instagram.startsWith("@") ? `https://instagram.com/${formData.instagram.slice(1)}` : formData.instagram);
@@ -357,14 +377,18 @@ export default function CreatorRegisterPage() {
           .from("members")
           .insert({
             profile_id: data.user.id,
-            institution_id: formData.institutionId,
+            institution_id: institutionId,
             level: formData.level,
             interests: [],
           });
         if (memberError) console.error("Member creation error:", memberError);
       }
 
-      router.push("/auth/verify-email?email=" + encodeURIComponent(formData.email));
+      if (data.session) {
+        router.push("/");
+      } else {
+        router.push("/auth/verify-email?email=" + encodeURIComponent(formData.email));
+      }
     } catch (error) {
       console.error("Registration error:", error);
       setSubmitError("An unexpected error occurred. Please try again.");
@@ -514,7 +538,7 @@ export default function CreatorRegisterPage() {
                         >
                           <SelectTrigger error={touched.institutionId ? errors.institutionId : undefined}><SelectValue placeholder="Select institution" /></SelectTrigger>
                           <SelectContent>
-                            {institutions.map((inst) => (
+                            {institutionOptions.map((inst) => (
                               <SelectItem key={inst.id} value={inst.id}>{inst.name}</SelectItem>
                             ))}
                           </SelectContent>
