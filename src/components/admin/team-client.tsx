@@ -4,9 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { getDbErrorMessage, getRpcError } from "@/lib/errors";
+import { compressImage, extFromName, storagePathFromPublicUrl } from "@/lib/image";
 import { PageHeader } from "@/components/admin/page-header";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { ImageCropDialog, type CropResult } from "@/components/image-crop-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,10 +44,11 @@ interface LinkableUser {
 }
 
 const DEPARTMENTS = [
-  { value: "executive", label: "Executive" },
-  { value: "production", label: "Production" },
-  { value: "talent", label: "Talent" },
-  { value: "digital", label: "Digital" },
+  { value: "executive", label: "Executive Board" },
+  { value: "editorial", label: "Editorial" },
+  { value: "creative", label: "Creative & Design" },
+  { value: "digital", label: "Digital & Engagement" },
+  { value: "operations", label: "Operations" },
 ];
 
 const EMPTY_FORM: TeamMemberFormData = {
@@ -59,6 +62,7 @@ const EMPTY_FORM: TeamMemberFormData = {
   tiktok: "",
   email: "",
   display_order: 0,
+  on_board: false,
   is_active: true,
   image_url: null,
 };
@@ -73,6 +77,14 @@ export function TeamClient({ canManage }: TeamClientProps) {
   const [form, setForm] = useState<TeamMemberFormData>(EMPTY_FORM);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [cropSource, setCropSource] = useState<{ file: File; src: string } | null>(null);
+
+  const updateImagePreview = (value: string | null) => {
+    setImagePreview((prev) => {
+      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
+      return value;
+    });
+  };
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TeamMember | null>(null);
@@ -115,7 +127,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
     setEditing(null);
     setForm(EMPTY_FORM);
     setImageFile(null);
-    setImagePreview(null);
+    updateImagePreview(null);
     setFormError(null);
     setFormOpen(true);
   };
@@ -133,11 +145,12 @@ export function TeamClient({ canManage }: TeamClientProps) {
       tiktok: member.tiktok ?? "",
       email: member.email ?? "",
       display_order: member.display_order,
+      on_board: member.on_board,
       is_active: member.is_active,
       image_url: member.image_url,
     });
     setImageFile(null);
-    setImagePreview(member.image_url);
+    updateImagePreview(member.image_url);
     setFormError(null);
     setFormOpen(true);
   };
@@ -145,7 +158,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
   const onImageChange = (file: File | null) => {
     if (!file) {
       setImageFile(null);
-      setImagePreview(editing?.image_url ?? null);
+      updateImagePreview(editing?.image_url ?? null);
       return;
     }
     if (!file.type.startsWith("image/")) {
@@ -156,10 +169,26 @@ export function TeamClient({ canManage }: TeamClientProps) {
       setFormError("Image must be less than 5MB.");
       return;
     }
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = (e) => setImagePreview(e.target?.result as string);
-    reader.readAsDataURL(file);
+    setCropSource({ file, src: URL.createObjectURL(file) });
+  };
+
+  const closeCrop = () => {
+    setCropSource((current) => {
+      if (current) URL.revokeObjectURL(current.src);
+      return null;
+    });
+  };
+
+  const onCropConfirm = async (result: CropResult) => {
+    setCropSource((current) => {
+      if (current) URL.revokeObjectURL(current.src);
+      return null;
+    });
+    const cropped = new File([result.blob], `team-${Date.now()}.${result.ext}`, {
+      type: result.blob.type,
+    });
+    setImageFile(cropped);
+    updateImagePreview(URL.createObjectURL(result.blob));
   };
 
   const save = async () => {
@@ -174,18 +203,30 @@ export function TeamClient({ canManage }: TeamClientProps) {
 
     try {
       let imageUrl = editing?.image_url ?? null;
+      const oldPath = imageUrl ? storagePathFromPublicUrl(imageUrl, "avatars") : null;
+      let uploadedPath: string | null = null;
 
       if (imageFile && user) {
-        const fileExt = imageFile.name.split(".").pop()?.toLowerCase() ?? "jpg";
-        const path = `${user.id}/team-${Date.now()}.${fileExt}`;
+        let blob: Blob = imageFile;
+        let ext = extFromName(imageFile.name);
+        try {
+          const result = await compressImage(imageFile, { maxEdge: 1024 });
+          blob = result.blob;
+          ext = result.ext;
+        } catch {
+          blob = imageFile;
+          ext = extFromName(imageFile.name);
+        }
+        const path = `${user.id}/team-${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage
           .from("avatars")
-          .upload(path, imageFile, { upsert: true });
+          .upload(path, blob, { upsert: true });
         if (uploadError) throw new Error(getDbErrorMessage(uploadError));
         const {
           data: { publicUrl },
         } = supabase.storage.from("avatars").getPublicUrl(path);
         imageUrl = publicUrl;
+        uploadedPath = path;
       }
 
       const payload = {
@@ -199,19 +240,31 @@ export function TeamClient({ canManage }: TeamClientProps) {
         tiktok: form.tiktok.trim() || null,
         email: form.email.trim() || null,
         display_order: Number(form.display_order) || 0,
+        on_board: form.on_board,
         image_url: imageUrl,
         is_active: form.is_active,
       };
 
-      if (editing) {
-        const { error: updateError } = await supabase
-          .from("team_members")
-          .update(payload)
-          .eq("id", editing.id);
-        if (updateError) throw new Error(getDbErrorMessage(updateError));
-      } else {
-        const { error: insertError } = await supabase.from("team_members").insert(payload);
-        if (insertError) throw new Error(getDbErrorMessage(insertError));
+      try {
+        if (editing) {
+          const { error: updateError } = await supabase
+            .from("team_members")
+            .update(payload)
+            .eq("id", editing.id);
+          if (updateError) throw new Error(getDbErrorMessage(updateError));
+        } else {
+          const { error: insertError } = await supabase.from("team_members").insert(payload);
+          if (insertError) throw new Error(getDbErrorMessage(insertError));
+        }
+      } catch (err) {
+        if (uploadedPath) {
+          await supabase.storage.from("avatars").remove([uploadedPath]).catch(() => undefined);
+        }
+        throw err;
+      }
+
+      if (uploadedPath && oldPath && oldPath !== uploadedPath) {
+        await supabase.storage.from("avatars").remove([oldPath]).catch(() => undefined);
       }
 
       await fetchMembers();
@@ -235,6 +288,12 @@ export function TeamClient({ canManage }: TeamClientProps) {
     if (deleteError) {
       setError(getDbErrorMessage(deleteError));
     } else {
+      const imagePath = deleteTarget.image_url
+        ? storagePathFromPublicUrl(deleteTarget.image_url, "avatars")
+        : null;
+      if (imagePath) {
+        await supabase.storage.from("avatars").remove([imagePath]).catch(() => undefined);
+      }
       setMembers((current) => current.filter((m) => m.id !== deleteTarget.id));
       setDeleteTarget(null);
     }
@@ -407,13 +466,14 @@ export function TeamClient({ canManage }: TeamClientProps) {
                     <p className="text-sm text-yaaq-gold truncate">{member.role}</p>
                   </div>
                   <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs capitalize text-muted-foreground">
-                    {member.department}
+                    {DEPARTMENTS.find((d) => d.value === member.department)?.label ?? member.department}
                   </span>
                 </div>
                 {member.email && (
                   <p className="mt-1 text-xs text-muted-foreground truncate">{member.email}</p>
                 )}
-                <p className="mt-2">
+                <p className="mt-2 flex flex-wrap items-center gap-1.5">
+                  {member.on_board && <Badge variant="gold">Executive Board</Badge>}
                   {member.profile_id ? (
                     <Badge variant="gold">Account linked</Badge>
                   ) : (
@@ -626,6 +686,17 @@ export function TeamClient({ canManage }: TeamClientProps) {
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"
+                checked={form.on_board}
+                onChange={(e) => setForm({ ...form, on_board: e.target.checked })}
+                disabled={saving}
+                className="h-4 w-4 rounded border-input accent-[color:var(--yaaq-gold)]"
+              />
+              <span className="text-sm font-medium">Executive Board member (Article 3.1)</span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
                 checked={form.is_active}
                 onChange={(e) => setForm({ ...form, is_active: e.target.checked })}
                 disabled={saving}
@@ -653,7 +724,10 @@ export function TeamClient({ canManage }: TeamClientProps) {
                     type="file"
                     accept="image/jpeg,image/png,image/webp,image/avif"
                     className="sr-only"
-                    onChange={(e) => onImageChange(e.target.files?.[0] ?? null)}
+                    onChange={(e) => {
+                      onImageChange(e.target.files?.[0] ?? null);
+                      e.target.value = "";
+                    }}
                     disabled={saving}
                   />
                 </label>
@@ -766,6 +840,18 @@ export function TeamClient({ canManage }: TeamClientProps) {
         destructive
         isLoading={saving}
         onConfirm={remove}
+      />
+
+      <ImageCropDialog
+        open={cropSource !== null}
+        src={cropSource?.src ?? null}
+        file={cropSource?.file ?? null}
+        aspect={1}
+        cropShape="rect"
+        maxEdge={1024}
+        title="Position the photo"
+        onCancel={closeCrop}
+        onConfirm={onCropConfirm}
       />
     </div>
   );

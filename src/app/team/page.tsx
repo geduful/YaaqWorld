@@ -10,7 +10,7 @@ import { TeamDirectoryClient } from "@/components/team/team-directory-client";
 export const metadata: Metadata = {
   title: "Our Team",
   description:
-    "Meet the YAAQ World team — executive management, media production crew, on-screen talent, and digital operations. The creators behind the lens.",
+    "Meet the YAAQ World team — the Executive Board and our Editorial, Creative & Design, Digital & Engagement, and Operations departments.",
 };
 
 export default function TeamPage() {
@@ -42,7 +42,7 @@ export default function TeamPage() {
             id="team-directory-heading"
             tagline="Team Directory"
             title="Our Team Members"
-            description="Filter by department to explore the people powering YAAQ World's media production and storytelling."
+            description="Filter by department to explore the Executive Board and departments powering YAAQ World."
           />
           <TeamDirectoryClient />
         </div>
@@ -58,7 +58,7 @@ export default function TeamPage() {
               description="We're always looking for passionate creators — photographers, videographers, editors, writers, on-screen talent, and digital strategists. Whether you're a student or a professional, if you love campus culture, there's a place for you."
             />
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/team#join">
+                <Link href="/contact">
                 <Button size="lg" variant="gold" className="gap-2">
                   <Plus className="h-5 w-5" />
                   Express Interest

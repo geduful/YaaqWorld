@@ -29,6 +29,9 @@ import {
   Globe,
 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { getDbErrorMessage } from "@/lib/errors";
+import { storagePathFromPublicUrl } from "@/lib/image";
+import { ImageCropDialog, type CropResult } from "@/components/image-crop-dialog";
 import { Institution } from "@/types";
 
 const levels = [
@@ -59,6 +62,7 @@ export default function ProfileEditPage() {
   const [institutions, setInstitutions] = useState<Institution[]>([]);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [cropSource, setCropSource] = useState<{ file: File; src: string } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -94,8 +98,9 @@ export default function ProfileEditPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-  const handlePhotoChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    if (fileInputRef.current) fileInputRef.current.value = "";
     if (!file || !user) return;
 
     if (!file.type.startsWith("image/")) {
@@ -107,22 +112,36 @@ export default function ProfileEditPage() {
       return;
     }
 
+    setMessage(null);
+    setCropSource({ file, src: URL.createObjectURL(file) });
+  };
+
+  const closeCrop = () => {
+    setCropSource((current) => {
+      if (current) URL.revokeObjectURL(current.src);
+      return null;
+    });
+  };
+
+  const handleCropConfirm = async (result: CropResult) => {
+    setCropSource((current) => {
+      if (current) URL.revokeObjectURL(current.src);
+      return null;
+    });
+    if (!user) return;
+
     setIsUploading(true);
     setMessage(null);
 
     try {
-      const reader = new FileReader();
-      reader.onload = (e) => setPhotoPreview(e.target?.result as string);
-      reader.readAsDataURL(file);
-
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}.${fileExt}`;
+      const oldPath = avatarUrl ? storagePathFromPublicUrl(avatarUrl, "avatars") : null;
+      const fileName = `${user.id}/avatar-${Date.now()}.${result.ext}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, file, { upsert: true });
+        .upload(fileName, result.blob);
 
       if (uploadError) {
-        setMessage({ type: "error", text: "Unable to upload photo. Please try again." });
+        setMessage({ type: "error", text: getDbErrorMessage(uploadError) });
         return;
       }
 
@@ -134,8 +153,15 @@ export default function ProfileEditPage() {
         .eq("id", user.id);
 
       if (updateError) {
-        setMessage({ type: "error", text: "Unable to save photo. Please try again." });
+        if (oldPath !== fileName) {
+          await supabase.storage.from("avatars").remove([fileName]).catch(() => undefined);
+        }
+        setMessage({ type: "error", text: getDbErrorMessage(updateError) });
         return;
+      }
+
+      if (oldPath && oldPath !== fileName) {
+        await supabase.storage.from("avatars").remove([oldPath]).catch(() => undefined);
       }
 
       setAvatarUrl(publicUrl);
@@ -146,7 +172,6 @@ export default function ProfileEditPage() {
       setMessage({ type: "error", text: "An unexpected error occurred." });
     } finally {
       setIsUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -156,8 +181,10 @@ export default function ProfileEditPage() {
     setMessage(null);
 
     try {
-      const fileExt = avatarUrl?.split(".").pop() || "jpg";
-      await supabase.storage.from("avatars").remove([`${user.id}.${fileExt}`]);
+      const path = avatarUrl ? storagePathFromPublicUrl(avatarUrl, "avatars") : null;
+      if (path) {
+        await supabase.storage.from("avatars").remove([path]).catch(() => undefined);
+      }
 
       const { error } = await supabase
         .from("profiles")
@@ -316,6 +343,18 @@ export default function ProfileEditPage() {
             </div>
           </CardContent>
         </Card>
+
+        <ImageCropDialog
+          open={cropSource !== null}
+          src={cropSource?.src ?? null}
+          file={cropSource?.file ?? null}
+          aspect={1}
+          cropShape="round"
+          maxEdge={512}
+          title="Position your photo"
+          onCancel={closeCrop}
+          onConfirm={handleCropConfirm}
+        />
 
         <form onSubmit={handleSubmit}>
           <Card>

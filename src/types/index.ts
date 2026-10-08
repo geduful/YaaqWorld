@@ -84,7 +84,7 @@ export interface CreatorSocialLink extends BaseEntity {
 export interface TeamMember extends BaseEntity {
   full_name: string;
   role: string;
-  department: "executive" | "production" | "talent" | "digital";
+  department: "executive" | "editorial" | "creative" | "digital" | "operations";
   bio: string | null;
   image_url: string | null;
   moniker: string | null;
@@ -94,6 +94,7 @@ export interface TeamMember extends BaseEntity {
   email: string | null;
   profile_id: string | null;
   display_order: number;
+  on_board: boolean;
   is_active: boolean;
 }
 
@@ -436,7 +437,7 @@ export interface AdminInviteFormData {
 export interface TeamMemberFormData {
   full_name: string;
   role: string;
-  department: "executive" | "production" | "talent" | "digital";
+  department: "executive" | "editorial" | "creative" | "digital" | "operations";
   bio: string;
   moniker: string;
   instagram: string;
@@ -444,6 +445,7 @@ export interface TeamMemberFormData {
   tiktok: string;
   email: string;
   display_order: number;
+  on_board: boolean;
   is_active: boolean;
   image_url: string | null;
 }

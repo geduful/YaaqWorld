@@ -14,10 +14,11 @@ interface SocialLink {
 interface TeamMember {
   name: string;
   role: string;
-  department: "executive" | "production" | "talent" | "digital";
+  department: "executive" | "editorial" | "creative" | "digital" | "operations";
   bio?: string;
   image?: string;
   moniker?: string;
+  board?: boolean;
   socials?: SocialLink[];
 }
 
@@ -27,17 +28,19 @@ interface TeamCardProps {
 }
 
 const departmentLabels = {
-  executive: "Executive Management",
-  production: "Media Production",
-  talent: "On-Screen Talent",
-  digital: "Digital Operations",
+  executive: "Executive",
+  editorial: "Editorial",
+  creative: "Creative & Design",
+  digital: "Digital & Engagement",
+  operations: "Operations",
 };
 
 const departmentColors = {
   executive: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-  production: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  talent: "bg-pink-500/10 text-pink-600 border-pink-500/20",
+  editorial: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  creative: "bg-pink-500/10 text-pink-600 border-pink-500/20",
   digital: "bg-green-500/10 text-green-600 border-green-500/20",
+  operations: "bg-amber-500/10 text-amber-600 border-amber-500/20",
 };
 
 export function TeamCard({ member, className }: TeamCardProps) {
@@ -75,6 +78,11 @@ export function TeamCard({ member, className }: TeamCardProps) {
           {member.name}
         </h3>
         <p className="mt-0.5 text-sm text-muted-foreground">{member.role}</p>
+        {member.board && (
+          <p className="mt-2">
+            <Badge variant="gold" className="mx-auto">Executive Board</Badge>
+          </p>
+        )}
         {member.bio && (
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{member.bio}</p>
         )}

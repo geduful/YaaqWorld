@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS team_members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name TEXT NOT NULL,
   role TEXT NOT NULL,
-  department TEXT NOT NULL CHECK (department IN ('executive', 'production', 'talent', 'digital')),
+  department TEXT NOT NULL CHECK (department IN ('executive', 'editorial', 'creative', 'digital', 'operations')),
   bio TEXT,
   image_url TEXT,
   moniker TEXT,
@@ -164,6 +164,7 @@ CREATE TABLE IF NOT EXISTS team_members (
   email TEXT,
   profile_id UUID UNIQUE REFERENCES profiles(id) ON DELETE SET NULL,
   display_order INT NOT NULL DEFAULT 0,
+  on_board BOOLEAN NOT NULL DEFAULT false,
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -1528,6 +1529,21 @@ BEGIN
 END;
 $$;
 
+-- 6.8 Constitutional team structure (Articles 3 & 4)
+-- Departments follow Article 3.2 (Editorial, Creative & Design,
+-- Digital & Engagement, Operations); 'executive' hosts board-only roles.
+-- on_board marks Article 3.1 Executive Board positions (CEO + the four heads).
+-- NOTE: the old constraint must go FIRST, otherwise the legacy-value
+-- remap below fails the old check (23514) before the new one exists.
+ALTER TABLE team_members DROP CONSTRAINT IF EXISTS team_members_department_check;
+UPDATE team_members SET department = 'creative' WHERE department = 'production';
+UPDATE team_members SET department = 'editorial' WHERE department = 'talent';
+ALTER TABLE team_members ADD CONSTRAINT team_members_department_check CHECK (department IN ('executive', 'editorial', 'creative', 'digital', 'operations'));
+ALTER TABLE team_members ADD COLUMN IF NOT EXISTS on_board BOOLEAN NOT NULL DEFAULT false;
+UPDATE team_members SET on_board = true
+WHERE role ILIKE 'CEO%'
+   OR role IN ('Head of Editors', 'Head of Operations', 'Head of Creative & Design', 'Head of Social Media & Engagement');
+
 -- ============================================================
 -- 7. ROW LEVEL SECURITY
 -- ============================================================
@@ -1707,6 +1723,17 @@ CREATE POLICY "Admins with members.manage update profiles"
   ON profiles FOR UPDATE
   USING (public.has_admin_permission('members.manage'))
   WITH CHECK (public.has_admin_permission('members.manage'));
+
+-- 8-fix. Profiles self-update recursion (42P17)
+-- The phase 2 self-update policy subqueried profiles inside its own WITH
+-- CHECK, which Postgres rejects as infinite recursion — breaking every
+-- profiles UPDATE from the browser (e.g. avatar saves). Role protection is
+-- enforced by the enforce_profile_security trigger instead.
+DROP POLICY IF EXISTS "Users can update own profile (no role change)" ON profiles;
+CREATE POLICY "Users can update own profile (no role change)"
+  ON profiles FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
 
 -- members: permission-gated read
 DROP POLICY IF EXISTS "Admins can view all members" ON members;

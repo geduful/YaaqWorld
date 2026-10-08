@@ -545,6 +545,32 @@ BEGIN
 END;
 $$;
 
+-- 6.8 Constitutional team structure (Articles 3 & 4)
+-- Departments follow Article 3.2 (Editorial, Creative & Design,
+-- Digital & Engagement, Operations); 'executive' hosts board-only roles.
+-- on_board marks Article 3.1 Executive Board positions (CEO + the four heads).
+-- NOTE: the old constraint must go FIRST, otherwise the legacy-value
+-- remap below fails the old check (23514) before the new one exists.
+ALTER TABLE team_members DROP CONSTRAINT IF EXISTS team_members_department_check;
+UPDATE team_members SET department = 'creative' WHERE department = 'production';
+UPDATE team_members SET department = 'editorial' WHERE department = 'talent';
+ALTER TABLE team_members ADD CONSTRAINT team_members_department_check CHECK (department IN ('executive', 'editorial', 'creative', 'digital', 'operations'));
+ALTER TABLE team_members ADD COLUMN IF NOT EXISTS on_board BOOLEAN NOT NULL DEFAULT false;
+UPDATE team_members SET on_board = true
+WHERE role ILIKE 'CEO%'
+   OR role IN ('Head of Editors', 'Head of Operations', 'Head of Creative & Design', 'Head of Social Media & Engagement');
+
+-- 8-fix. Profiles self-update recursion (42P17)
+-- The phase 2 self-update policy subqueried profiles inside its own WITH
+-- CHECK, which Postgres rejects as infinite recursion — breaking every
+-- profiles UPDATE from the browser (e.g. avatar saves). Role protection is
+-- enforced by the enforce_profile_security trigger instead.
+DROP POLICY IF EXISTS "Users can update own profile (no role change)" ON profiles;
+CREATE POLICY "Users can update own profile (no role change)"
+  ON profiles FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+
 -- 8b-post: These functions were created after the blanket GRANT at the
 -- end of phase3 ran, so they need explicit EXECUTE grants (PostgREST
 -- resolves RPCs as anon/authenticated/service_role).

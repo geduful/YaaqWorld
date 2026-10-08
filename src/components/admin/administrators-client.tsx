@@ -280,6 +280,20 @@ export function AdministratorsClient({ currentUserId, canManage }: Administrator
       setDeleteTarget(null);
       setCandidates((prev) => prev.filter((c) => c.profile_id !== deletedId));
       await fetchAll();
+      const rootNames = ["webp", "jpg", "jpeg", "png", "gif", "avif"].map(
+        (ext) => `${deletedId}.${ext}`
+      );
+      await supabase.storage.from("avatars").remove(rootNames).catch(() => undefined);
+      const { data: folderFiles } = await supabase.storage
+        .from("avatars")
+        .list(`${deletedId}`, { limit: 100 })
+        .catch(() => ({ data: null, error: null }));
+      const avatarPaths = (folderFiles ?? [])
+        .filter((entry) => entry.name.startsWith("avatar-"))
+        .map((entry) => `${deletedId}/${entry.name}`);
+      if (avatarPaths.length > 0) {
+        await supabase.storage.from("avatars").remove(avatarPaths).catch(() => undefined);
+      }
       setNotice(`${deletedLabel} was permanently deleted.`);
     }
     setActionSaving(false);
