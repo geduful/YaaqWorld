@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -27,21 +28,32 @@ export function MembersClient({ canManage }: MembersClientProps) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [target, setTarget] = useState<Profile | null>(null);
   const [saving, setSaving] = useState(false);
+  const [teamIds, setTeamIds] = useState<Set<string>>(new Set());
 
   const fetchMembers = useCallback(async () => {
     const supabase = getBrowserClient();
     setError(null);
-    const { data, error: queryError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("role", "member")
-      .order("created_at", { ascending: false });
+    const [profilesResult, teamResult] = await Promise.all([
+      supabase
+        .from("profiles")
+        .select("*")
+        .eq("role", "member")
+        .order("created_at", { ascending: false }),
+      supabase.from("team_members").select("profile_id").not("profile_id", "is", "null"),
+    ]);
 
-    if (queryError) {
-      setError(getDbErrorMessage(queryError));
+    if (profilesResult.error) {
+      setError(getDbErrorMessage(profilesResult.error));
       return;
     }
-    setMembers((data ?? []) as Profile[]);
+    setMembers((profilesResult.data ?? []) as Profile[]);
+    setTeamIds(
+      new Set(
+        ((teamResult.data ?? []) as { profile_id: string | null }[])
+          .map((row) => row.profile_id)
+          .filter((id): id is string => id !== null)
+      )
+    );
   }, []);
 
   useEffect(() => {
@@ -171,8 +183,9 @@ export function MembersClient({ canManage }: MembersClientProps) {
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0">
-                          <p className="font-medium text-foreground truncate">
+                          <p className="font-medium text-foreground truncate flex items-center gap-2">
                             {member.full_name || "Unnamed member"}
+                            {teamIds.has(member.id) && <Badge variant="gold">Team</Badge>}
                           </p>
                           <p className="text-xs text-muted-foreground truncate">
                             {member.whatsapp || member.level || "—"}

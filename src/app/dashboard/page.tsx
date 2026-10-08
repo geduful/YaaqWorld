@@ -17,6 +17,7 @@ import {
   Megaphone,
   Calendar,
   ArrowRight,
+  CheckCircle2,
   Inbox,
   Sparkles,
 } from "lucide-react";
@@ -36,10 +37,21 @@ export default function MemberDashboardPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsLoading, setNotificationsLoading] = useState(true);
+  const [isTeamMember, setIsTeamMember] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     const supabase = getBrowserClient();
+
+    const checkTeamLink = async () => {
+      const { data } = await supabase
+        .from("team_members")
+        .select("id")
+        .eq("profile_id", user.id)
+        .limit(1)
+        .maybeSingle();
+      setIsTeamMember(Boolean(data));
+    };
 
     const fetchNotifications = async () => {
       setNotificationsLoading(true);
@@ -58,6 +70,7 @@ export default function MemberDashboardPage() {
     };
 
     fetchNotifications();
+    checkTeamLink();
   }, [user]);
 
   if (loading) {
@@ -91,6 +104,12 @@ export default function MemberDashboardPage() {
             </h1>
             <p className="mt-1 text-muted-foreground">Welcome back to your YAAQ World dashboard</p>
           </div>
+          {isTeamMember && (
+            <Badge variant="gold" className="gap-1.5 self-start sm:self-auto">
+              <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+              Team member
+            </Badge>
+          )}
           {profile?.role && (
             <Badge variant="gold" className="self-start sm:self-auto capitalize">{profile.role}</Badge>
           )}

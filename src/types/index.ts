@@ -91,6 +91,8 @@ export interface TeamMember extends BaseEntity {
   instagram: string | null;
   linkedin: string | null;
   tiktok: string | null;
+  email: string | null;
+  profile_id: string | null;
   display_order: number;
   is_active: boolean;
 }
@@ -440,6 +442,7 @@ export interface TeamMemberFormData {
   instagram: string;
   linkedin: string;
   tiktok: string;
+  email: string;
   display_order: number;
   is_active: boolean;
   image_url: string | null;

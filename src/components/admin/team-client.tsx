@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/auth";
 import { getBrowserClient } from "@/lib/supabase-browser";
-import { getDbErrorMessage } from "@/lib/errors";
+import { getDbErrorMessage, getRpcError } from "@/lib/errors";
 import { PageHeader } from "@/components/admin/page-header";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { EmptyState } from "@/components/dashboard/empty-state";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,10 +29,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { TeamMember, TeamMemberFormData } from "@/types";
-import { LayoutGrid, Pencil, Plus, Trash2, Upload } from "lucide-react";
+import { LayoutGrid, Link2, Pencil, Plus, Trash2, Unlink, Upload } from "lucide-react";
 
 interface TeamClientProps {
   canManage: boolean;
+}
+
+interface LinkableUser {
+  profile_id: string;
+  email: string;
+  full_name: string | null;
 }
 
 const DEPARTMENTS = [
@@ -50,6 +57,7 @@ const EMPTY_FORM: TeamMemberFormData = {
   instagram: "",
   linkedin: "",
   tiktok: "",
+  email: "",
   display_order: 0,
   is_active: true,
   image_url: null,
@@ -68,6 +76,16 @@ export function TeamClient({ canManage }: TeamClientProps) {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TeamMember | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Link account dialog
+  const [linkTarget, setLinkTarget] = useState<TeamMember | null>(null);
+  const [linkQuery, setLinkQuery] = useState("");
+  const [linkResults, setLinkResults] = useState<LinkableUser[]>([]);
+  const [linkSearching, setLinkSearching] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
+  const [linkSaving, setLinkSaving] = useState(false);
+  const linkReqRef = useRef(0);
 
   const fetchMembers = useCallback(async () => {
     const supabase = getBrowserClient();
@@ -113,6 +131,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
       instagram: member.instagram ?? "",
       linkedin: member.linkedin ?? "",
       tiktok: member.tiktok ?? "",
+      email: member.email ?? "",
       display_order: member.display_order,
       is_active: member.is_active,
       image_url: member.image_url,
@@ -150,6 +169,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
     }
     setSaving(true);
     setFormError(null);
+    setNotice(null);
     const supabase = getBrowserClient();
 
     try {
@@ -177,6 +197,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
         instagram: form.instagram.trim() || null,
         linkedin: form.linkedin.trim() || null,
         tiktok: form.tiktok.trim() || null,
+        email: form.email.trim() || null,
         display_order: Number(form.display_order) || 0,
         image_url: imageUrl,
         is_active: form.is_active,
@@ -220,6 +241,96 @@ export function TeamClient({ canManage }: TeamClientProps) {
     setSaving(false);
   };
 
+  const openLink = (member: TeamMember) => {
+    setLinkTarget(member);
+    setLinkQuery("");
+    setLinkResults([]);
+    setLinkError(null);
+  };
+
+  const closeLink = () => {
+    setLinkTarget(null);
+    setLinkQuery("");
+    setLinkResults([]);
+    setLinkError(null);
+    setLinkSearching(false);
+    ++linkReqRef.current;
+  };
+
+  const handleLinkQueryChange = (value: string) => {
+    setLinkQuery(value);
+    if (value.trim().length < 2) {
+      setLinkResults([]);
+      setLinkSearching(false);
+      setLinkError(null);
+    } else {
+      setLinkSearching(true);
+      setLinkError(null);
+    }
+  };
+
+  useEffect(() => {
+    const query = linkQuery.trim();
+    const requestId = ++linkReqRef.current;
+    if (query.length < 2) return;
+
+    const timer = setTimeout(async () => {
+      const supabase = getBrowserClient();
+      const { data, error: rpcError } = await supabase.rpc("search_linkable_users", {
+        p_query: query,
+        p_limit: 8,
+      });
+      if (requestId !== linkReqRef.current) return;
+      setLinkSearching(false);
+      if (rpcError) {
+        setLinkError(getRpcError(rpcError));
+      } else {
+        setLinkResults((data ?? []) as LinkableUser[]);
+      }
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [linkQuery]);
+
+  const runLink = async (account: LinkableUser) => {
+    if (!linkTarget) return;
+    setLinkSaving(true);
+    setLinkError(null);
+    const supabase = getBrowserClient();
+    const { error: rpcError } = await supabase.rpc("link_team_member", {
+      p_team_id: linkTarget.id,
+      p_profile_id: account.profile_id,
+    });
+
+    if (rpcError) {
+      setLinkError(getRpcError(rpcError));
+    } else {
+      const listedName = linkTarget.full_name;
+      closeLink();
+      await fetchMembers();
+      setNotice(`${account.email} is now linked to ${listedName}.`);
+    }
+    setLinkSaving(false);
+  };
+
+  const runUnlink = async (member: TeamMember) => {
+    setLinkSaving(true);
+    setError(null);
+    setNotice(null);
+    const supabase = getBrowserClient();
+    const { error: rpcError } = await supabase.rpc("link_team_member", {
+      p_team_id: member.id,
+      p_profile_id: null,
+    });
+
+    if (rpcError) {
+      setError(getRpcError(rpcError));
+    } else {
+      await fetchMembers();
+      setNotice(`Account unlinked from ${member.full_name}.`);
+    }
+    setLinkSaving(false);
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -238,6 +349,11 @@ export function TeamClient({ canManage }: TeamClientProps) {
       {error && (
         <div className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive" role="alert">
           {error}
+        </div>
+      )}
+      {notice && (
+        <div className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-600" role="status">
+          {notice}
         </div>
       )}
 
@@ -294,6 +410,16 @@ export function TeamClient({ canManage }: TeamClientProps) {
                     {member.department}
                   </span>
                 </div>
+                {member.email && (
+                  <p className="mt-1 text-xs text-muted-foreground truncate">{member.email}</p>
+                )}
+                <p className="mt-2">
+                  {member.profile_id ? (
+                    <Badge variant="gold">Account linked</Badge>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">No account linked</span>
+                  )}
+                </p>
                 {member.bio && (
                   <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{member.bio}</p>
                 )}
@@ -301,7 +427,29 @@ export function TeamClient({ canManage }: TeamClientProps) {
                   <p className="mt-2 text-xs text-amber-600">Hidden from public site</p>
                 )}
                 {canManage && (
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {!member.profile_id ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 flex-1"
+                        onClick={() => openLink(member)}
+                      >
+                        <Link2 className="h-3.5 w-3.5" />
+                        Link account
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 flex-1"
+                        onClick={() => runUnlink(member)}
+                        isLoading={linkSaving}
+                      >
+                        <Unlink className="h-3.5 w-3.5" />
+                        Unlink
+                      </Button>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
@@ -405,6 +553,21 @@ export function TeamClient({ canManage }: TeamClientProps) {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="team-email">Email (optional)</Label>
+              <Input
+                id="team-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="name@example.com"
+                disabled={saving}
+              />
+              <p className="text-xs text-muted-foreground">
+                Used to automatically detect their account when they sign up.
+              </p>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="team-bio">Bio</Label>
               <Textarea
                 id="team-bio"
@@ -505,6 +668,90 @@ export function TeamClient({ canManage }: TeamClientProps) {
             </Button>
             <Button variant="gold" onClick={save} isLoading={saving}>
               {editing ? "Save changes" : "Add member"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Link account dialog */}
+      <Dialog
+        open={linkTarget !== null}
+        onOpenChange={(open) => !linkSaving && open === false && closeLink()}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Link an account</DialogTitle>
+            <DialogDescription>
+              {linkTarget
+                ? `Find the signed-in account for ${linkTarget.full_name} and attach it to this listing.`
+                : ""}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2">
+            <Label htmlFor="link-user-search">Search accounts</Label>
+            <Input
+              id="link-user-search"
+              type="search"
+              value={linkQuery}
+              onChange={(e) => handleLinkQueryChange(e.target.value)}
+              placeholder="Type a name or email address…"
+              autoComplete="off"
+              disabled={linkSaving}
+            />
+            <p className="text-xs text-muted-foreground">
+              Only accounts that are not already linked to another team member are shown.
+            </p>
+          </div>
+
+          {linkError && (
+            <div className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">
+              {linkError}
+            </div>
+          )}
+
+          {linkSearching && (
+            <div className="space-y-2">
+              {[1, 2].map((i) => (
+                <Skeleton key={i} className="h-12 w-full" />
+              ))}
+            </div>
+          )}
+
+          {!linkSearching && !linkError && linkQuery.trim().length >= 2 && linkResults.length === 0 && (
+            <p className="text-sm text-muted-foreground">No matching accounts found.</p>
+          )}
+
+          {!linkSearching && linkResults.length > 0 && (
+            <div className="max-h-64 space-y-2 overflow-y-auto">
+              {linkResults.map((account) => (
+                <div
+                  key={account.profile_id}
+                  className="rounded-lg border p-3 flex items-center justify-between gap-3"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {account.full_name || account.email}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">{account.email}</p>
+                  </div>
+                  <Button
+                    variant="gold"
+                    size="sm"
+                    className="shrink-0"
+                    disabled={linkSaving}
+                    onClick={() => runLink(account)}
+                  >
+                    Link
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={closeLink} disabled={linkSaving}>
+              Close
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -161,6 +161,8 @@ CREATE TABLE IF NOT EXISTS team_members (
   instagram TEXT,
   linkedin TEXT,
   tiktok TEXT,
+  email TEXT,
+  profile_id UUID UNIQUE REFERENCES profiles(id) ON DELETE SET NULL,
   display_order INT NOT NULL DEFAULT 0,
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -169,6 +171,7 @@ CREATE TABLE IF NOT EXISTS team_members (
 
 CREATE INDEX IF NOT EXISTS idx_team_department ON team_members (department, display_order);
 CREATE INDEX IF NOT EXISTS idx_team_active ON team_members (is_active);
+CREATE INDEX IF NOT EXISTS idx_team_members_profile ON team_members (profile_id);
 
 -- Services catalogue (pricing optional â€” NULL means inquiry-based)
 CREATE TABLE IF NOT EXISTS services (
@@ -1345,6 +1348,183 @@ BEGIN
   );
 
   RETURN jsonb_build_object('ok', true, 'recipients', v_count);
+END;
+$$;
+
+-- 6.7 Team account linking (badge + manual link)
+-- Stores an optional official email on a team listing and links it to
+-- a signed-in account: automatically when a matching email signs up,
+-- or manually by a team manager. Linking grants no permissions.
+ALTER TABLE team_members ADD COLUMN IF NOT EXISTS email TEXT;
+ALTER TABLE team_members ADD COLUMN IF NOT EXISTS profile_id UUID UNIQUE REFERENCES profiles(id) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_team_members_profile ON team_members (profile_id);
+
+-- One-time backfill: link listings whose email already matches an account.
+UPDATE team_members t
+SET profile_id = m.profile_id
+FROM (
+  SELECT DISTINCT ON (lower(u.email)) t2.id AS team_id, u.id AS profile_id
+  FROM team_members t2
+  JOIN auth.users u ON lower(u.email) = t2.email
+  WHERE t2.profile_id IS NULL
+  ORDER BY lower(u.email), t2.created_at
+) m
+WHERE t.id = m.team_id
+  AND NOT EXISTS (SELECT 1 FROM team_members x WHERE x.profile_id = m.profile_id);
+
+-- Normalize email (lowercase, blank -> NULL) and auto-match an existing
+-- account when the email is first set or changed. A link is only ever
+-- removed manually, so unrelated edits never break it.
+CREATE OR REPLACE FUNCTION public.normalize_and_match_team_email()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions, pg_temp
+AS $$
+BEGIN
+  NEW.email := nullif(lower(trim(coalesce(NEW.email, ''))), '');
+
+  IF NEW.profile_id IS NULL
+     AND NEW.email IS NOT NULL
+     AND (TG_OP = 'INSERT' OR NEW.email IS DISTINCT FROM OLD.email) THEN
+    SELECT p.id INTO NEW.profile_id
+    FROM auth.users u
+    JOIN profiles p ON p.id = u.id
+    WHERE lower(u.email) = NEW.email
+      AND NOT EXISTS (
+        SELECT 1 FROM team_members t
+        WHERE t.profile_id = p.id AND t.id IS DISTINCT FROM NEW.id
+      )
+    ORDER BY u.created_at
+    LIMIT 1;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_match_team_email ON team_members;
+CREATE TRIGGER trg_match_team_email
+  BEFORE INSERT OR UPDATE ON team_members
+  FOR EACH ROW EXECUTE FUNCTION public.normalize_and_match_team_email();
+
+-- When a new account is created, attach it to the first unlinked team
+-- listing that already carries that email.
+CREATE OR REPLACE FUNCTION public.link_team_on_signup()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions, pg_temp
+AS $$
+DECLARE
+  v_email TEXT;
+BEGIN
+  IF EXISTS (SELECT 1 FROM team_members WHERE profile_id = NEW.id) THEN
+    RETURN NULL;
+  END IF;
+
+  SELECT lower(u.email) INTO v_email FROM auth.users u WHERE u.id = NEW.id;
+  IF v_email IS NULL THEN
+    RETURN NULL;
+  END IF;
+
+  UPDATE team_members SET profile_id = NEW.id
+  WHERE id = (
+    SELECT t.id FROM team_members t
+    WHERE t.email = v_email AND t.profile_id IS NULL
+    ORDER BY t.created_at
+    LIMIT 1
+  );
+  RETURN NULL;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_link_team_on_signup ON profiles;
+CREATE TRIGGER trg_link_team_on_signup
+  AFTER INSERT ON profiles
+  FOR EACH ROW EXECUTE FUNCTION public.link_team_on_signup();
+
+-- Find signed-in accounts that are not yet linked to a team listing.
+CREATE OR REPLACE FUNCTION public.search_linkable_users(
+  p_query TEXT,
+  p_limit INT DEFAULT 10
+) RETURNS TABLE (
+  profile_id UUID,
+  email TEXT,
+  full_name TEXT
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions, pg_temp
+AS $$
+DECLARE
+  v_uid UUID := auth.uid();
+  v_query TEXT := trim(coalesce(p_query, ''));
+  v_limit INT := LEAST(GREATEST(coalesce(p_limit, 10), 1), 25);
+BEGIN
+  IF v_uid IS NULL OR NOT public.has_admin_permission('team.manage') THEN
+    RAISE EXCEPTION 'You do not have permission to manage the team.' USING ERRCODE = '42501';
+  END IF;
+  IF length(v_query) < 2 THEN
+    RETURN;
+  END IF;
+
+  RETURN QUERY
+  SELECT u.id, u.email::text, p.full_name
+  FROM auth.users u
+  JOIN profiles p ON p.id = u.id
+  WHERE (u.email ILIKE '%' || v_query || '%' OR coalesce(p.full_name, '') ILIKE '%' || v_query || '%')
+    AND NOT EXISTS (SELECT 1 FROM team_members t WHERE t.profile_id = u.id)
+    AND u.email_confirmed_at IS NOT NULL
+    AND (u.banned_until IS NULL OR u.banned_until < now())
+  ORDER BY u.email
+  LIMIT v_limit;
+END;
+$$;
+
+-- Manually link a team listing to an account (or unlink with NULL).
+CREATE OR REPLACE FUNCTION public.link_team_member(
+  p_team_id UUID,
+  p_profile_id UUID DEFAULT NULL
+)
+RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions, pg_temp
+AS $$
+DECLARE
+  v_uid UUID := auth.uid();
+  v_team team_members%ROWTYPE;
+  v_email TEXT;
+BEGIN
+  IF v_uid IS NULL OR NOT public.has_admin_permission('team.manage') THEN
+    RAISE EXCEPTION 'You do not have permission to manage the team.' USING ERRCODE = '42501';
+  END IF;
+  IF p_team_id IS NULL THEN
+    RAISE EXCEPTION 'Select a team member.' USING ERRCODE = '22023';
+  END IF;
+
+  SELECT * INTO v_team FROM team_members WHERE id = p_team_id FOR UPDATE;
+  IF v_team.id IS NULL THEN
+    RAISE EXCEPTION 'Team member not found.' USING ERRCODE = '22023';
+  END IF;
+
+  IF p_profile_id IS NULL THEN
+    UPDATE team_members SET profile_id = NULL WHERE id = p_team_id;
+    RETURN jsonb_build_object('ok', true, 'linked', false, 'team_id', p_team_id);
+  END IF;
+
+  SELECT u.email::text INTO v_email FROM auth.users u WHERE u.id = p_profile_id;
+  IF v_email IS NULL THEN
+    RAISE EXCEPTION 'Account not found.' USING ERRCODE = '22023';
+  END IF;
+  IF EXISTS (SELECT 1 FROM team_members WHERE profile_id = p_profile_id AND id <> p_team_id) THEN
+    RAISE EXCEPTION 'This account is already linked to another team member.' USING ERRCODE = '22023';
+  END IF;
+
+  UPDATE team_members SET profile_id = p_profile_id, email = lower(v_email) WHERE id = p_team_id;
+
+  RETURN jsonb_build_object('ok', true, 'linked', true, 'team_id', p_team_id, 'profile_id', p_profile_id, 'email', lower(v_email));
 END;
 $$;
 
