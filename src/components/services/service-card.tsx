@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 interface ServiceCardProps {
+  id?: string;
   title: string;
   description: string;
   href: string;
@@ -20,6 +21,7 @@ interface ServiceCardProps {
 }
 
 export function ServiceCard({
+  id,
   title,
   description,
   href,
@@ -30,7 +32,7 @@ export function ServiceCard({
   className,
 }: ServiceCardProps) {
   return (
-    <Card className={cn("group overflow-hidden transition-all duration-300 hover:shadow-xl", featured && "lg:col-span-2", className)}>
+    <Card id={id} className={cn("group overflow-hidden transition-all duration-300 hover:shadow-xl scroll-mt-24", featured && "lg:col-span-2", className)}>
       {image && (
         <div className="relative aspect-[16/9] overflow-hidden">
           <Image

@@ -86,6 +86,7 @@ export default async function ServicesPage() {
               {services.map((service, i) => (
                 <ServiceCard
                   key={service.id}
+                  id={service.slug}
                   title={service.title}
                   description={service.description}
                   href="/booking"
