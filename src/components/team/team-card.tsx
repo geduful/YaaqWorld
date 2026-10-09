@@ -36,11 +36,11 @@ const departmentLabels = {
 };
 
 const departmentColors = {
-  executive: "bg-purple-500/10 text-purple-600 border-purple-500/20",
-  editorial: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  creative: "bg-pink-500/10 text-pink-600 border-pink-500/20",
-  digital: "bg-success-soft text-success border-success/30",
-  operations: "bg-amber-500/10 text-amber-700 border-amber-500/20",
+  executive: "bg-purple-700 text-white border-transparent shadow-lg",
+  editorial: "bg-blue-700 text-white border-transparent shadow-lg",
+  creative: "bg-pink-700 text-white border-transparent shadow-lg",
+  digital: "bg-emerald-700 text-white border-transparent shadow-lg",
+  operations: "bg-amber-400 text-amber-950 border-transparent shadow-lg",
 };
 
 export function TeamCard({ member, className }: TeamCardProps) {

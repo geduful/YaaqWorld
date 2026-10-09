@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 const FACTS: { label: string; value: string }[] = [
-  { label: "Founded", value: "2022" },
+  { label: "Founded", value: "2026" },
   { label: "Founder", value: "Mr. Abdul-Mumin" },
   { label: "Headquarters", value: "Koforidua, Eastern Region, Ghana" },
   { label: "Primary campus", value: "Koforidua Technical University (KTU)" },
@@ -70,7 +70,7 @@ export default function PressKitPage() {
                   <p className="text-muted-foreground">
                     YAAQ World is a Ghanaian campus media production and creative storytelling brand led
                     by Mr. Abdul-Mumin, operating strongly within tertiary environments — particularly
-                    Koforidua Technical University (KTU) in Koforidua, Ghana. Established in 2022 as a
+                    Koforidua Technical University (KTU) in Koforidua, Ghana. Established in 2026 as a
                     subsidiary of YAAQMIIN Enterprise, its work spans photography, videography, event
                     coverage, campus tours, street quizzes, lifestyle content, media partnerships, and
                     youth event coverage — documenting the moments that define a generation.

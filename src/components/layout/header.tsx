@@ -140,10 +140,11 @@ function UserMenu() {
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
-  const [scrolled, setScrolled] = React.useState(false);
   const { user, profile, loading, signOut } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const toggleRef = React.useRef<HTMLButtonElement>(null);
+  const menuRef = React.useRef<HTMLDivElement>(null);
 
   const [lastPathname, setLastPathname] = React.useState(pathname);
   if (lastPathname !== pathname) {
@@ -151,11 +152,48 @@ export function Header() {
     setMobileMenuOpen(false);
   }
 
+  // Freeze the page behind the open mobile menu (robust across iOS/Android),
+  // restoring the exact scroll position when the menu closes.
   React.useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (!mobileMenuOpen) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const previous = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+    };
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    return () => {
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.left = previous.left;
+      body.style.right = previous.right;
+      body.style.width = previous.width;
+      window.scrollTo(0, scrollY);
+    };
+  }, [mobileMenuOpen]);
+
+  // Escape closes the menu; move focus into the menu on open and back to the toggle on close.
+  React.useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    const firstItem = menuRef.current?.querySelector<HTMLElement>("a, button");
+    firstItem?.focus();
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
 
   const isCreator = profile?.role === "creator";
   const dashboardHref = isCreator ? "/creator/dashboard" : "/dashboard";
@@ -169,24 +207,19 @@ export function Header() {
 
   return (
     <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-background/95 backdrop-blur-sm border-b border-border shadow-sm"
-          : "bg-transparent",
-      )}
+      className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm"
       role="banner"
     >
       <nav className="container-yaaq" aria-label="Main navigation">
         <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2" aria-label="YAAQ World Home">
+          <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="YAAQ World Home">
             <Image
               src="/logo.jpeg"
               alt="YAAQ World"
               width={40}
               height={40}
               priority
-              className="h-10 w-10"
+              className="h-10 w-10 rounded-xl shrink-0"
             />
           </Link>
 
@@ -245,6 +278,7 @@ export function Header() {
           </div>
 
           <button
+            ref={toggleRef}
             className="md:hidden p-2 rounded-lg text-muted-foreground hover:bg-accent"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
@@ -255,16 +289,26 @@ export function Header() {
           </button>
         </div>
 
+        {mobileMenuOpen && (
+          <div
+            className="fixed inset-x-0 bottom-0 top-16 z-40 bg-black/40 md:hidden"
+            aria-hidden="true"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+
         <div
           id="mobile-menu"
+          ref={menuRef}
           className={cn(
-            "md:hidden transition-all duration-300 ease-in-out border-t border-border bg-background overscroll-contain",
+            "relative z-50 -mx-4 border-t border-border bg-background transition-[max-height,opacity,visibility] duration-300 ease-in-out md:hidden",
             mobileMenuOpen
-              ? "max-h-[calc(100dvh-4rem)] opacity-100 overflow-y-auto"
-              : "max-h-0 opacity-0 overflow-hidden",
+              ? "visible max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain opacity-100"
+              : "invisible max-h-0 overflow-hidden opacity-0",
           )}
           role="navigation"
           aria-label="Mobile navigation"
+          aria-hidden={!mobileMenuOpen}
         >
           <div className="py-4 space-y-1">
             {navigation.map((item) => (

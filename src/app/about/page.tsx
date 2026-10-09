@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import Image from "next/image";
+import { MilestoneTimeline, type Milestone } from "@/components/about/milestone-timeline";
 import { socialIcons } from "@/lib/icons";
 
 export const metadata: Metadata = {
@@ -23,13 +25,18 @@ const values = [
   { icon: <socialIcons.bookOpen className="h-6 w-6" />, title: "Growth", desc: "Continuous learning, mentorship, and elevation of the next generation." },
 ];
 
-const milestones = [
-  { year: "2022", title: "Founded", desc: "YAAQ World established at KTU by Mr. Abdul-Mumin" },
-  { year: "2023", title: "First Major Coverage", desc: "KTU SRC Week — comprehensive multi-day documentation" },
-  { year: "2023", title: "Face of KTU Partnership", desc: "Official media partner for the premier campus pageant" },
-  { year: "2024", title: "Campus Tour Series Launch", desc: "Video series showcasing campus life across Ghana" },
-  { year: "2024", title: "Street Quiz Format", desc: "Original content format engaging students campus-wide" },
-  { year: "2024", title: "YAAQMIIN Enterprise Subsidiary", desc: "Formalized under the wider creative enterprise" },
+const milestones: Milestone[] = [
+  { year: "2026", title: "Founded", desc: "YAAQ World established at Koforidua Technical University (KTU) by Mr. Abdul-Mumin" },
+  {
+    year: "2026",
+    title: "KTU SRC Celebration",
+    desc: "Coverage of the 2026 KTU SRC Celebration, including:",
+    activities: ["Face of KTU", "SRC Artist Night", "SRC Trip"],
+  },
+  { year: "2026", title: "KTU-COMPSSA Awards & Dinner Night", desc: "Attended and covered the Computer Science Department (COMPSSA) Awards and Dinner Night" },
+  { year: "2026", title: "Ghana Parliament Sitting", desc: "Attended and covered a sitting of Ghana's Parliament" },
+  { year: "2026", title: "Bistro Breeze", desc: "Attended and covered the Bistro Breeze programme" },
+  { year: "2026", title: "Campus Tour Series", desc: "2026 Campus Tour for the 2026/2027 academic year" },
 ];
 
 export default function AboutPage() {
@@ -85,15 +92,13 @@ export default function AboutPage() {
               />
             </div>
             <div className="animate-in stagger-2 relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted">
-              <div className="absolute inset-0 flex items-center justify-center bg-yaaq-navy">
-                <div className="text-center p-8">
-                  <svg className="mx-auto h-16 w-16 text-yaaq-gold/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <p className="mt-4 text-white/60">Team Photo Placeholder</p>
-                </div>
-              </div>
+              <Image
+                src="/team-photo.jpg"
+                alt="The YAAQ World team"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover"
+              />
             </div>
           </div>
         </div>
@@ -105,27 +110,9 @@ export default function AboutPage() {
             id="story-heading"
             tagline="Our Journey"
             title="Our Story & Legacy"
-            description="Key milestones in our evolution from a campus initiative to a recognized media brand."
+            description="Milestones from our founding year — and counting."
           />
-          <div className="relative">
-            <div className="absolute left-[19px] top-0 bottom-0 w-0.5 bg-border" aria-hidden="true" />
-            <div className="space-y-8">
-              {milestones.map((milestone, i) => (
-                <div key={milestone.year} className={`relative pl-20 animate-in stagger-${Math.min(i + 1, 10)}`}>
-                  <div className="absolute left-0 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-yaaq-gold text-yaaq-navy font-bold text-lg">
-                    {i + 1}
-                  </div>
-                  <div className="ml-4">
-                    <div className="flex items-baseline gap-4">
-                      <span className="font-display text-xl font-bold text-yaaq-gold-ink">{milestone.year}</span>
-                      <h3 className="font-display text-lg font-semibold text-foreground">{milestone.title}</h3>
-                    </div>
-                    <p className="mt-1 text-muted-foreground">{milestone.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <MilestoneTimeline milestones={milestones} />
         </div>
       </section>
 
@@ -192,13 +179,14 @@ export default function AboutPage() {
           <div className="max-w-3xl mx-auto">
             <Card className="overflow-hidden">
               <div className="grid gap-0 md:grid-cols-2">
-                <div className="relative aspect-square bg-muted flex items-center justify-center">
-                  <div className="text-center p-8">
-                    <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold-ink text-3xl font-bold">
-                      AM
-                    </div>
-                    <p className="text-muted-foreground">Portrait Placeholder</p>
-                  </div>
+                <div className="relative aspect-square bg-muted">
+                  <Image
+                    src="/ceo.jpeg"
+                    alt="Mr. Abdul-Mumin, Founder and CEO of YAAQ World"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover object-top"
+                  />
                 </div>
                 <div className="p-8 flex flex-col justify-center">
                   <Badge variant="gold" className="mb-4 inline-block w-fit">

@@ -428,7 +428,7 @@ export function MediaClient({ canManage }: MediaClientProps) {
                 id="media-title"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                placeholder="KTU SRC Week 2024 Highlights"
+                placeholder="KTU SRC Week 2026 Highlights"
                 disabled={saving}
               />
             </div>

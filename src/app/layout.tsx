@@ -128,6 +128,7 @@ export default function RootLayout({
         "@id": `${siteUrl}/#organization`,
         name: "YAAQ World",
         url: siteUrl,
+        foundingDate: "2026",
         ...(sameAs.length > 0 ? { sameAs } : {}),
       },
       {
