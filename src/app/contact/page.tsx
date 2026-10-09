@@ -251,7 +251,7 @@ export default function ContactPage() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
-                  <Link href="/team">Join YAAQ World</Link>
+                  <Link href="/auth/register">Join YAAQ World</Link>
                 </Button>
               </div>
             }

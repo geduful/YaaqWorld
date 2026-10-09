@@ -79,7 +79,7 @@ export default async function HomePage() {
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <Button asChild size="xl" variant="gold" className="gap-2">
-                <Link href="/team">
+                <Link href="/auth/register">
                   Join YAAQ World
                   <socialIcons.arrowRight className="h-5 w-5" />
                 </Link>
@@ -371,7 +371,7 @@ export default async function HomePage() {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
-                  <Link href="/team">Join YAAQ World</Link>
+                  <Link href="/auth/register">Join YAAQ World</Link>
                 </Button>
               </div>
             }
