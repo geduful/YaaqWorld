@@ -42,3 +42,4 @@ next-env.d.ts
 
 # raw hero image originals (auto-archived by scripts/hero-images.mjs)
 /hero-originals/
+.vercel
