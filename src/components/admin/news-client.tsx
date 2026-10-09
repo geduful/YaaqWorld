@@ -280,11 +280,11 @@ export function NewsClient({ canManage }: NewsClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Article</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Category</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Status</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Created</th>
-                  {canManage && <th scope="col" className="px-4 py-3 font-medium">Actions</th>}
+                  <th scope="col" className="px-4 py-3 font-semibold">Article</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Category</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Created</th>
+                  {canManage && <th scope="col" className="px-4 py-3 font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -294,7 +294,7 @@ export function NewsClient({ canManage }: NewsClientProps) {
                       <p className="font-medium text-foreground flex items-center gap-1.5">
                         {article.title}
                         {article.featured && (
-                          <span className="rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs text-yaaq-gold whitespace-nowrap">
+                          <span className="rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs text-yaaq-gold-ink whitespace-nowrap">
                             Featured
                           </span>
                         )}
@@ -308,7 +308,7 @@ export function NewsClient({ canManage }: NewsClientProps) {
                       <StatusBadge kind="news" status={article.status} />
                     </td>
                     <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
-                      {new Date(article.created_at).toLocaleDateString()}
+                      {new Date(article.created_at).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}
                     </td>
                     {canManage && (
                       <td className="px-4 py-3">

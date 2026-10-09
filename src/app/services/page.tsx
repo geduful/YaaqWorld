@@ -77,9 +77,9 @@ export default async function ServicesPage() {
                 Our services will be listed here shortly. Meanwhile, you can tell us about your
                 project through the booking form.
               </p>
-              <Link href="/booking" className="mt-6 inline-block">
-                <Button variant="gold">Book our team</Button>
-              </Link>
+              <Button asChild variant="gold" className="mt-6">
+                <Link href="/booking">Book our team</Link>
+              </Button>
             </div>
           ) : (
             <div className="grid gap-6 lg:grid-cols-2">
@@ -111,9 +111,9 @@ export default async function ServicesPage() {
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {processSteps.map((step, i) => (
-              <Card key={step.title} className={`animate-in stagger-${i + 1}`}>
+              <Card key={step.title} className={`animate-in stagger-${Math.min(i + 1, 6)}`}>
                 <CardContent className="p-6 text-center">
-                  <div className="mb-3 text-yaaq-gold font-display text-2xl font-bold">{step.step}</div>
+                  <div className="mb-3 text-yaaq-gold-ink font-display text-2xl font-bold">{step.step}</div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{step.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{step.desc}</p>
                 </CardContent>

@@ -121,7 +121,7 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
                 </div>
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={profile?.avatar_url || undefined} alt="" />
-                  <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-xs font-semibold">
+                  <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-xs font-semibold">
                     {getInitials()}
                   </AvatarFallback>
                 </Avatar>
@@ -139,7 +139,7 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="" />
-                <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-xs font-semibold">
+                <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-xs font-semibold">
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
@@ -157,33 +157,40 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
             aria-label="Dashboard navigation"
           >
             <div className="py-3 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors",
-                    isActive(item.href)
-                      ? "bg-yaaq-gold/10 text-yaaq-gold"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <item.icon className="h-4 w-4" aria-hidden="true" />
-                  {item.name}
-                </Link>
-              ))}
-              <div className="pt-3 border-t border-border mt-3">
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                      active
+                        ? "border border-border/70 bg-card text-foreground shadow-sm"
+                        : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <item.icon
+                      className={cn("h-4 w-4 shrink-0", active ? "text-yaaq-gold-ink" : "text-muted-foreground")}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                  </Link>
+                );
+              })}
+              <div className="mt-3 border-t border-border pt-3">
                 <Link
                   href="/"
-                  className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Home className="h-4 w-4" aria-hidden="true" />
+                  <Home className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   Public Site
                 </Link>
                 <button
-                  className="flex w-full items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-destructive hover:bg-destructive/10"
                   onClick={handleSignOut}
                   disabled={isSigningOut}
                 >
@@ -199,35 +206,42 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
       <div className="flex-1 flex">
         <aside className="hidden md:flex md:flex-col w-60 border-r border-border bg-muted/20 min-h-[calc(100vh-4rem)] sticky top-16" aria-label="Sidebar navigation">
           <nav className="flex-1 p-4 space-y-1" aria-label="Dashboard sidebar">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  isActive(item.href)
-                    ? "bg-yaaq-gold/10 text-yaaq-gold"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                )}
-              >
-                <item.icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-                {item.name}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    active
+                      ? "border border-border/70 bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                  )}
+                >
+                  <item.icon
+                    className={cn("h-4 w-4 shrink-0", active ? "text-yaaq-gold-ink" : "text-muted-foreground")}
+                    aria-hidden="true"
+                  />
+                  {item.name}
+                </Link>
+              );
+            })}
           </nav>
-          <div className="p-4 border-t border-border">
+          <div className="space-y-1 border-t border-border p-4">
             <Link
               href="/"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
             >
-              <Home className="h-4 w-4" aria-hidden="true" />
+              <Home className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               Public Site
             </Link>
             <Link
-              href="/profile"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+              href="/profile/edit"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
             >
-              <Settings className="h-4 w-4" aria-hidden="true" />
+              <Settings className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               Settings
             </Link>
           </div>

@@ -62,7 +62,7 @@ export function AuditLogsClient() {
               placeholder="Search actions..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 w-44 bg-transparent text-sm focus:outline-none sm:w-56"
+              className="h-9 w-44 bg-transparent text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-ring sm:w-56"
               aria-label="Search audit logs"
             />
           </div>
@@ -97,11 +97,11 @@ export function AuditLogsClient() {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Action</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Entity</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Actor</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Details</th>
-                  <th scope="col" className="px-4 py-3 font-medium">When</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Action</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Entity</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Actor</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Details</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">When</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, Bell, LayoutDashboard, LogOut, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -66,7 +67,7 @@ function UserMenu() {
       >
         <Avatar className="h-8 w-8">
           <AvatarImage src={profile?.avatar_url || undefined} alt="" />
-          <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-xs font-semibold">
+          <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-xs font-semibold">
             {getInitials()}
           </AvatarFallback>
         </Avatar>
@@ -113,7 +114,7 @@ function UserMenu() {
           {isAdminRole(profile?.role) && (
             <Link
               href="/admin"
-              className="flex items-center gap-3 px-4 py-2.5 text-sm text-yaaq-gold hover:bg-accent transition-colors"
+              className="flex items-center gap-3 px-4 py-2.5 text-sm text-yaaq-gold-ink hover:bg-accent transition-colors"
               onClick={() => setOpen(false)}
               role="menuitem"
             >
@@ -179,9 +180,14 @@ export function Header() {
       <nav className="container-yaaq" aria-label="Main navigation">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2" aria-label="YAAQ World Home">
-            <span className="font-display text-xl font-bold text-foreground">
-              YAAQ<span className="text-yaaq-gold">World</span>
-            </span>
+            <Image
+              src="/logo.jpeg"
+              alt="YAAQ World"
+              width={40}
+              height={40}
+              priority
+              className="h-10 w-10"
+            />
           </Link>
 
           <div className="hidden md:flex md:items-center md:gap-6">
@@ -209,7 +215,7 @@ export function Header() {
                 </Link>
                 {isAdminRole(profile?.role) && (
                   <Link href="/admin">
-                    <Button variant="ghost" size="sm" className="gap-2 text-yaaq-gold">
+                    <Button variant="ghost" size="sm" className="gap-2 text-yaaq-gold-ink">
                       <ShieldCheck className="h-4 w-4" />
                       Admin
                     </Button>
@@ -284,7 +290,7 @@ export function Header() {
                   </Link>
                   {isAdminRole(profile?.role) && (
                     <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" className="w-full justify-center gap-2 text-yaaq-gold">
+                      <Button variant="outline" className="w-full justify-center gap-2 text-yaaq-gold-ink">
                         <ShieldCheck className="h-4 w-4" />
                         Admin
                       </Button>

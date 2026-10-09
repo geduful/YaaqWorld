@@ -44,7 +44,7 @@ export function PermissionEditor({ selected, onChange, disabled = false }: Permi
         return (
           <div key={category} className="rounded-lg border border-border">
             <div className="flex items-center justify-between gap-3 px-3 py-2 border-b border-border bg-muted/40">
-              <label className="flex items-center gap-2 text-sm font-medium text-foreground cursor-pointer">
+              <label className={`flex items-center gap-2 text-sm font-medium text-foreground ${disabled ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}>
                 <input
                   type="checkbox"
                   checked={allSelected}
@@ -62,7 +62,7 @@ export function PermissionEditor({ selected, onChange, disabled = false }: Permi
               {permissions.map((permission) => (
                 <label
                   key={permission.key}
-                  className="flex items-start gap-2.5 px-3 py-2.5 cursor-pointer hover:bg-accent/50 transition-colors"
+                  className={`flex items-start gap-2.5 px-3 py-2.5 transition-colors ${disabled ? "cursor-not-allowed" : "cursor-pointer hover:bg-accent/50"}`}
                 >
                   <input
                     type="checkbox"

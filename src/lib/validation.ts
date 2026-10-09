@@ -8,7 +8,7 @@ export function calculatePasswordStrength(password: string): { score: number; la
   if (/[^a-zA-Z0-9]/.test(password)) score++;
 
   const labels = ["Very Weak", "Weak", "Fair", "Strong", "Very Strong"];
-  const colors = ["text-destructive", "text-destructive", "text-yellow-600", "text-green-600", "text-green-700"];
+  const colors = ["text-error", "text-error", "text-warning", "text-success", "text-success"];
 
   return {
     score: Math.min(score, 4),

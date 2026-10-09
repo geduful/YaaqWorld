@@ -40,7 +40,7 @@ export function VideoHero({ src, poster, fallback, className }: VideoHeroProps) 
           preload="metadata"
           poster={poster}
           onError={() => setHasError(true)}
-          className="absolute inset-0 h-full w-full object-cover opacity-40"
+          className="absolute inset-0 h-full w-full object-cover opacity-45"
           aria-hidden="true"
         >
           <source src={src} type="video/mp4" />
@@ -53,7 +53,8 @@ export function VideoHero({ src, poster, fallback, className }: VideoHeroProps) 
           {fallback}
         </div>
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-yaaq-navy/60 via-yaaq-navy/40 to-yaaq-navy/80" />
+      <div className="absolute inset-0 bg-gradient-to-r from-yaaq-navy via-yaaq-navy/70 to-yaaq-navy/25" />
+      <div className="absolute inset-0 bg-gradient-to-t from-yaaq-navy/90 via-transparent to-yaaq-navy/50" />
     </div>
   );
 }

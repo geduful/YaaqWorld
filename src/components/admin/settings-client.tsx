@@ -115,7 +115,7 @@ export function SettingsClient({ canManage, isSuperAdmin, permissionCount }: Set
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+              <ShieldCheck className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
               System Status
             </CardTitle>
             <CardDescription>Live checks for this environment</CardDescription>
@@ -128,7 +128,7 @@ export function SettingsClient({ canManage, isSuperAdmin, permissionCount }: Set
                   <p className="text-xs text-muted-foreground">{item.detail}</p>
                 </div>
                 {item.ok ? (
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" aria-hidden="true" />
+                  <CheckCircle2 className="h-5 w-5 shrink-0 text-success" aria-hidden="true" />
                 ) : (
                   <XCircle className="h-5 w-5 shrink-0 text-destructive" aria-hidden="true" />
                 )}
@@ -140,7 +140,7 @@ export function SettingsClient({ canManage, isSuperAdmin, permissionCount }: Set
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Eye className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+              <Eye className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
               Public Announcement Banner
             </CardTitle>
             <CardDescription>
@@ -180,7 +180,7 @@ export function SettingsClient({ canManage, isSuperAdmin, permissionCount }: Set
                 </div>
 
                 {saved && (
-                  <p className="flex items-center gap-1.5 text-sm text-green-600" role="status">
+                  <p className="flex items-center gap-1.5 text-sm text-success" role="status">
                     <CheckCircle2 className="h-4 w-4" />
                     Settings saved.
                   </p>
@@ -192,8 +192,8 @@ export function SettingsClient({ canManage, isSuperAdmin, permissionCount }: Set
                     Save banner settings
                   </Button>
                 ) : (
-                  <p className="flex items-start gap-2 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
-                    <Info className="h-4 w-4 shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning-soft p-3 text-xs text-foreground">
+                    <Info className="h-4 w-4 shrink-0 mt-0.5 text-warning" aria-hidden="true" />
                     You have read-only access. Ask an administrator with settings.manage to change
                     platform settings.
                   </p>

@@ -333,7 +333,7 @@ export default function MemberRegisterPage() {
               ← Back to choose role
             </Link>
             <div className="text-center">
-              <span className="inline-block mb-4 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold bg-yaaq-gold/10 rounded-full">
+              <span className="inline-block mb-4 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold-ink bg-yaaq-gold/10 rounded-full">
                 STUDENT / FAN REGISTRATION
               </span>
               <h1 className="font-display text-3xl font-bold text-foreground">Create Your Member Account</h1>
@@ -513,7 +513,7 @@ export default function MemberRegisterPage() {
                           className="h-full transition-all duration-300 rounded-full"
                           style={{
                             width: `${((passwordStrength.score + 1) / 5) * 100}%`,
-                            backgroundColor: passwordStrength.score <= 1 ? "#ef4444" : passwordStrength.score === 2 ? "#eab308" : "#22c55e",
+                            backgroundColor: passwordStrength.score <= 1 ? "#b91c1c" : passwordStrength.score === 2 ? "#a16207" : "#15803d",
                           }}
                         />
                       </div>
@@ -660,7 +660,7 @@ export default function MemberRegisterPage() {
 
                 <p className="text-center text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link href="/auth/login" className="text-yaaq-gold hover:underline font-medium">
+                  <Link href="/auth/login" className="text-yaaq-gold-ink hover:underline font-medium">
                     Sign in
                   </Link>
                 </p>

@@ -94,7 +94,7 @@ export default function PressKitPage() {
             {FACTS.map((fact) => (
               <Card key={fact.label}>
                 <CardContent className="p-5">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-yaaq-gold">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-yaaq-gold-ink">
                     {fact.label}
                   </p>
                   <p className="mt-2 font-medium text-foreground">{fact.value}</p>
@@ -119,7 +119,7 @@ export default function PressKitPage() {
               <div className="grid gap-3 sm:grid-cols-2">
                 {COVERAGE.map((item) => (
                   <div key={item} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 border border-border">
-                    <socialIcons.star className="h-4 w-4 shrink-0 text-yaaq-gold" aria-hidden="true" />
+                    <socialIcons.star className="h-4 w-4 shrink-0 text-yaaq-gold-ink" aria-hidden="true" />
                     <span className="font-medium text-foreground">{item}</span>
                   </div>
                 ))}
@@ -130,7 +130,7 @@ export default function PressKitPage() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <socialIcons.mail className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                    <socialIcons.mail className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                     Media Contact
                   </CardTitle>
                   <CardDescription>For interviews, comment requests, and press enquiries.</CardDescription>
@@ -138,8 +138,8 @@ export default function PressKitPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</p>
-                    <a href="mailto:hello@yaaqworld.com" className="mt-1 inline-block font-medium text-foreground hover:text-yaaq-gold transition-colors">
-                      hello@yaaqworld.com
+                    <a href="mailto:yaaqworld@gmail.com" className="mt-1 inline-block font-medium text-foreground hover:text-yaaq-gold-ink transition-colors">
+                      yaaqworld@gmail.com
                     </a>
                   </div>
                   <div>
@@ -176,22 +176,18 @@ export default function PressKitPage() {
             description="Browse published stories, media coverage, and company updates."
           />
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/news">
-              <Button size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+            <Button asChild size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+              <Link href="/news">
                 Read the Newsroom
                 <socialIcons.arrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/media">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10">
-                Visit Media Hub
-              </Button>
-            </Link>
-            <Link href="/about">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10">
-                Our Story
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
+              <Link href="/media">Visit Media Hub</Link>
+            </Button>
+            <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
+              <Link href="/about">Our Story</Link>
+            </Button>
           </div>
         </div>
       </section>

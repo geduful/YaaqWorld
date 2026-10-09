@@ -342,11 +342,11 @@ export function OpportunitiesClient({ canManage }: OpportunitiesClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Opportunity</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Type</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Deadline</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Status</th>
-                  {canManage && <th scope="col" className="px-4 py-3 font-medium">Actions</th>}
+                  <th scope="col" className="px-4 py-3 font-semibold">Opportunity</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Type</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Deadline</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  {canManage && <th scope="col" className="px-4 py-3 font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -361,7 +361,7 @@ export function OpportunitiesClient({ canManage }: OpportunitiesClientProps) {
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">{TYPE_LABELS[item.type]}</td>
                     <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
-                      {item.deadline ? new Date(item.deadline).toLocaleDateString() : "—"}
+                      {item.deadline ? new Date(item.deadline).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" }) : "—"}
                     </td>
                     <td className="px-4 py-3">
                       <StatusBadge kind="opportunity" status={item.status} />
@@ -613,7 +613,7 @@ export function OpportunitiesClient({ canManage }: OpportunitiesClientProps) {
                         {application.applicant?.full_name ?? "Creator"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        Applied {new Date(application.created_at).toLocaleDateString()}
+                        Applied {new Date(application.created_at).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}
                       </p>
                     </div>
                     <StatusBadge kind="application" status={application.status} />
@@ -628,7 +628,7 @@ export function OpportunitiesClient({ canManage }: OpportunitiesClientProps) {
                       href={safeHttpUrl(application.portfolio_url) as string}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-yaaq-gold underline break-all"
+                      className="text-sm text-yaaq-gold-ink underline break-all"
                     >
                       Portfolio link
                     </a>

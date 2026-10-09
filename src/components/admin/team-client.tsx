@@ -412,7 +412,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
         </div>
       )}
       {notice && (
-        <div className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-600" role="status">
+        <div className="rounded-lg bg-success-soft px-4 py-3 text-sm text-success" role="status">
           {notice}
         </div>
       )}
@@ -450,7 +450,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <span className="font-display text-3xl font-bold text-yaaq-gold/60">
+                  <span className="font-display text-3xl font-bold text-yaaq-gold-ink/60">
                     {member.full_name
                       .split(" ")
                       .map((n) => n[0])
@@ -464,7 +464,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="font-medium text-foreground truncate">{member.full_name}</p>
-                    <p className="text-sm text-yaaq-gold truncate">{member.role}</p>
+                    <p className="text-sm text-yaaq-gold-ink truncate">{member.role}</p>
                   </div>
                   <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs capitalize text-muted-foreground">
                     {DEPARTMENTS.find((d) => d.value === member.department)?.label ?? member.department}
@@ -485,7 +485,7 @@ export function TeamClient({ canManage }: TeamClientProps) {
                   <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{member.bio}</p>
                 )}
                 {!member.is_active && (
-                  <p className="mt-2 text-xs text-amber-600">Hidden from public site</p>
+                  <p className="mt-2 text-xs text-warning">Hidden from public site</p>
                 )}
                 {canManage && (
                   <div className="mt-3 flex flex-wrap gap-2">

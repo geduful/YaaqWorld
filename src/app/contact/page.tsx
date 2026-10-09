@@ -17,18 +17,19 @@ export const metadata: Metadata = {
 };
 
 const contactInfo = {
-  email: "hello@yaaqworld.com",
-  phone: "+233 XX XXX XXXX",
-  whatsapp: "+233 XX XXX XXXX",
+  email: "yaaqworld@gmail.com",
+  phone: "+233 24 031 8000",
+  whatsapp: "+233 24 031 8000",
   location: "Koforidua, Eastern Region, Ghana",
 };
 
 const socialLinks = [
-  { name: "Instagram", href: "https://instagram.com/yaaqworld", icon: socialIcons.instagram, color: "text-pink-500" },
-  { name: "Twitter", href: "https://twitter.com/yaaqworld", icon: socialIcons.twitter, color: "text-blue-400" },
-  { name: "Facebook", href: "https://facebook.com/yaaqworld", icon: socialIcons.facebook, color: "text-blue-600" },
-  { name: "YouTube", href: "https://youtube.com/@yaaqworld", icon: socialIcons.youtube, color: "text-red-500" },
-  { name: "LinkedIn", href: "https://linkedin.com/company/yaaqworld", icon: socialIcons.linkedin, color: "text-blue-700" },
+  { name: "Instagram", handle: "@yaaq_world", href: "https://instagram.com/yaaq_world", icon: socialIcons.instagram, color: "text-pink-500" },
+  { name: "TikTok", handle: "@yaaq.world", href: "https://www.tiktok.com/@yaaq.world", icon: socialIcons.tiktok, color: "text-foreground" },
+  { name: "Twitter", handle: "@yaaqworld", href: "https://twitter.com/yaaqworld", icon: socialIcons.twitter, color: "text-blue-400" },
+  { name: "Facebook", handle: "@yaaqworld", href: "https://facebook.com/yaaqworld", icon: socialIcons.facebook, color: "text-blue-600" },
+  { name: "YouTube", handle: "@yaaqworld", href: "https://youtube.com/@yaaqworld", icon: socialIcons.youtube, color: "text-red-500" },
+  { name: "LinkedIn", handle: "@yaaqworld", href: "https://linkedin.com/company/yaaqworld", icon: socialIcons.linkedin, color: "text-blue-700" },
 ];
 
 const contactMethods = [
@@ -47,7 +48,7 @@ const contactMethods = [
     label: contactInfo.phone,
   },
   {
-    icon: socialIcons.messageSquare,
+    icon: socialIcons.whatsapp,
     title: "WhatsApp",
     desc: "Quick messages and media sharing",
     action: `https://wa.me/${contactInfo.whatsapp.replace(/\s|\+/g, "")}`,
@@ -86,7 +87,7 @@ const faqItems = [
   },
   {
     q: "How do I join YAAQ World as a creator?",
-    a: "Visit our Team page and click 'Express Interest' or email us at hello@yaaqworld.com with your portfolio and area of interest.",
+    a: "Visit our Team page and click 'Express Interest' or email us at yaaqworld@gmail.com with your portfolio and area of interest.",
   },
 ];
 
@@ -124,16 +125,16 @@ export default function ContactPage() {
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {contactMethods.map((method, i) => (
-              <Card key={method.title} className={`animate-in stagger-${i + 1}`}>
+              <Card key={method.title} className={`animate-in stagger-${Math.min(i + 1, 10)}`}>
                 <CardContent className="p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold-ink mb-4">
                     <method.icon className="h-6 w-6" />
                   </div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{method.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{method.desc}</p>
                   <a
                     href={method.action}
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-yaaq-gold hover:gap-3 transition-all"
+                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-yaaq-gold-ink hover:gap-3 transition-all"
                     target={method.external ? "_blank" : undefined}
                     rel={method.external ? "noopener noreferrer" : undefined}
                   >
@@ -165,9 +166,9 @@ export default function ContactPage() {
                   { day: "Sunday", hours: "Event days only" },
                   { day: "Event Coverage", hours: "As scheduled (including weekends/holidays)" },
                 ].map((item, i) => (
-                  <div key={item.day} className={`flex items-center justify-between p-4 rounded-lg bg-card border border-border animate-in stagger-${i + 1}`}>
+                  <div key={item.day} className={`flex items-center justify-between p-4 rounded-lg bg-card border border-border animate-in stagger-${Math.min(i + 1, 10)}`}>
                     <div className="flex items-center gap-3">
-                      <Clock className="h-5 w-5 text-yaaq-gold" />
+                      <Clock className="h-5 w-5 text-yaaq-gold-ink" />
                       <span className="font-medium text-foreground">{item.day}</span>
                     </div>
                     <span className="text-muted-foreground">{item.hours}</span>
@@ -190,15 +191,15 @@ export default function ContactPage() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`p-5 rounded-xl bg-card border border-border hover:border-yaaq-gold/50 hover:shadow-lg transition-all group animate-in stagger-${i + 1}`}
+                    className={`p-5 rounded-xl bg-card border border-border hover:border-yaaq-gold/50 hover:shadow-lg transition-all group animate-in stagger-${Math.min(i + 1, 10)}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-yaaq-gold/10">
                         <social.icon className={cn("h-6 w-6", social.color)} />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground group-hover:text-yaaq-gold transition-colors">{social.name}</p>
-                        <p className="text-sm text-muted-foreground">@{social.name.toLowerCase() === "youtube" ? "yaaqworld" : "yaaqworld"}</p>
+                        <p className="font-medium text-foreground group-hover:text-yaaq-gold-ink transition-colors">{social.name}</p>
+                        <p className="text-sm text-muted-foreground">{social.handle}</p>
                       </div>
                     </div>
                   </a>
@@ -219,14 +220,14 @@ export default function ContactPage() {
           />
           <div className="max-w-3xl mx-auto space-y-4">
             {faqItems.map((item, i) => (
-              <details key={item.q} className={`group rounded-xl bg-card border border-border animate-in stagger-${i + 1}`}>
+              <details key={item.q} className={`group rounded-xl bg-card border border-border animate-in stagger-${Math.min(i + 1, 10)}`}>
                 <summary className="flex items-center justify-between p-5 cursor-pointer list-none">
                   <h3 className="font-medium text-foreground pr-8">{item.q}</h3>
                   <svg className="h-5 w-5 text-muted-foreground transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </summary>
-                <div className="px-5 pb-5 text-muted-foreground leading-relaxed border-t border-border">
+                <div className="px-5 pb-5 pt-4 text-muted-foreground leading-relaxed border-t border-border">
                   {item.a}
                 </div>
               </details>
@@ -243,17 +244,15 @@ export default function ContactPage() {
             description="Whether it's a campus event, brand campaign, or creative project — let's make it happen."
             action={
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/booking">
-                  <Button size="lg" variant="gold" className="gap-2">
+                <Button asChild size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+                  <Link href="/booking">
                     Book Our Media Team
                     <socialIcons.arrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link href="/team">
-                  <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                    Join YAAQ World
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
+                  <Link href="/team">Join YAAQ World</Link>
+                </Button>
               </div>
             }
           />

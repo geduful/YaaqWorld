@@ -15,7 +15,7 @@ export default function NotFound() {
     <MainLayout>
       <section className="flex-1 flex items-center justify-center py-20 px-4">
         <div className="text-center max-w-md">
-          <h1 className="font-display text-9xl font-bold text-yaaq-gold/20">404</h1>
+          <h1 className="font-display text-9xl font-bold text-yaaq-gold-ink/25">404</h1>
           <h2 className="mt-4 font-display text-3xl font-bold text-foreground">Page Not Found</h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
             Sorry, we couldn&apos;t find the page you&apos;re looking for. It might have been moved

@@ -13,7 +13,7 @@ interface StatCardProps {
 
 export function StatCard({ label, value, icon, loading = false }: StatCardProps) {
   return (
-    <Card className="hover:shadow-none">
+    <Card>
       <CardContent className="p-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -26,7 +26,7 @@ export function StatCard({ label, value, icon, loading = false }: StatCardProps)
               <p className="mt-1 font-display text-2xl font-bold text-foreground">{value}</p>
             )}
           </div>
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-yaaq-gold/25 bg-yaaq-gold/10 text-yaaq-gold-ink">
             {icon}
           </div>
         </div>

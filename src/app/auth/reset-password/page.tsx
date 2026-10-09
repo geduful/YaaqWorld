@@ -77,7 +77,7 @@ export default function ResetPasswordPage() {
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
             <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle className="h-8 w-8 text-green-600" aria-hidden="true" />
+              <CheckCircle className="h-8 w-8 text-success" aria-hidden="true" />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">Password Updated</h1>
             <p className="mt-3 text-muted-foreground">
@@ -112,7 +112,7 @@ export default function ResetPasswordPage() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10">
-              <KeyRound className="h-7 w-7 text-yaaq-gold" aria-hidden="true" />
+              <KeyRound className="h-7 w-7 text-yaaq-gold-ink" aria-hidden="true" />
             </div>
             <h1 className="font-display text-3xl font-bold text-foreground">Create New Password</h1>
             <p className="mt-2 text-muted-foreground">Choose a strong password for your account</p>
@@ -157,7 +157,7 @@ export default function ResetPasswordPage() {
                           className="h-full transition-all duration-300 rounded-full"
                           style={{
                             width: `${((passwordStrength.score + 1) / 5) * 100}%`,
-                            backgroundColor: passwordStrength.score <= 1 ? "#ef4444" : passwordStrength.score === 2 ? "#eab308" : "#22c55e",
+                            backgroundColor: passwordStrength.score <= 1 ? "#b91c1c" : passwordStrength.score === 2 ? "#a16207" : "#15803d",
                           }}
                         />
                       </div>

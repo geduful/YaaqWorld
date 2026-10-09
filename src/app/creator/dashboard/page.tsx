@@ -120,7 +120,7 @@ export default function CreatorDashboardPage() {
               <Card className="h-full transition-all hover:shadow-md hover:border-yaaq-gold/50 cursor-pointer group">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold-ink">
                       <action.icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     {action.badge && (
@@ -129,7 +129,7 @@ export default function CreatorDashboardPage() {
                       </span>
                     )}
                   </div>
-                  <p className="mt-3 font-medium text-foreground text-sm group-hover:text-yaaq-gold transition-colors">
+                  <p className="mt-3 font-medium text-foreground text-sm group-hover:text-yaaq-gold-ink transition-colors">
                     {action.name}
                   </p>
                   <p className="text-xs text-muted-foreground">{action.description}</p>
@@ -144,7 +144,7 @@ export default function CreatorDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                  <Briefcase className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                   Opportunities
                 </CardTitle>
                 <CardDescription>Casting calls, crew recruitment, and production notices</CardDescription>
@@ -169,7 +169,7 @@ export default function CreatorDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                  <Users className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                   Crew Recruitment
                 </CardTitle>
                 <CardDescription>Production crew calls and team opportunities</CardDescription>
@@ -230,7 +230,7 @@ export default function CreatorDashboardPage() {
                         href={safeHttpUrl(creatorData?.portfolio_url) as string}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-yaaq-gold hover:underline truncate"
+                        className="text-yaaq-gold-ink hover:underline truncate"
                       >
                         Portfolio
                       </a>
@@ -251,7 +251,7 @@ export default function CreatorDashboardPage() {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                  <Bell className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                   Notifications
                 </CardTitle>
                 {unreadCount > 0 && <Badge variant="destructive">{unreadCount}</Badge>}

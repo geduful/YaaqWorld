@@ -111,7 +111,7 @@ export default function MemberDashboardPage() {
             </Badge>
           )}
           {profile?.role && (
-            <Badge variant="gold" className="self-start sm:self-auto capitalize">{profile.role}</Badge>
+            <Badge variant="secondary" className="self-start sm:self-auto capitalize">{profile.role}</Badge>
           )}
         </div>
 
@@ -121,7 +121,7 @@ export default function MemberDashboardPage() {
               <Card className="h-full transition-all hover:shadow-md hover:border-yaaq-gold/50 cursor-pointer group">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold-ink">
                       <action.icon className="h-5 w-5" aria-hidden="true" />
                     </div>
                     {action.badge && (
@@ -130,7 +130,7 @@ export default function MemberDashboardPage() {
                       </span>
                     )}
                   </div>
-                  <p className="mt-3 font-medium text-foreground text-sm group-hover:text-yaaq-gold transition-colors">
+                  <p className="mt-3 font-medium text-foreground text-sm group-hover:text-yaaq-gold-ink transition-colors">
                     {action.name}
                   </p>
                   <p className="text-xs text-muted-foreground">{action.description}</p>
@@ -145,7 +145,7 @@ export default function MemberDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Megaphone className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                  <Megaphone className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                   Announcements
                 </CardTitle>
                 <CardDescription>Latest updates from YAAQ World</CardDescription>
@@ -162,7 +162,7 @@ export default function MemberDashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                  <Calendar className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                   Upcoming Opportunities
                 </CardTitle>
                 <CardDescription>Events, activities, and chances to get involved</CardDescription>
@@ -199,7 +199,7 @@ export default function MemberDashboardPage() {
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <div>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Bell className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+                    <Bell className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
                     Recent Notifications
                   </CardTitle>
                 </div>

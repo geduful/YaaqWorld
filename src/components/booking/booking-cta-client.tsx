@@ -16,11 +16,9 @@ export function BookingCTAClient() {
         Submit Booking Request
         <socialIcons.arrowRight className="h-5 w-5" />
       </Button>
-      <Link href="/contact">
-        <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10">
-          Contact Us Directly
-        </Button>
-      </Link>
+      <Button asChild size="lg" variant="glass">
+        <Link href="/contact">Contact Us Directly</Link>
+      </Button>
     </div>
   );
 }

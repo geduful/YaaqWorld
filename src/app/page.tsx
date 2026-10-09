@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { ReactNode } from "react";
 import Image from "next/image";
 import { MainLayout } from "@/components/layout/main-layout";
-import { VideoHero } from "@/components/home/video-hero";
+import { HeroSlideshow, getHeroSlides } from "@/components/home/hero-slideshow";
 import { SectionHeader } from "@/components/ui/section-header";
 import { Stats } from "@/components/home/stats";
 import { ServiceCard } from "@/components/services/service-card";
@@ -57,60 +57,50 @@ export default async function HomePage() {
 
   return (
     <MainLayout>
-      <section className="relative min-h-screen flex items-center justify-center" aria-labelledby="hero-heading">
-        <VideoHero
-          src="/images/hero-video.mp4"
-          poster="/images/hero-poster.jpg"
-          fallback={
-            <div className="absolute inset-0 flex items-center justify-center bg-yaaq-navy">
-              <div className="text-center p-8">
-                <socialIcons.play className="h-16 w-16 mx-auto text-yaaq-gold/50" aria-hidden="true" />
-                <p className="mt-4 text-yaaq-gold/50 font-medium">YAAQ World Hero Video</p>
-              </div>
+      <section className="relative flex min-h-screen items-center bg-yaaq-navy" aria-labelledby="hero-heading">
+        <HeroSlideshow className="absolute inset-0" slides={getHeroSlides()} />
+        <div className="relative w-full container-yaaq py-24 lg:py-32">
+          <div className="max-w-3xl animate-in stagger-1">
+            <div className="mb-7 flex items-center gap-4">
+              <span className="h-px w-12 bg-yaaq-gold" aria-hidden="true" />
+              <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-yaaq-gold-light">
+                Ghana&apos;s Premier Campus Media Brand
+              </span>
             </div>
-          }
-        />
-        <div className="relative container-yaaq py-20 lg:py-32">
-          <div className="max-w-4xl animate-in stagger-1">
-            <span className="inline-block mb-6 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold bg-yaaq-gold/10 rounded-full">
-              Ghana&apos;s Premier Campus Media Brand
-            </span>
             <h1
               id="hero-heading"
-              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight text-balance"
+              className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white leading-[1.05] text-balance"
             >
-              The Pulse of Ghanaian Campus Culture & Creative Storytelling
+              The Pulse of Ghanaian Campus Culture &amp; Creative Storytelling
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-white/90 max-w-2xl leading-relaxed">
+            <p className="mt-7 text-lg sm:text-xl text-white/80 max-w-2xl leading-relaxed">
               We capture the people, moments, events, and experiences shaping Ghanaian campus culture.
               From SRC weeks to street quizzes, campus tours to pageants — we&apos;re there for every story.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/team">
-                <Button size="xl" variant="gold" className="gap-2">
+              <Button asChild size="xl" variant="gold" className="gap-2">
+                <Link href="/team">
                   Join YAAQ World
                   <socialIcons.arrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/booking">
-                <Button size="xl" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-                  Book Our Media Team
-                </Button>
-              </Link>
+                </Link>
+              </Button>
+              <Button asChild size="xl" variant="glass">
+                <Link href="/booking">Book Our Media Team</Link>
+              </Button>
             </div>
           </div>
         </div>
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" aria-hidden="true">
-          <svg className="h-6 w-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
+        <div
+          className="absolute bottom-0 left-1/2 h-20 w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-white/40 to-transparent"
+          aria-hidden="true"
+        />
       </section>
 
       <section className="section-py bg-background" aria-labelledby="intro-heading">
         <div className="container-yaaq">
           <div className="max-w-4xl mx-auto text-center">
             <SectionHeader
+              id="intro-heading"
               tagline="Who We Are"
               title="Capturing Campus Culture Since Day One"
               description={
@@ -134,8 +124,8 @@ export default async function HomePage() {
                 { icon: <socialIcons.video className="h-6 w-6" />, title: "Professional Production", desc: "Broadcast-quality equipment and post-production workflows." },
                 { icon: <socialIcons.users className="h-6 w-6" />, title: "Youth-First Perspective", desc: "Created by students, for students — we understand the culture." },
               ].map((item, i) => (
-                <div key={item.title} className={`text-center animate-in stagger-${i + 1}`}>
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold">
+                <div key={item.title} className={`text-center animate-in stagger-${Math.min(i + 1, 10)}`}>
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold-ink">
                     {item.icon}
                   </div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{item.title}</h3>
@@ -225,21 +215,25 @@ export default async function HomePage() {
                 ].map((item, i) => (
                   <div
                     key={item}
-                    className={`p-4 rounded-xl bg-muted/50 border border-border animate-in stagger-${i + 1}`}
+                    className={`p-4 rounded-xl bg-muted/50 border border-border animate-in stagger-${Math.min(i + 1, 10)}`}
                   >
                     <p className="font-medium text-foreground">{item}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="animate-in stagger-2 relative aspect-[4/3] rounded-2xl overflow-hidden bg-yaaq-navy">
+            <Link
+              href="/media"
+              aria-label="Watch our story — browse the media library"
+              className="animate-in stagger-2 group relative block aspect-[4/3] rounded-2xl overflow-hidden bg-yaaq-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yaaq-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
               <div className="absolute inset-0 flex items-center justify-center">
-                <socialIcons.play className="h-20 w-20 text-white/50 hover:text-yaaq-gold transition-colors cursor-pointer" />
+                <socialIcons.play className="h-20 w-20 text-white/60 group-hover:text-yaaq-gold transition-colors" />
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-yaaq-navy to-transparent">
-                <p className="text-white/80 text-sm">Watch our story →</p>
+                <p className="text-white/80 text-sm group-hover:text-white transition-colors">Watch our story →</p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -253,7 +247,7 @@ export default async function HomePage() {
             description="Real metrics from our work across Ghanaian campuses. Data-driven storytelling with measurable reach."
           />
           <Stats stats={homeStats} />
-          <p className="mt-8 text-center text-sm text-white/50">
+          <p className="mt-8 text-center text-sm text-white/60">
             * Verified metrics will be updated from our admin dashboard. Placeholder values shown above.
           </p>
         </div>
@@ -307,7 +301,7 @@ export default async function HomePage() {
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="font-display text-base font-semibold text-foreground group-hover:text-yaaq-gold transition-colors">{item.title}</p>
+                    <p className="font-display text-base font-semibold text-foreground group-hover:text-yaaq-gold-ink transition-colors">{item.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{item.type === "video" ? "Video" : "Photography"}</p>
                   </div>
                 </Link>
@@ -370,17 +364,15 @@ export default async function HomePage() {
             description="From campus festivals to brand activations, student features to corporate partnerships — we bring professional media production and creative storytelling to every project."
             action={
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/booking">
-                  <Button size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+                <Button asChild size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+                  <Link href="/booking">
                     Book Our Media Team
                     <socialIcons.arrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link href="/team">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10">
-                    Join YAAQ World
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
+                  <Link href="/team">Join YAAQ World</Link>
+                </Button>
               </div>
             }
           />

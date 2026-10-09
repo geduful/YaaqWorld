@@ -126,7 +126,7 @@ export default function BookingPage() {
                   <div className="space-y-4">
                     {processSteps.map((step) => (
                       <div key={step.step} className="flex gap-4">
-                        <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold font-bold text-sm">
+                        <div className="flex-shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold-ink font-bold text-sm">
                           {step.step}
                         </div>
                         <div>
@@ -144,12 +144,12 @@ export default function BookingPage() {
                   <h3 className="font-display text-lg font-semibold text-foreground mb-4">Service Categories</h3>
                   <div className="space-y-3">
                     {serviceCategories.map((cat) => (
-                      <button
+                      <div
                         key={cat.id}
-                        className="w-full text-left p-4 rounded-lg border border-border hover:border-yaaq-gold/50 hover:bg-yaaq-gold/5 transition-colors"
+                        className="w-full text-left p-4 rounded-lg border border-border"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold-ink">
                             <cat.icon className="h-5 w-5" />
                           </div>
                           <div>
@@ -157,7 +157,7 @@ export default function BookingPage() {
                             <p className="text-sm text-muted-foreground">{cat.desc}</p>
                           </div>
                         </div>
-                      </button>
+                      </div>
                     ))}
                   </div>
                 </CardContent>
@@ -176,8 +176,8 @@ export default function BookingPage() {
                       "End-to-end production from concept to delivery",
                     ].map((item) => (
                       <li key={item} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 shrink-0 mt-0.5 text-yaaq-gold" />
-                        <span className="text-white/80">{item}</span>
+                        <Check className="h-5 w-5 shrink-0 mt-0.5 text-yaaq-gold-ink" />
+                        <span className="text-muted-foreground">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -198,9 +198,9 @@ export default function BookingPage() {
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {serviceCategories.map((cat, i) => (
-              <Card key={cat.id} className={`animate-in stagger-${i + 1}`}>
+              <Card key={cat.id} className={`animate-in stagger-${Math.min(i + 1, 6)}`}>
                 <CardContent className="p-6">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold mb-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold-ink mb-4">
                     <cat.icon className="h-6 w-6" />
                   </div>
                   <h3 className="font-display text-lg font-semibold text-foreground">{cat.title}</h3>
@@ -208,7 +208,7 @@ export default function BookingPage() {
                   <ul className="mt-4 space-y-2" role="list">
                     {cat.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="h-4 w-4 text-yaaq-gold" />
+                        <Check className="h-4 w-4 text-yaaq-gold-ink" />
                         {feature}
                       </li>
                     ))}

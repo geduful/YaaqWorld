@@ -26,8 +26,8 @@ import {
   CheckCircle,
   Instagram,
   Linkedin,
-  Globe,
 } from "lucide-react";
+import { TikTok } from "@/lib/brand-icons";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { getDbErrorMessage } from "@/lib/errors";
 import { storagePathFromPublicUrl } from "@/lib/image";
@@ -280,7 +280,7 @@ export default function ProfileEditPage() {
           <div
             className={`flex items-center gap-2 p-3 rounded-lg text-sm ${
               message.type === "success"
-                ? "bg-green-100 text-green-800"
+                ? "border border-success/30 bg-success-soft text-success"
                 : "bg-destructive/10 text-destructive"
             }`}
             role={message.type === "error" ? "alert" : "status"}
@@ -303,7 +303,7 @@ export default function ProfileEditPage() {
             <div className="flex items-center gap-5">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={photoPreview || avatarUrl || undefined} alt="" />
-                <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-2xl font-semibold">
+                <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-2xl font-semibold">
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
@@ -320,7 +320,7 @@ export default function ProfileEditPage() {
                 <div className="flex flex-wrap gap-2">
                   <Label
                     htmlFor="avatar-upload"
-                    className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border border-input rounded-lg text-sm font-medium hover:bg-accent transition-colors"
+                    className="cursor-pointer inline-flex items-center gap-2 h-9 px-4 border border-input rounded-lg text-sm font-medium hover:bg-accent transition-colors"
                   >
                     <Camera className="h-4 w-4" />
                     {isUploading ? "Uploading..." : avatarUrl ? "Change Photo" : "Upload Photo"}
@@ -471,7 +471,7 @@ export default function ProfileEditPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="tiktok" className="flex items-center gap-1.5">
-                  <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <TikTok className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                   TikTok
                 </Label>
                 <Input

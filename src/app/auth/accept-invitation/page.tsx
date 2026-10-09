@@ -93,7 +93,7 @@ function AcceptInvitationContent() {
 
               {status === "accepted" && (
                 <>
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 text-green-600">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-success-soft text-success">
                     <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
                   </div>
                   <div>
@@ -114,7 +114,7 @@ function AcceptInvitationContent() {
 
               {status === "unauthenticated" && (
                 <>
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold-ink">
                     <LogIn className="h-7 w-7" aria-hidden="true" />
                   </div>
                   <div>

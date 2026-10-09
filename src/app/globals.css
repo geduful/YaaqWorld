@@ -1,36 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #0f0f0f;
+  /* Warm editorial neutrals — calmer reading surfaces than pure grey. */
+  --background: #faf9f7;
+  --foreground: #16130f;
   --card: #ffffff;
-  --card-foreground: #0f0f0f;
+  --card-foreground: #16130f;
   --popover: #ffffff;
-  --popover-foreground: #0f0f0f;
-  --primary: #1a1a2e;
-  --primary-foreground: #fafafa;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #0f0f0f;
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-  --accent: #f5f5f5;
-  --accent-foreground: #0f0f0f;
+  --popover-foreground: #16130f;
+  --primary: #14213d;
+  --primary-foreground: #faf9f7;
+  --secondary: #f1efe9;
+  --secondary-foreground: #16130f;
+  --muted: #f1efe9;
+  --muted-foreground: #6b6862;
+  --accent: #ece9e1;
+  --accent-foreground: #16130f;
   --destructive: #dc2626;
   --destructive-foreground: #fafafa;
-  --border: #e5e5e5;
-  --input: #e5e5e5;
-  --ring: #1a1a2e;
+  --border: #e3dfd5;
+  --input: #d8d3c7;
+  --ring: #14213d;
   --radius: 0.5rem;
 
+  /* Brand */
   --yaaq-gold: #d4a843;
   --yaaq-gold-light: #e8c56d;
   --yaaq-gold-dark: #b8923a;
+  /* Gold tuned for TEXT on light surfaces (4.7:1 on white — WCAG AA). */
+  --yaaq-gold-ink: #8a6a1f;
+  --yaaq-gold-ink-hover: #75591a;
   --yaaq-navy: #0f172a;
   --yaaq-navy-light: #1e293b;
   --yaaq-charcoal: #18181b;
   --yaaq-slate: #64748b;
   --yaaq-cream: #fefce8;
   --yaaq-warm-white: #fafaf9;
+
+  /* Semantic state colours (text-safe on light surfaces) */
+  --success: #15803d;
+  --success-soft: #eef6f0;
+  --warning: #a16207;
+  --warning-soft: #faf4e6;
+  --error: #b91c1c;
+  --error-soft: #fbeeee;
+  --info: #1d4ed8;
+  --info-soft: #eef2fb;
+
+  /*
+   * Section tone — set per section background; descendants (SectionHeader,
+   * eyebrows, inline headings) pick the right foreground automatically.
+   */
+  --section-fg: var(--foreground);
+  --section-fg-muted: var(--muted-foreground);
+  --section-accent: var(--yaaq-gold-ink);
+}
+
+/* Dark navy sections flip the section tone to light-on-dark. */
+.bg-yaaq-navy {
+  --section-fg: #f8fafc;
+  --section-fg-muted: #cbd5e1;
+  --section-accent: var(--yaaq-gold-light);
 }
 
 .dark {
@@ -49,10 +79,21 @@
   --accent: #27272a;
   --accent-foreground: #fafafa;
   --destructive: #ef4444;
-  --destructive-foreground: #fafafa;
+  --destructive-foreground: #0f172a;
   --border: #3f3f46;
   --input: #3f3f46;
   --ring: #e8c56d;
+  /* On dark surfaces the ink gold becomes the light gold. */
+  --yaaq-gold-ink: #e8c56d;
+  --yaaq-gold-ink-hover: #f0d48c;
+  --success: #4ade80;
+  --success-soft: #12291c;
+  --warning: #fbbf24;
+  --warning-soft: #2b2313;
+  --error: #f87171;
+  --error-soft: #2d1616;
+  --info: #93c5fd;
+  --info-soft: #14203a;
 }
 
 @theme inline {
@@ -84,12 +125,23 @@
   --color-yaaq-gold: var(--yaaq-gold);
   --color-yaaq-gold-light: var(--yaaq-gold-light);
   --color-yaaq-gold-dark: var(--yaaq-gold-dark);
+  --color-yaaq-gold-ink: var(--yaaq-gold-ink);
+  --color-yaaq-gold-ink-hover: var(--yaaq-gold-ink-hover);
   --color-yaaq-navy: var(--yaaq-navy);
   --color-yaaq-navy-light: var(--yaaq-navy-light);
   --color-yaaq-charcoal: var(--yaaq-charcoal);
   --color-yaaq-slate: var(--yaaq-slate);
   --color-yaaq-cream: var(--yaaq-cream);
   --color-yaaq-warm-white: var(--yaaq-warm-white);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
 
   --font-sans: var(--font-inter);
   --font-display: var(--font-playfair);
@@ -142,6 +194,19 @@
   .stagger-4 { animation-delay: 0.4s; }
   .stagger-5 { animation-delay: 0.5s; }
   .stagger-6 { animation-delay: 0.6s; }
+  .stagger-7 { animation-delay: 0.7s; }
+  .stagger-8 { animation-delay: 0.8s; }
+  .stagger-9 { animation-delay: 0.9s; }
+  .stagger-10 { animation-delay: 1s; }
+}
+
+/* Eyebrow label: editorial section marker (tone-aware, no pill). */
+.eyebrow {
+  color: var(--section-accent);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 /* Respect prefers-reduced-motion: disable entrance animations and smooth scroll. */
@@ -159,8 +224,51 @@
   }
 }
 
-/* Visible keyboard focus indicator (theme default outline is removed by some resets). */
+/* Hero slideshow: slow crossfade with a gentle drift. Decorative layer only. */
+@keyframes hero-crossfade {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  6% {
+    opacity: 1;
+  }
+  17% {
+    opacity: 1;
+  }
+  23% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+.hero-slide {
+  opacity: 0;
+  pointer-events: none;
+  animation-name: hero-crossfade;
+  animation-duration: 30s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+  .hero-slide:first-child {
+    opacity: 1 !important;
+  }
+}
+
+/* Visible keyboard focus indicator — tone-aware (gold-ink on light, light gold on navy). */
 :focus-visible {
-  outline: 2px solid var(--yaaq-gold, #d4af37);
+  outline: 2px solid var(--section-accent, var(--yaaq-gold-ink));
   outline-offset: 2px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--yaaq-gold) 35%, transparent);
 }

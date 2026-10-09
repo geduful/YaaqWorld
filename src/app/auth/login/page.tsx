@@ -142,7 +142,7 @@ function LoginContent() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <Link href="/auth/forgot-password" className="text-sm text-yaaq-gold hover:underline">
+                    <Link href="/auth/forgot-password" className="text-sm text-yaaq-gold-ink hover:underline">
                       Forgot password?
                     </Link>
                   </div>
@@ -186,7 +186,7 @@ function LoginContent() {
 
                 <p className="text-center text-sm text-muted-foreground">
                   Don&apos;t have an account?{" "}
-                  <Link href="/auth/register" className="text-yaaq-gold hover:underline font-medium">
+                  <Link href="/auth/register" className="text-yaaq-gold-ink hover:underline font-medium">
                     Join YAAQ World
                   </Link>
                 </p>

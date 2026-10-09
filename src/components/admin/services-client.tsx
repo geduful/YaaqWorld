@@ -257,11 +257,11 @@ export function ServicesClient({ canManage }: ServicesClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Service</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Category</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Pricing</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Status</th>
-                  {canManage && <th scope="col" className="px-4 py-3 font-medium">Actions</th>}
+                  <th scope="col" className="px-4 py-3 font-semibold">Service</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Category</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Pricing</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  {canManage && <th scope="col" className="px-4 py-3 font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -276,7 +276,7 @@ export function ServicesClient({ canManage }: ServicesClientProps) {
                     <td className="px-4 py-3">
                       <span className="capitalize text-muted-foreground">{service.category}</span>
                       {service.is_featured && (
-                        <span className="ml-2 rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs text-yaaq-gold">
+                        <span className="ml-2 rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs text-yaaq-gold-ink">
                           Featured
                         </span>
                       )}

@@ -56,7 +56,7 @@ export function MediaHubClient({ items }: MediaHubClientProps) {
 
   return (
     <>
-      <section className="section-py bg-background" aria-labelledby="media-library-heading">
+      <section className="section-py bg-background" aria-label="Media library">
         <div className="container-yaaq">
           <div className="flex items-center gap-2 mb-8">
             <button
@@ -98,13 +98,13 @@ export function MediaHubClient({ items }: MediaHubClientProps) {
               onValueChange={setActiveCategory}
               className="w-full"
             >
-              <TabsList className="flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Media categories">
-                <TabsTrigger value="all" className="px-4 py-2 text-sm gap-2">
+              <TabsList className="gap-6 mb-8" aria-label="Media categories">
+                <TabsTrigger value="all">
                   <socialIcons.grid className="h-4 w-4" aria-hidden="true" />
                   All Media
                 </TabsTrigger>
                 {categoryValues.map((value) => (
-                  <TabsTrigger key={value} value={value} className="px-4 py-2 text-sm">
+                  <TabsTrigger key={value} value={value}>
                     {categoryLabel(value, MEDIA_CATEGORY_OPTIONS)}
                   </TabsTrigger>
                 ))}
@@ -157,7 +157,7 @@ export function MediaHubClient({ items }: MediaHubClientProps) {
             </h2>
             <div className="grid gap-6 lg:grid-cols-2">
               {featuredItems.map((item, i) => (
-                <Card key={item.id} className={`overflow-hidden animate-in stagger-${i + 1}`}>
+                <Card key={item.id} className={`overflow-hidden animate-in stagger-${Math.min(i + 1, 10)}`}>
                   <div className="relative aspect-[16/9] bg-yaaq-navy overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -201,14 +201,14 @@ export function MediaHubClient({ items }: MediaHubClientProps) {
         </section>
       )}
 
-      <section className="section-py bg-yaaq-navy text-white" aria-labelledby="youtube-heading">
+      <section className="section-py bg-yaaq-navy text-white" aria-label="YouTube channel">
         <div className="container-yaaq text-center">
-          <a href="https://youtube.com/@yaaqworld" target="_blank" rel="noopener noreferrer">
-            <Button size="lg" variant="gold" className="gap-2">
-              <socialIcons.play className="h-5 w-5" />
+          <Button asChild size="lg" variant="gold" className="gap-2">
+            <a href="https://youtube.com/@yaaqworld" target="_blank" rel="noopener noreferrer">
+              <socialIcons.youtube className="h-5 w-5" />
               Subscribe on YouTube
-            </Button>
-          </a>
+            </a>
+          </Button>
         </div>
       </section>
 

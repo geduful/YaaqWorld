@@ -91,7 +91,7 @@ export default function AboutPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <p className="mt-4 text-white/50">Team Photo Placeholder</p>
+                  <p className="mt-4 text-white/60">Team Photo Placeholder</p>
                 </div>
               </div>
             </div>
@@ -108,16 +108,16 @@ export default function AboutPage() {
             description="Key milestones in our evolution from a campus initiative to a recognized media brand."
           />
           <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border" aria-hidden="true" />
+            <div className="absolute left-[19px] top-0 bottom-0 w-0.5 bg-border" aria-hidden="true" />
             <div className="space-y-8">
               {milestones.map((milestone, i) => (
-                <div key={milestone.year} className={`relative pl-20 animate-in stagger-${i + 1}`}>
+                <div key={milestone.year} className={`relative pl-20 animate-in stagger-${Math.min(i + 1, 10)}`}>
                   <div className="absolute left-0 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-yaaq-gold text-yaaq-navy font-bold text-lg">
                     {i + 1}
                   </div>
                   <div className="ml-4">
                     <div className="flex items-baseline gap-4">
-                      <span className="font-display text-xl font-bold text-yaaq-gold">{milestone.year}</span>
+                      <span className="font-display text-xl font-bold text-yaaq-gold-ink">{milestone.year}</span>
                       <h3 className="font-display text-lg font-semibold text-foreground">{milestone.title}</h3>
                     </div>
                     <p className="mt-1 text-muted-foreground">{milestone.desc}</p>
@@ -136,6 +136,7 @@ export default function AboutPage() {
               <SectionHeader
                 id="mission-heading"
                 align="left"
+                size="sm"
                 tagline="Mission"
                 title="Our Mission"
                 description="To authentically document, creatively amplify, and professionally preserve the stories, voices, and experiences that define Ghanaian campus culture — empowering student creators and connecting youth narratives to the wider world."
@@ -145,6 +146,7 @@ export default function AboutPage() {
               <SectionHeader
                 id="vision-heading"
                 align="left"
+                size="sm"
                 tagline="Vision"
                 title="Our Vision"
                 description="To become the definitive media platform for Ghanaian youth culture — the trusted lens through which campus stories are told, the launchpad for the next generation of African creatives, and the bridge between campus culture and global audiences."
@@ -166,7 +168,7 @@ export default function AboutPage() {
             {values.map((value, i) => (
               <Card
                 key={value.title}
-                className={`bg-yaaq-navy-light border-border/50 animate-in stagger-${i + 1}`}
+                className={`bg-yaaq-navy-light border-border/50 animate-in stagger-${Math.min(i + 1, 10)}`}
               >
                 <CardContent className="p-6">
                   <div className="mb-4 text-yaaq-gold">{value.icon}</div>
@@ -192,7 +194,7 @@ export default function AboutPage() {
               <div className="grid gap-0 md:grid-cols-2">
                 <div className="relative aspect-square bg-muted flex items-center justify-center">
                   <div className="text-center p-8">
-                    <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold text-3xl font-bold">
+                    <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-yaaq-gold/10 text-yaaq-gold-ink text-3xl font-bold">
                       AM
                     </div>
                     <p className="text-muted-foreground">Portrait Placeholder</p>
@@ -207,12 +209,33 @@ export default function AboutPage() {
                     Official biography and professional background to be provided. This section is structured to receive
                     the approved biography, professional journey, and leadership philosophy of YAAQ World&apos;s founder.
                   </p>
-                  <div className="mt-6 flex gap-4">
-                    <a href="#" className="text-muted-foreground hover:text-yaaq-gold transition-colors" aria-label="Instagram">
-                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                  <div className="mt-6 flex gap-4" role="group" aria-label="YAAQ World social profiles">
+                    <a
+                      href="https://instagram.com/yaaq_world"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-yaaq-gold-ink transition-colors"
+                      aria-label="YAAQ World on Instagram"
+                    >
+                      <socialIcons.instagram className="h-5 w-5" aria-hidden="true" />
                     </a>
-                    <a href="#" className="text-muted-foreground hover:text-yaaq-gold transition-colors" aria-label="LinkedIn">
-                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    <a
+                      href="https://www.tiktok.com/@yaaq.world"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-yaaq-gold-ink transition-colors"
+                      aria-label="YAAQ World on TikTok"
+                    >
+                      <socialIcons.tiktok className="h-5 w-5" aria-hidden="true" />
+                    </a>
+                    <a
+                      href="https://linkedin.com/company/yaaqworld"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-yaaq-gold-ink transition-colors"
+                      aria-label="YAAQ World on LinkedIn"
+                    >
+                      <socialIcons.linkedin className="h-5 w-5" aria-hidden="true" />
                     </a>
                   </div>
                 </div>
@@ -237,7 +260,7 @@ export default function AboutPage() {
               "Face of KTU Organization",
               "Ghana Tertiary Students Network",
             ].map((item, i) => (
-              <Card key={item} className={`animate-in stagger-${i + 1}`}>
+              <Card key={item} className={`animate-in stagger-${Math.min(i + 1, 10)}`}>
                 <CardContent className="p-6 text-center">
                   <p className="font-medium text-foreground">{item}</p>
                 </CardContent>
@@ -255,17 +278,15 @@ export default function AboutPage() {
             description="We're always looking for passionate creators, storytellers, and partners who believe in the power of campus culture."
             action={
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/booking">
-                  <Button size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+                <Button asChild size="lg" variant="gold" className="w-full sm:w-auto gap-2">
+                  <Link href="/booking">
                     Book Our Media Team
                     <socialIcons.arrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
-                <Link href="/team">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10">
-                    Join YAAQ World
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="glass" className="w-full sm:w-auto">
+                  <Link href="/team">Join YAAQ World</Link>
+                </Button>
               </div>
             }
           />

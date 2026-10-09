@@ -70,7 +70,7 @@ function VerifyEmailContent() {
           <Card>
             <CardContent className="p-8 text-center">
               <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-yaaq-gold/10">
-                <Mail className="h-8 w-8 text-yaaq-gold" aria-hidden="true" />
+                <Mail className="h-8 w-8 text-yaaq-gold-ink" aria-hidden="true" />
               </div>
 
               <h1 className="font-display text-2xl font-bold text-foreground">Check Your Email</h1>
@@ -95,7 +95,7 @@ function VerifyEmailContent() {
               </div>
 
               {resendStatus === "success" && (
-                <div className="mt-4 flex items-center justify-center gap-2 text-sm text-green-600" role="status">
+                <div className="mt-4 flex items-center justify-center gap-2 text-sm text-success" role="status">
                   <CheckCircle className="h-4 w-4" />
                   <span>{resendMessage}</span>
                 </div>

@@ -84,10 +84,10 @@ export default function PrivacyPage() {
               <li>Data portability</li>
               <li>Withdraw consent at any time</li>
             </ul>
-            <p>To exercise these rights, contact us at <a href="mailto:hello@yaaqworld.com" className="text-yaaq-gold hover:underline">hello@yaaqworld.com</a>.</p>
+            <p>To exercise these rights, contact us at <a href="mailto:yaaqworld@gmail.com" className="text-yaaq-gold-ink hover:underline">yaaqworld@gmail.com</a>.</p>
 
             <h2>6. Cookies & Tracking</h2>
-            <p>Our website uses cookies and similar technologies to enhance your experience, analyze traffic, and personalize content. See our <a href="/cookies" className="text-yaaq-gold hover:underline">Cookie Policy</a> for details.</p>
+            <p>Our website uses cookies and similar technologies to enhance your experience, analyze traffic, and personalize content. See our <a href="/cookies" className="text-yaaq-gold-ink hover:underline">Cookie Policy</a> for details.</p>
 
             <h2>7. Third-Party Links</h2>
             <p>Our website may contain links to third-party websites (social media, YouTube, etc.). We are not responsible for the privacy practices of these sites. We encourage you to review their privacy policies.</p>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
             <address className="not-italic">
               <p>YAAQ World</p>
               <p>Koforidua, Eastern Region, Ghana</p>
-              <p>Email: <a href="mailto:hello@yaaqworld.com" className="text-yaaq-gold hover:underline">hello@yaaqworld.com</a></p>
+              <p>Email: <a href="mailto:yaaqworld@gmail.com" className="text-yaaq-gold-ink hover:underline">yaaqworld@gmail.com</a></p>
             </address>
           </div>
         </div>

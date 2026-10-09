@@ -136,20 +136,20 @@ export default function NotificationsPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList>
-            <TabsTrigger value="all" className="gap-2">
+            <TabsTrigger value="all">
               All
-              <Badge variant="secondary" className="text-xs">{notifications.length}</Badge>
+              <Badge variant="secondary" className="text-xs tabular-nums">{notifications.length}</Badge>
             </TabsTrigger>
-            <TabsTrigger value="unread" className="gap-2">
+            <TabsTrigger value="unread">
               Unread
               {unreadNotifications.length > 0 && (
-                <Badge variant="destructive" className="text-xs">{unreadNotifications.length}</Badge>
+                <Badge variant="destructive" className="text-xs tabular-nums">{unreadNotifications.length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="read">Read</TabsTrigger>
           </TabsList>
 
-          <TabsContent value={activeTab} className="mt-4">
+          <TabsContent value={activeTab}>
             {isLoading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
@@ -178,7 +178,7 @@ export default function NotificationsPage() {
                     <CardContent className="p-4 flex items-start gap-3">
                       <div
                         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                          !notification.read ? "bg-yaaq-gold/10 text-yaaq-gold" : "bg-muted text-muted-foreground"
+                          !notification.read ? "bg-yaaq-gold/10 text-yaaq-gold-ink" : "bg-muted text-muted-foreground"
                         }`}
                       >
                         {typeIcons[notification.type] || <Bell className="h-4 w-4" />}
@@ -207,7 +207,7 @@ export default function NotificationsPage() {
                           deleteNotification(notification.id);
                         }}
                         aria-label={`Delete notification: ${notification.title}`}
-                        title="Delete notification"
+                        title={`Delete "${notification.title}"`}
                       >
                         <Trash2 className="h-4 w-4" aria-hidden="true" />
                       </button>

@@ -49,7 +49,7 @@ export function ServiceCard({
       )}
       <CardContent className="p-6">
         {icon && !image && (
-          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold-ink">
             {icon}
           </div>
         )}
@@ -58,13 +58,13 @@ export function ServiceCard({
             {category}
           </Badge>
         )}
-        <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-yaaq-gold transition-colors">
+        <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-yaaq-gold-ink transition-colors">
           {title}
         </h3>
         <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{description}</p>
         <Link
           href={href}
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-yaaq-gold hover:gap-3 transition-all"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-yaaq-gold-ink hover:gap-3 transition-all"
         >
           Book This Service
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

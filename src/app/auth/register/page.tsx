@@ -58,7 +58,7 @@ export default function RegisterChoicePage() {
                 YAAQ<span className="text-yaaq-gold">World</span>
               </span>
             </Link>
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="ghost" size="sm">
                 Sign In
               </Button>
@@ -70,7 +70,7 @@ export default function RegisterChoicePage() {
       <main className="flex-1 flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-4xl">
           <div className="text-center mb-12">
-            <span className="inline-block mb-4 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold bg-yaaq-gold/10 rounded-full">
+            <span className="inline-block mb-4 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold-ink bg-yaaq-gold/10 rounded-full">
               JOIN YAAQ WORLD
             </span>
             <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground leading-tight text-balance">
@@ -86,14 +86,14 @@ export default function RegisterChoicePage() {
               <Card
                 key={role.id}
                 className={cn(
-                  "relative overflow-hidden transition-all duration-300 hover:shadow-xl",
-                  selectedRole === role.id && "ring-2 ring-yaaq-gold border-yaaq-gold"
+                  "relative overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-xl focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
+                  selectedRole === role.id && "ring-2 ring-yaaq-gold-ink border-yaaq-gold-ink"
                 )}
                 onClick={() => setSelectedRole(role.id)}
               >
                 <div className="absolute top-0 right-0 h-24 w-24 bg-yaaq-gold/5 rounded-full blur-2xl" aria-hidden="true" />
                 <CardHeader className="relative z-10">
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold-ink">
                     <role.icon className="h-7 w-7" aria-hidden="true" />
                   </div>
                   <CardTitle className="text-center font-display text-xl">{role.label}</CardTitle>
@@ -103,7 +103,7 @@ export default function RegisterChoicePage() {
                   <ul className="space-y-3 mb-6" role="list">
                     {role.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
-                        <Sparkles className="h-4 w-4 shrink-0 text-yaaq-gold mt-0.5" aria-hidden="true" />
+                        <Sparkles className="h-4 w-4 shrink-0 text-yaaq-gold-ink mt-0.5" aria-hidden="true" />
                         <span>{feature}</span>
                       </li>
                     ))}
@@ -128,7 +128,7 @@ export default function RegisterChoicePage() {
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/auth/login" className="text-yaaq-gold hover:underline font-medium">
+            <Link href="/auth/login" className="text-yaaq-gold-ink hover:underline font-medium">
               Sign in
             </Link>
           </p>

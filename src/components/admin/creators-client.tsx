@@ -108,7 +108,7 @@ export function CreatorsClient({ canManage }: CreatorsClientProps) {
               placeholder="Search creators..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 w-44 bg-transparent text-sm focus:outline-none sm:w-56"
+              className="h-9 w-44 bg-transparent text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-ring sm:w-56"
               aria-label="Search creators"
             />
           </div>
@@ -143,11 +143,11 @@ export function CreatorsClient({ canManage }: CreatorsClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Creator</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Bio</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Visibility</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Account</th>
-                  {canManage && <th scope="col" className="px-4 py-3 font-medium">Actions</th>}
+                  <th scope="col" className="px-4 py-3 font-semibold">Creator</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Bio</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Visibility</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Account</th>
+                  {canManage && <th scope="col" className="px-4 py-3 font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -157,7 +157,7 @@ export function CreatorsClient({ canManage }: CreatorsClientProps) {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={row.profile.avatar_url || undefined} alt="" />
-                          <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-xs font-semibold">
+                          <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-xs font-semibold">
                             {(row.profile.full_name ?? "C")
                               .split(" ")
                               .map((n) => n[0])

@@ -111,19 +111,20 @@ export function MembersClient({ canManage }: MembersClientProps) {
               placeholder="Search members..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-9 w-44 bg-transparent text-sm focus:outline-none sm:w-56"
+              className="h-9 w-44 bg-transparent text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-ring sm:w-56"
               aria-label="Search members"
             />
           </div>
         }
       />
 
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="Member status filter">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Member status filter">
         {(["all", "active", "inactive"] as StatusFilter[]).map((filter) => (
           <Button
             key={filter}
-            variant={statusFilter === filter ? "gold" : "outline"}
+            variant={statusFilter === filter ? "default" : "outline"}
             size="sm"
+            aria-pressed={statusFilter === filter}
             onClick={() => setStatusFilter(filter)}
             className="capitalize"
           >
@@ -160,11 +161,11 @@ export function MembersClient({ canManage }: MembersClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Member</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Level</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Joined</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Status</th>
-                  {canManage && <th scope="col" className="px-4 py-3 font-medium">Actions</th>}
+                  <th scope="col" className="px-4 py-3 font-semibold">Member</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Level</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Joined</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  {canManage && <th scope="col" className="px-4 py-3 font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -174,7 +175,7 @@ export function MembersClient({ canManage }: MembersClientProps) {
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={member.avatar_url || undefined} alt="" />
-                          <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-xs font-semibold">
+                          <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-xs font-semibold">
                             {(member.full_name ?? "U")
                               .split(" ")
                               .map((n) => n[0])

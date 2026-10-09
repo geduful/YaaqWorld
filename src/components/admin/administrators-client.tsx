@@ -336,7 +336,7 @@ export function AdministratorsClient({ currentUserId, canManage }: Administrator
         </div>
       )}
       {notice && (
-        <div className="rounded-lg bg-green-500/10 px-4 py-3 text-sm text-green-600" role="status">
+        <div className="rounded-lg bg-success-soft px-4 py-3 text-sm text-success" role="status">
           {notice}
         </div>
       )}
@@ -345,7 +345,7 @@ export function AdministratorsClient({ currentUserId, canManage }: Administrator
         <Card>
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Search className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+              <Search className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
               Grant admin access
             </CardTitle>
             <CardDescription>
@@ -445,7 +445,7 @@ export function AdministratorsClient({ currentUserId, canManage }: Administrator
       <Card>
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <UserCog className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+            <UserCog className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
             Administrators
           </CardTitle>
           <CardDescription>Accounts with administrative access to YAAQ World</CardDescription>
@@ -483,7 +483,7 @@ export function AdministratorsClient({ currentUserId, canManage }: Administrator
                         <p className="font-medium text-foreground truncate">{personLabel(admin)}</p>
                         <StatusBadge kind="admin" status={admin.is_super ? "active" : admin.status} />
                         {admin.is_super && (
-                          <span className="rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs font-semibold text-yaaq-gold">
+                          <span className="rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs font-semibold text-yaaq-gold-ink">
                             Super Admin
                           </span>
                         )}

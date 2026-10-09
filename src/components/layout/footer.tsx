@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { socialIcons } from "@/lib/icons";
 
 const footerLinks = {
@@ -30,7 +31,8 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { name: "Instagram", href: "https://instagram.com/yaaqworld", icon: socialIcons.instagram },
+  { name: "Instagram", href: "https://instagram.com/yaaq_world", icon: socialIcons.instagram },
+  { name: "TikTok", href: "https://www.tiktok.com/@yaaq.world", icon: socialIcons.tiktok },
   { name: "Twitter", href: "https://twitter.com/yaaqworld", icon: socialIcons.twitter },
   { name: "Facebook", href: "https://facebook.com/yaaqworld", icon: socialIcons.facebook },
   { name: "YouTube", href: "https://youtube.com/@yaaqworld", icon: socialIcons.youtube },
@@ -38,9 +40,9 @@ const socialLinks = [
 ];
 
 const contactInfo = {
-  email: "hello@yaaqworld.com",
-  phone: "+233 XX XXX XXXX",
-  whatsapp: "+233 XX XXX XXXX",
+  email: "yaaqworld@gmail.com",
+  phone: "+233 24 031 8000",
+  whatsapp: "+233 24 031 8000",
   location: "Koforidua, Eastern Region, Ghana",
 };
 
@@ -51,9 +53,13 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2 space-y-6">
             <Link href="/" className="flex items-center gap-2" aria-label="YAAQ World Home">
-              <span className="font-display text-2xl font-bold text-foreground">
-                YAAQ<span className="text-yaaq-gold">World</span>
-              </span>
+              <Image
+                src="/logo.jpeg"
+                alt="YAAQ World"
+                width={48}
+                height={48}
+                className="h-12 w-12"
+              />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
               The pulse of Ghanaian campus culture & creative storytelling. Capturing the people,
@@ -66,7 +72,7 @@ export function Footer() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-yaaq-gold transition-colors"
+                  className="text-muted-foreground hover:text-yaaq-gold-ink transition-colors"
                   aria-label={social.name}
                 >
                   <social.icon className="h-5 w-5" aria-hidden="true" />

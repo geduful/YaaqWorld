@@ -315,10 +315,10 @@ export function MediaClient({ canManage }: MediaClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Item</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Category</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Visibility</th>
-                  {canManage && <th scope="col" className="px-4 py-3 font-medium">Actions</th>}
+                  <th scope="col" className="px-4 py-3 font-semibold">Item</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Category</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Visibility</th>
+                  {canManage && <th scope="col" className="px-4 py-3 font-semibold">Actions</th>}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -336,7 +336,7 @@ export function MediaClient({ canManage }: MediaClientProps) {
                           <p className="font-medium text-foreground flex items-center gap-1.5">
                             {item.title}
                             {item.featured && (
-                              <span className="rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs text-yaaq-gold whitespace-nowrap">
+                              <span className="rounded-full bg-yaaq-gold/10 px-2 py-0.5 text-xs text-yaaq-gold-ink whitespace-nowrap">
                                 Featured
                               </span>
                             )}
@@ -353,7 +353,7 @@ export function MediaClient({ canManage }: MediaClientProps) {
                     </td>
                     <td className="px-4 py-3">
                       {item.published_at ? (
-                        <span className="inline-flex items-center gap-1 text-green-600 text-xs font-medium">
+                        <span className="inline-flex items-center gap-1 text-success text-xs font-medium">
                           <CheckCircle2 className="h-3.5 w-3.5" />
                           Published
                         </span>

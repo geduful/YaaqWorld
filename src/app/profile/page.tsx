@@ -18,11 +18,12 @@ import {
   ExternalLink,
   Instagram,
   Linkedin,
-  Globe,
   Shield,
 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { safeHttpUrl } from "@/lib/content";
+import { socialUrl } from "@/lib/social-links";
+import { TikTok, WhatsApp } from "@/lib/brand-icons";
 import { Creator, Institution } from "@/types";
 
 export default function ProfilePage() {
@@ -94,7 +95,7 @@ export default function ProfilePage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
               <Avatar className="h-24 w-24">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="" />
-                <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold text-2xl font-semibold">
+                <AvatarFallback className="bg-yaaq-gold/20 text-yaaq-gold-ink text-2xl font-semibold">
                   {getInitials()}
                 </AvatarFallback>
               </Avatar>
@@ -109,7 +110,7 @@ export default function ProfilePage() {
                   )}
                 </div>
                 {profile?.bio && <p className="mt-2 text-sm text-muted-foreground max-w-2xl">{profile.bio}</p>}
-                {profile?.moniker && <p className="text-sm text-yaaq-gold font-medium">&ldquo;{profile.moniker}&rdquo;</p>}
+                {profile?.moniker && <p className="text-sm text-yaaq-gold-ink font-medium">&ldquo;{profile.moniker}&rdquo;</p>}
               </div>
             </div>
           </CardContent>
@@ -134,11 +135,26 @@ export default function ProfilePage() {
 
               <div className="flex items-center gap-3">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted">
-                  <Phone className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  {profile?.whatsapp ? (
+                    <WhatsApp className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  ) : (
+                    <Phone className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  )}
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs text-muted-foreground">WhatsApp</p>
-                  <p className="text-sm font-medium text-foreground">{profile?.whatsapp || "Not provided"}</p>
+                  {profile?.whatsapp ? (
+                    <a
+                      href={`https://wa.me/${profile.whatsapp.replace(/[^\d]/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-medium text-foreground hover:text-yaaq-gold-ink transition-colors"
+                    >
+                      {profile.whatsapp}
+                    </a>
+                  ) : (
+                    <p className="text-sm font-medium text-foreground">Not provided</p>
+                  )}
                 </div>
               </div>
 
@@ -180,45 +196,45 @@ export default function ProfilePage() {
             <CardContent className="space-y-4">
               {profile?.instagram ? (
                 <a
-                  href={profile.instagram.startsWith("http") ? profile.instagram : `https://instagram.com/${profile.instagram.replace("@", "")}`}
+                  href={socialUrl("instagram", profile.instagram) ?? profile.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group"
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted group-hover:bg-pink-100 transition-colors">
-                    <Instagram className="h-4 w-4 text-muted-foreground group-hover:text-pink-600" aria-hidden="true" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted group-hover:bg-yaaq-gold/10 transition-colors">
+                    <Instagram className="h-4 w-4 text-muted-foreground group-hover:text-yaaq-gold-ink" aria-hidden="true" />
                   </div>
-                  <span className="text-sm font-medium text-foreground group-hover:text-yaaq-gold">Instagram</span>
+                  <span className="text-sm font-medium text-foreground group-hover:text-yaaq-gold-ink">Instagram</span>
                   <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" aria-hidden="true" />
                 </a>
               ) : null}
 
               {profile?.linkedin ? (
                 <a
-                  href={profile.linkedin.startsWith("http") ? profile.linkedin : `https://linkedin.com/in/${profile.linkedin}`}
+                  href={socialUrl("linkedin", profile.linkedin) ?? profile.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group"
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted group-hover:bg-blue-100 transition-colors">
-                    <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-blue-600" aria-hidden="true" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted group-hover:bg-yaaq-gold/10 transition-colors">
+                    <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-yaaq-gold-ink" aria-hidden="true" />
                   </div>
-                  <span className="text-sm font-medium text-foreground group-hover:text-yaaq-gold">LinkedIn</span>
+                  <span className="text-sm font-medium text-foreground group-hover:text-yaaq-gold-ink">LinkedIn</span>
                   <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" aria-hidden="true" />
                 </a>
               ) : null}
 
               {profile?.tiktok ? (
                 <a
-                  href={profile.tiktok.startsWith("http") ? profile.tiktok : `https://tiktok.com/@${profile.tiktok.replace("@", "")}`}
+                  href={socialUrl("tiktok", profile.tiktok) ?? profile.tiktok}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 group"
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted group-hover:bg-gray-100 transition-colors">
-                    <Globe className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted group-hover:bg-yaaq-gold/10 transition-colors">
+                    <TikTok className="h-4 w-4 text-muted-foreground group-hover:text-yaaq-gold-ink" aria-hidden="true" />
                   </div>
-                  <span className="text-sm font-medium text-foreground group-hover:text-yaaq-gold">TikTok</span>
+                  <span className="text-sm font-medium text-foreground group-hover:text-yaaq-gold-ink">TikTok</span>
                   <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" aria-hidden="true" />
                 </a>
               ) : null}
@@ -257,7 +273,7 @@ export default function ProfilePage() {
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Portfolio</p>
                   {safeHttpUrl(creatorData.portfolio_url) ? (
-                    <a href={safeHttpUrl(creatorData.portfolio_url) as string} target="_blank" rel="noopener noreferrer" className="text-sm text-yaaq-gold hover:underline inline-flex items-center gap-1">
+                    <a href={safeHttpUrl(creatorData.portfolio_url) as string} target="_blank" rel="noopener noreferrer" className="text-sm text-yaaq-gold-ink hover:underline inline-flex items-center gap-1">
                       View Portfolio <ExternalLink className="h-3 w-3" />
                     </a>
                   ) : creatorData.portfolio_url ? (

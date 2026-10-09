@@ -100,7 +100,7 @@ export default function CookiesPage() {
             <address className="not-italic">
               <p>YAAQ World</p>
               <p>Koforidua, Eastern Region, Ghana</p>
-              <p>Email: <a href="mailto:hello@yaaqworld.com" className="text-yaaq-gold hover:underline">hello@yaaqworld.com</a></p>
+              <p>Email: <a href="mailto:yaaqworld@gmail.com" className="text-yaaq-gold-ink hover:underline">yaaqworld@gmail.com</a></p>
             </address>
           </div>
         </div>

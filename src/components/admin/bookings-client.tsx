@@ -210,12 +210,12 @@ export function BookingsClient({ canManage }: BookingsClientProps) {
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th scope="col" className="px-4 py-3 font-medium">Requester</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Service</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Event date</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Status</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Received</th>
-                  <th scope="col" className="px-4 py-3 font-medium">Actions</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Requester</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Service</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Event date</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Status</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Received</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -229,13 +229,13 @@ export function BookingsClient({ canManage }: BookingsClientProps) {
                       {serviceLabel(booking.service_category)}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
-                      {new Date(booking.event_date).toLocaleDateString()}
+                      {new Date(booking.event_date).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}
                     </td>
                     <td className="px-4 py-3">
                       <StatusBadge kind="booking" status={booking.status} />
                     </td>
                     <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
-                      {new Date(booking.created_at).toLocaleDateString()}
+                      {new Date(booking.created_at).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
@@ -277,7 +277,7 @@ export function BookingsClient({ canManage }: BookingsClientProps) {
           <DialogHeader>
             <DialogTitle>Booking request</DialogTitle>
             <DialogDescription>
-              Submitted {viewing ? new Date(viewing.created_at).toLocaleString() : ""}
+              Submitted {viewing ? new Date(viewing.created_at).toLocaleString("en-GH", { dateStyle: "medium", timeStyle: "short" }) : ""}
             </DialogDescription>
           </DialogHeader>
 
@@ -313,7 +313,7 @@ export function BookingsClient({ canManage }: BookingsClientProps) {
                 <div>
                   <dt className="text-muted-foreground">Event date</dt>
                   <dd className="font-medium">
-                    {new Date(viewing.event_date).toLocaleDateString()}
+                    {new Date(viewing.event_date).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}
                   </dd>
                 </div>
                 <div>

@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
             <>
               <div className="text-center mb-8">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10">
-                  <KeyRound className="h-7 w-7 text-yaaq-gold" aria-hidden="true" />
+                  <KeyRound className="h-7 w-7 text-yaaq-gold-ink" aria-hidden="true" />
                 </div>
                 <h1 className="font-display text-3xl font-bold text-foreground">Forgot Password?</h1>
                 <p className="mt-2 text-muted-foreground">
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
             <Card>
               <CardContent className="p-8 text-center">
                 <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <CheckCircle className="h-8 w-8 text-green-600" aria-hidden="true" />
+                  <CheckCircle className="h-8 w-8 text-success" aria-hidden="true" />
                 </div>
                 <h1 className="font-display text-2xl font-bold text-foreground">Check Your Email</h1>
                 <p className="mt-3 text-muted-foreground leading-relaxed">

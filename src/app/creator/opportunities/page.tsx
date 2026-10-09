@@ -256,7 +256,7 @@ export default function CreatorOpportunitiesPage() {
                             {opportunity.deadline && (
                               <span className="inline-flex items-center gap-1.5">
                                 <CalendarDays className="h-4 w-4" aria-hidden="true" />
-                                Closes {new Date(opportunity.deadline).toLocaleDateString()}
+                                Closes {new Date(opportunity.deadline).toLocaleDateString("en-GH", { day: "numeric", month: "short", year: "numeric" })}
                               </span>
                             )}
                             {opportunity.compensation && (
@@ -295,15 +295,15 @@ export default function CreatorOpportunitiesPage() {
                           </Button>
                         )}
                         {opportunity.apply_url && (
-                          <a
-                            href={opportunity.apply_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button variant="outline" size="sm">
+                          <Button asChild variant="outline" size="sm">
+                            <a
+                              href={opportunity.apply_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               Apply externally
-                            </Button>
-                          </a>
+                            </a>
+                          </Button>
                         )}
                       </div>
                     </CardContent>
@@ -329,7 +329,7 @@ export default function CreatorOpportunitiesPage() {
           </DialogHeader>
 
           {submitSuccess ? (
-            <div className="rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-900/20 dark:text-green-400" role="alert">
+            <div className="rounded-lg border border-success/30 bg-success-soft p-4 text-success" role="alert">
               <p className="font-medium">Application submitted.</p>
               <p className="text-sm mt-1">
                 The team will review it and reach out if you&apos;re a fit.

@@ -4,59 +4,70 @@ import { Badge } from "@/components/ui/badge";
 import { AdminStatus, AnnouncementStatus, InvitationStatus } from "@/types";
 import { cn } from "@/lib/utils";
 
+/* Tone classes use the semantic state tokens (WCAG AA text on soft backgrounds). */
+const TONE = {
+  blue: "bg-info-soft text-info border-info/30",
+  green: "bg-success-soft text-success border-success/30",
+  amber: "bg-warning-soft text-warning border-warning/30",
+  red: "bg-error-soft text-error border-error/30",
+  indigo: "bg-info-soft text-indigo-700 border-indigo-700/30",
+  violet: "bg-info-soft text-violet-700 border-violet-700/30",
+  neutral: "bg-muted text-muted-foreground border-border",
+} as const;
+
 const ADMIN_STATUS_STYLES: Record<AdminStatus, { label: string; className: string }> = {
-  invited: { label: "Invited", className: "bg-blue-500/10 text-blue-600 border border-blue-500/20" },
-  active: { label: "Active", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  suspended: { label: "Suspended", className: "bg-amber-500/10 text-amber-600 border border-amber-500/20" },
-  revoked: { label: "Revoked", className: "bg-red-500/10 text-red-600 border border-red-500/20" },
+  invited: { label: "Invited", className: TONE.blue },
+  active: { label: "Active", className: TONE.green },
+  suspended: { label: "Suspended", className: TONE.amber },
+  revoked: { label: "Revoked", className: TONE.red },
 };
 
 const INVITATION_STATUS_STYLES: Record<InvitationStatus, { label: string; className: string }> = {
-  pending: { label: "Pending", className: "bg-blue-500/10 text-blue-600 border border-blue-500/20" },
-  accepted: { label: "Accepted", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  expired: { label: "Expired", className: "bg-amber-500/10 text-amber-600 border border-amber-500/20" },
-  revoked: { label: "Revoked", className: "bg-red-500/10 text-red-600 border border-red-500/20" },
+  pending: { label: "Pending", className: TONE.blue },
+  accepted: { label: "Accepted", className: TONE.green },
+  expired: { label: "Expired", className: TONE.amber },
+  revoked: { label: "Revoked", className: TONE.red },
 };
 
 const ANNOUNCEMENT_STATUS_STYLES: Record<AnnouncementStatus, { label: string; className: string }> = {
-  draft: { label: "Draft", className: "bg-muted text-muted-foreground border border-border" },
-  published: { label: "Published", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
+  draft: { label: "Draft", className: TONE.neutral },
+  published: { label: "Published", className: TONE.green },
 };
 
 const ACCOUNT_STYLES: Record<string, { label: string; className: string }> = {
-  active: { label: "Active", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  inactive: { label: "Inactive", className: "bg-muted text-muted-foreground border border-border" },
+  active: { label: "Active", className: TONE.green },
+  inactive: { label: "Inactive", className: TONE.neutral },
 };
 
 const NEWS_STYLES: Record<string, { label: string; className: string }> = {
-  draft: { label: "Draft", className: "bg-muted text-muted-foreground border border-border" },
-  published: { label: "Published", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  archived: { label: "Archived", className: "bg-amber-500/10 text-amber-600 border border-amber-500/20" },
+  draft: { label: "Draft", className: TONE.neutral },
+  published: { label: "Published", className: TONE.green },
+  archived: { label: "Archived", className: TONE.amber },
 };
 
 const BOOKING_STYLES: Record<string, { label: string; className: string }> = {
-  new: { label: "New", className: "bg-blue-500/10 text-blue-600 border border-blue-500/20" },
-  pending: { label: "Pending", className: "bg-blue-500/10 text-blue-600 border border-blue-500/20" },
-  contacted: { label: "Contacted", className: "bg-indigo-500/10 text-indigo-600 border border-indigo-500/20" },
-  quoted: { label: "Quoted", className: "bg-violet-500/10 text-violet-600 border border-violet-500/20" },
-  confirmed: { label: "Confirmed", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  completed: { label: "Completed", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  cancelled: { label: "Cancelled", className: "bg-muted text-muted-foreground border border-border" },
-  declined: { label: "Declined", className: "bg-red-500/10 text-red-600 border border-red-500/20" },
+  new: { label: "New", className: TONE.blue },
+  pending: { label: "Pending", className: TONE.blue },
+  contacted: { label: "Contacted", className: TONE.indigo },
+  quoted: { label: "Quoted", className: TONE.violet },
+  confirmed: { label: "Confirmed", className: TONE.green },
+  completed: { label: "Completed", className: TONE.green },
+  cancelled: { label: "Cancelled", className: TONE.neutral },
+  declined: { label: "Declined", className: TONE.red },
 };
 
 const OPPORTUNITY_STYLES: Record<string, { label: string; className: string }> = {
-  draft: { label: "Draft", className: "bg-muted text-muted-foreground border border-border" },
-  open: { label: "Open", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  closed: { label: "Closed", className: "bg-amber-500/10 text-amber-600 border border-amber-500/20" },
-  archived: { label: "Archived", className: "bg-muted text-muted-foreground border border-border" },
+  draft: { label: "Draft", className: TONE.neutral },
+  open: { label: "Open", className: TONE.green },
+  closed: { label: "Closed", className: TONE.amber },
+  archived: { label: "Archived", className: TONE.neutral },
 };
 
 const APPLICATION_STYLES: Record<string, { label: string; className: string }> = {
-  submitted: { label: "Submitted", className: "bg-blue-500/10 text-blue-600 border border-blue-500/20" },
-  shortlisted: { label: "Shortlisted", className: "bg-violet-500/10 text-violet-600 border border-violet-500/20" },
-  accepted: { label: "Accepted", className: "bg-green-500/10 text-green-600 border border-green-500/20" },
-  rejected: { label: "Rejected", className: "bg-red-500/10 text-red-600 border border-red-500/20" },
+  submitted: { label: "Submitted", className: TONE.blue },
+  shortlisted: { label: "Shortlisted", className: TONE.violet },
+  accepted: { label: "Accepted", className: TONE.green },
+  rejected: { label: "Rejected", className: TONE.red },
 };
 
 type StatusKind = "admin" | "invitation" | "announcement" | "account" | "news" | "booking" | "opportunity" | "application";
@@ -82,7 +93,7 @@ export function StatusBadge({ kind, status, className }: StatusBadgeProps) {
   const style = maps[kind][status] ?? { label: status, className: "" };
 
   return (
-    <Badge variant="outline" className={cn(style.className, className)}>
+    <Badge variant="outline" className={cn("font-medium", style.className, className)}>
       {style.label}
     </Badge>
   );

@@ -156,9 +156,8 @@ export function AdminShell({ children, visibleNav, isSuperAdmin, adminName }: Ad
 
             <button
               className="md:hidden flex items-center gap-2"
-              onClick={handleSignOut}
-              aria-label="Sign out"
-              disabled={isSigningOut}
+              onClick={() => router.push("/profile")}
+              aria-label="Open profile"
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={profile?.avatar_url || undefined} alt="" />
@@ -180,33 +179,37 @@ export function AdminShell({ children, visibleNav, isSuperAdmin, adminName }: Ad
             aria-label="Admin navigation"
           >
             <div className="py-3 space-y-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors",
-                    isActive(item.href)
-                      ? "bg-yaaq-gold/15 text-yaaq-gold"
-                      : "text-white/70 hover:bg-white/10 hover:text-white",
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
-              ))}
-              <div className="pt-3 border-t border-white/10 mt-3">
+              {navItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors",
+                      active
+                        ? "border border-white/15 bg-white/10 text-white shadow-sm"
+                        : "text-white/70 hover:bg-white/10 hover:text-white",
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                );
+              })}
+              <div className="mt-3 border-t border-white/10 pt-3">
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
+                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   <Home className="h-4 w-4" aria-hidden="true" />
                   My Dashboard
                 </Link>
                 <button
-                  className="flex w-full items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-300 hover:bg-red-500/10"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-red-300 hover:bg-red-500/10"
                   onClick={handleSignOut}
                   disabled={isSigningOut}
                 >
@@ -225,28 +228,32 @@ export function AdminShell({ children, visibleNav, isSuperAdmin, adminName }: Ad
           aria-label="Admin sidebar"
         >
           <nav className="flex-1 p-4 space-y-1" aria-label="Admin sidebar navigation">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                  isActive(item.href)
-                    ? "bg-yaaq-gold/10 text-yaaq-gold"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground",
-                )}
-              >
-                {item.icon}
-                {item.name}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    active
+                      ? "border border-border/70 bg-card text-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-accent hover:text-foreground",
+                  )}
+                >
+                  {item.icon}
+                  {item.name}
+                </Link>
+              );
+            })}
           </nav>
-          <div className="p-4 border-t border-border">
+          <div className="border-t border-border p-4">
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
             >
-              <Home className="h-4 w-4" aria-hidden="true" />
+              <Home className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
               My Dashboard
             </Link>
           </div>

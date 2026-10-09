@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "gold";
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "gold" | "glass";
   size?: "default" | "sm" | "lg" | "xl" | "icon";
   isLoading?: boolean;
   asChild?: boolean;
@@ -42,6 +42,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       link: "text-primary underline-offset-4 hover:underline",
       gold:
         "bg-yaaq-gold text-yaaq-navy hover:bg-yaaq-gold-light shadow-sm font-semibold",
+      glass:
+        "border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/15 hover:border-white/50 shadow-sm",
     };
 
     const sizes = {
@@ -53,6 +55,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const Comp = asChild ? Slot : "button";
+
+    if (asChild) {
+      return (
+        <Slot
+          ref={ref}
+          className={cn(baseStyles, variants[variant], sizes[size], className)}
+          {...props}
+        >
+          {children}
+        </Slot>
+      );
+    }
 
     return (
       <Comp

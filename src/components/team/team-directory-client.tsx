@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { socialUrl } from "@/lib/social-links";
 import { Users } from "lucide-react";
 
 const departments = [
@@ -45,19 +46,6 @@ interface TeamRow {
   linkedin: string | null;
   tiktok: string | null;
   on_board: boolean;
-}
-
-function socialUrl(platform: SocialLink["platform"], value: string): string | null {
-  const v = value.trim();
-  if (!v) return null;
-  if (v.startsWith("http://") || v.startsWith("https://")) return v;
-  if (v.startsWith("@")) {
-    if (platform === "instagram") return `https://www.instagram.com/${v}`;
-    if (platform === "tiktok") return `https://www.tiktok.com/${v}`;
-    return null;
-  }
-  if (platform === "linkedin" && v.includes(".")) return `https://${v}`;
-  return null;
 }
 
 function toMember(row: TeamRow): DirectoryMember {
@@ -133,13 +121,13 @@ export function TeamDirectoryClient() {
             </div>
           ) : (
             <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-              <TabsList className="w-full justify-center gap-2 bg-muted p-1 flex-wrap">
-                <TabsTrigger value="all" className="px-4 py-2">
-                  All Members <span className="ml-2 px-2 py-0.5 text-xs bg-yaaq-gold/20 text-yaaq-gold rounded-full">{members.length}</span>
+              <TabsList className="justify-start sm:justify-center gap-6">
+                <TabsTrigger value="all">
+                  All Members <span className="ml-1.5 px-2 py-0.5 text-xs font-semibold bg-yaaq-gold/20 text-yaaq-gold-ink rounded-full tabular-nums">{members.length}</span>
                 </TabsTrigger>
                 {departments.map((dept) => (
-                  <TabsTrigger key={dept.id} value={dept.id} className="px-4 py-2">
-                    {dept.label} <span className="ml-2 px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">{getTabMembers(members, dept.id).length}</span>
+                  <TabsTrigger key={dept.id} value={dept.id}>
+                    {dept.label} <span className="ml-1.5 px-2 py-0.5 text-xs font-semibold bg-muted text-muted-foreground rounded-full tabular-nums">{getTabMembers(members, dept.id).length}</span>
                   </TabsTrigger>
                 ))}
               </TabsList>
@@ -147,7 +135,7 @@ export function TeamDirectoryClient() {
               <TabsContent value="all" className="mt-8">
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {members.map((member, i) => (
-                    <TeamCard key={member.name} member={member} className={`animate-in stagger-${i + 1}`} />
+                    <TeamCard key={member.name} member={member} className={`animate-in stagger-${Math.min(i + 1, 10)}`} />
                   ))}
                   {members.length === 0 && (
                     <div className="col-span-full text-center py-12">
@@ -161,7 +149,7 @@ export function TeamDirectoryClient() {
                 <TabsContent key={dept.id} value={dept.id} className="mt-8">
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {getTabMembers(members, dept.id).map((member, i) => (
-                      <TeamCard key={member.name} member={member} className={`animate-in stagger-${i + 1}`} />
+                      <TeamCard key={member.name} member={member} className={`animate-in stagger-${Math.min(i + 1, 10)}`} />
                     ))}
                     {getTabMembers(members, dept.id).length === 0 && (
                       <div className="col-span-full text-center py-12">
@@ -176,7 +164,7 @@ export function TeamDirectoryClient() {
         </div>
       </section>
 
-      <section className="section-py bg-background" aria-labelledby="departments-heading">
+      <section className="section-py bg-background" aria-label="Departments">
         <div className="container-yaaq">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -187,9 +175,9 @@ export function TeamDirectoryClient() {
             ].map((dept, i) => {
               const count = getMembersByDepartment(members, dept.id).length;
               return (
-                <Card key={dept.title} className={`animate-in stagger-${i + 1}`}>
+                <Card key={dept.title} className={`animate-in stagger-${Math.min(i + 1, 10)}`}>
                   <CardContent className="p-6 text-center">
-                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold">
+                    <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-yaaq-gold/10 text-yaaq-gold-ink">
                       <Users className="h-7 w-7" />
                     </div>
                     <h3 className="font-display text-lg font-semibold text-foreground">{dept.title}</h3>

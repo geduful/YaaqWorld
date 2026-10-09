@@ -57,7 +57,7 @@ export function NewsCard({ article, className }: NewsCardProps) {
             </>
           )}
         </div>
-        <h3 className="mt-3 font-display text-xl font-semibold text-foreground group-hover:text-yaaq-gold transition-colors line-clamp-2">
+        <h3 className="mt-3 font-display text-xl font-semibold text-foreground group-hover:text-yaaq-gold-ink transition-colors line-clamp-2">
           <Link href={`/news/${article.slug}`}>{article.title}</Link>
         </h3>
         <p className="mt-2 flex-1 text-sm text-muted-foreground leading-relaxed line-clamp-3">
@@ -65,7 +65,7 @@ export function NewsCard({ article, className }: NewsCardProps) {
         </p>
         <Link
           href={`/news/${article.slug}`}
-          className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-yaaq-gold hover:gap-3 transition-all"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-yaaq-gold-ink hover:gap-3 transition-all"
         >
           Read More
           <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

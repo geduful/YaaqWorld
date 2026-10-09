@@ -132,11 +132,11 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   className={`p-5 rounded-xl bg-card border border-border hover:border-yaaq-gold/50 transition-colors group animate-in stagger-${Math.min(i + 1, 6)}`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold-ink">
                       <socialIcons.bookOpen className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-medium text-foreground group-hover:text-yaaq-gold transition-colors">
+                      <p className="font-medium text-foreground group-hover:text-yaaq-gold-ink transition-colors">
                         {categoryLabel(value, NEWS_CATEGORY_OPTIONS)}
                       </p>
                       <p className="text-sm text-muted-foreground">
@@ -164,7 +164,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   name="email"
                   placeholder="Enter your email"
                   required
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-yaaq-gold focus:ring-2 focus:ring-yaaq-gold/50"
+                  className="flex-1 px-4 h-10 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-yaaq-gold focus:ring-2 focus:ring-yaaq-gold/50"
                   aria-label="Email address"
                 />
                 <Button type="submit" variant="gold" className="whitespace-nowrap">

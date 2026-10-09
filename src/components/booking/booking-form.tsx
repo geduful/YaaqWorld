@@ -124,7 +124,7 @@ export function BookingForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       {submitStatus === "success" && (
-        <div className="rounded-lg bg-green-50 p-4 text-green-800 dark:bg-green-900/20 dark:text-green-400" role="alert">
+        <div className="rounded-lg border border-success/30 bg-success-soft p-4 text-success" role="alert">
           <p className="font-medium">Thank you! Your booking request has been submitted.</p>
           <p className="text-sm mt-1">Our team will review your request and contact you within 24 hours.</p>
         </div>
@@ -137,7 +137,7 @@ export function BookingForm() {
       )}
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="name">Full Name *</Label>
           <Input
             id="name"
@@ -151,7 +151,7 @@ export function BookingForm() {
             maxLength={100}
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="email">Email Address *</Label>
           <Input
             id="email"
@@ -166,7 +166,7 @@ export function BookingForm() {
             maxLength={100}
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="phone">Phone Number *</Label>
           <Input
             id="phone"
@@ -181,7 +181,7 @@ export function BookingForm() {
             maxLength={20}
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="organization">Organization / Institution</Label>
           <Input
             id="organization"
@@ -193,7 +193,7 @@ export function BookingForm() {
             maxLength={150}
           />
         </div>
-        <div className="md:col-span-2">
+        <div className="space-y-2 md:col-span-2">
           <Label htmlFor="service">Service Required *</Label>
           <Select name="service" value={formData.service} onValueChange={(value) => handleSelectChange("service", value)}>
             <SelectTrigger id="service">
@@ -207,8 +207,11 @@ export function BookingForm() {
               ))}
             </SelectContent>
           </Select>
+          {errors.service && (
+            <p className="mt-1.5 text-sm text-destructive" role="alert">{errors.service}</p>
+          )}
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="eventDate">Event Date *</Label>
           <Input
             id="eventDate"
@@ -221,7 +224,7 @@ export function BookingForm() {
             min={new Date().toISOString().split("T")[0]}
           />
         </div>
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="location">Event Location *</Label>
           <Input
             id="location"
@@ -236,7 +239,7 @@ export function BookingForm() {
         </div>
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="budget">Estimated Budget (Optional)</Label>
         <Input
           id="budget"
@@ -248,7 +251,7 @@ export function BookingForm() {
         />
       </div>
 
-      <div>
+      <div className="space-y-2">
         <Label htmlFor="details">Event Details *</Label>
         <Textarea
           id="details"

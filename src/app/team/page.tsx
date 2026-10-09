@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function TeamPage() {
   return (
     <MainLayout>
-      <section className="section-py bg-yaaq-navy text-white relative overflow-hidden" aria-labelledby="team-hero-heading">
+      <section className="bg-yaaq-navy text-white relative overflow-hidden" aria-labelledby="team-hero-heading">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-from)_0%,_transparent_70%)] from-yaaq-gold/20 via-transparent to-transparent" />
         <div className="relative container-yaaq py-12 lg:py-20">
           <div className="max-w-3xl animate-in stagger-1">
@@ -59,15 +59,15 @@ export default function TeamPage() {
               description="We're always looking for passionate creators — photographers, videographers, editors, writers, on-screen talent, and digital strategists. Whether you're a student or a professional, if you love campus culture, there's a place for you."
             />
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg" variant="gold" className="gap-2">
                 <Link href="/contact">
-                <Button size="lg" variant="gold" className="gap-2">
                   <Plus className="h-5 w-5" />
                   Express Interest
-                </Button>
-              </Link>
-              <Link href="/contact">
-                <Button size="lg" variant="outline">Contact Us</Button>
-              </Link>
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link href="/contact">Contact Us</Link>
+              </Button>
             </div>
           </div>
         </div>

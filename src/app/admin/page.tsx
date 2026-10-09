@@ -142,7 +142,7 @@ export default async function AdminOverviewPage() {
           <Link href="/admin/settings">
             <Button variant="outline" size="sm" className="gap-2">
               <ShieldCheck className="h-4 w-4" />
-              System Status
+              Settings
             </Button>
           </Link>
         }
@@ -169,10 +169,10 @@ export default async function AdminOverviewPage() {
             <Link key={action.href} href={action.href}>
               <Card className="h-full transition-all hover:border-yaaq-gold/50 group">
                 <CardContent className="p-5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold-ink">
                     {action.icon}
                   </div>
-                  <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-yaaq-gold transition-colors">
+                  <p className="mt-3 flex items-center gap-1.5 text-sm font-medium text-foreground group-hover:text-yaaq-gold-ink transition-colors">
                     {action.name}
                     <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </p>
@@ -187,7 +187,7 @@ export default async function AdminOverviewPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <ScrollText className="h-5 w-5 text-yaaq-gold" aria-hidden="true" />
+              <ScrollText className="h-5 w-5 text-yaaq-gold-ink" aria-hidden="true" />
               Recent Activity
             </CardTitle>
             <CardDescription>Latest audited administrative actions</CardDescription>
@@ -218,7 +218,7 @@ export default async function AdminOverviewPage() {
               </div>
               {!context.isSuperAdmin && !context.permissions.has("administrators.manage") && (
                 <p className="flex items-start gap-2 rounded-lg bg-muted/60 p-3 text-xs text-muted-foreground">
-                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-amber-500" aria-hidden="true" />
+                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-warning" aria-hidden="true" />
                   Administrator management is restricted to Super Admin accounts.
                 </p>
               )}

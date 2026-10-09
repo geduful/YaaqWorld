@@ -39,13 +39,13 @@ const departmentColors = {
   executive: "bg-purple-500/10 text-purple-600 border-purple-500/20",
   editorial: "bg-blue-500/10 text-blue-600 border-blue-500/20",
   creative: "bg-pink-500/10 text-pink-600 border-pink-500/20",
-  digital: "bg-green-500/10 text-green-600 border-green-500/20",
-  operations: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  digital: "bg-success-soft text-success border-success/30",
+  operations: "bg-amber-500/10 text-amber-700 border-amber-500/20",
 };
 
 export function TeamCard({ member, className }: TeamCardProps) {
   return (
-    <Card className={cn("group overflow-hidden text-center", className)}>
+    <Card className={cn("overflow-hidden text-center", className)}>
       <div className="relative aspect-square overflow-hidden">
         {member.image ? (
           <Image
@@ -53,7 +53,7 @@ export function TeamCard({ member, className }: TeamCardProps) {
             alt={`${member.name} portrait`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover"
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-muted">
@@ -71,7 +71,7 @@ export function TeamCard({ member, className }: TeamCardProps) {
       </div>
       <CardContent className="p-5">
         {member.moniker && (
-          <p className="text-xs font-medium text-yaaq-gold">{member.moniker}</p>
+          <p className="text-xs font-medium text-yaaq-gold-ink">{member.moniker}</p>
         )}
         <h3 className="mt-1 font-display text-lg font-semibold text-foreground">
           {member.name}
@@ -95,7 +95,7 @@ export function TeamCard({ member, className }: TeamCardProps) {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-yaaq-gold transition-colors"
+                  className="text-muted-foreground hover:text-yaaq-gold-ink transition-colors"
                   aria-label={social.platform}
                 >
                   <SocialIcon className="h-4 w-4" />
