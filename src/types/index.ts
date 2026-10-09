@@ -194,6 +194,27 @@ export interface OpportunityApplication extends BaseEntity {
   status: "submitted" | "shortlisted" | "accepted" | "rejected";
 }
 
+// Ambassadors
+export interface Ambassador extends BaseEntity {
+  profile_id: string;
+  institution_id: string;
+  full_name: string;
+  photo_url: string | null;
+  phone: string;
+  instagram: string | null;
+  tiktok: string | null;
+  twitter: string | null;
+  message: string | null;
+  status: "pending" | "approved" | "rejected" | "revoked";
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  rejection_reason: string | null;
+}
+
+export interface AmbassadorWithRelations extends Ambassador {
+  institutions?: Pick<Institution, "id" | "name" | "short_name" | "location"> | null;
+}
+
 // Notifications
 export interface Notification extends BaseEntity {
   user_id: string; // References profiles.id
@@ -229,6 +250,8 @@ export type PermissionKey =
   | "bookings.manage"
   | "opportunities.view"
   | "opportunities.manage"
+  | "ambassadors.view"
+  | "ambassadors.manage"
   | "notifications.view"
   | "notifications.manage"
   | "administrators.view"

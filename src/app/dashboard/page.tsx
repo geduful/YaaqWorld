@@ -19,7 +19,8 @@ import {
   ArrowRight,
   CheckCircle2,
   Inbox,
-  Sparkles,
+  Globe2,
+  Briefcase,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getBrowserClient } from "@/lib/supabase-browser";
@@ -38,6 +39,8 @@ export default function MemberDashboardPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsLoading, setNotificationsLoading] = useState(true);
   const [isTeamMember, setIsTeamMember] = useState(false);
+  const [ambassadorStatus, setAmbassadorStatus] = useState<"hidden" | "eligible" | "pending" | "approved" | "rejected">("hidden");
+  const [ambassadorInstitution, setAmbassadorInstitution] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -51,6 +54,38 @@ export default function MemberDashboardPage() {
         .limit(1)
         .maybeSingle();
       setIsTeamMember(Boolean(data));
+    };
+
+    const checkAmbassador = async () => {
+      if (!profile?.institution_id) return;
+
+      const { data: ktuRow } = await supabase
+        .from("institutions")
+        .select("id, name")
+        .eq("short_name", "KTU")
+        .maybeSingle();
+
+      // KTU members never see the ambassador card — YAAQ World is based there.
+      if (ktuRow && profile.institution_id === ktuRow.id) return;
+
+      const { data: inst } = await supabase
+        .from("institutions")
+        .select("name")
+        .eq("id", profile.institution_id)
+        .maybeSingle();
+      setAmbassadorInstitution(inst?.name ?? null);
+
+      const { data: request } = await supabase
+        .from("ambassadors")
+        .select("status")
+        .eq("profile_id", user.id)
+        .maybeSingle();
+
+      if (request) {
+        setAmbassadorStatus(request.status as "pending" | "approved" | "rejected");
+      } else {
+        setAmbassadorStatus("eligible");
+      }
     };
 
     const fetchNotifications = async () => {
@@ -71,7 +106,8 @@ export default function MemberDashboardPage() {
 
     fetchNotifications();
     checkTeamLink();
-  }, [user]);
+    checkAmbassador();
+  }, [user, profile]);
 
   if (loading) {
     return (
@@ -90,7 +126,7 @@ export default function MemberDashboardPage() {
   const quickActions = [
     { name: "View Profile", href: "/profile", icon: User, description: "View your profile" },
     { name: "Edit Profile", href: "/profile/edit", icon: Edit, description: "Update your details" },
-    { name: "Explore Opportunities", href: "/creator/opportunities", icon: Compass, description: "Discover chances" },
+    { name: "Our Services", href: "/services", icon: Briefcase, description: "What we offer" },
     { name: "Notifications", href: "/notifications", icon: Bell, description: `${unreadCount} unread`, badge: unreadCount || undefined },
   ];
 
@@ -245,21 +281,58 @@ export default function MemberDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-yaaq-navy text-white border-none">
-              <CardContent className="p-6 text-center">
-                <Sparkles className="h-8 w-8 mx-auto text-yaaq-gold" aria-hidden="true" />
-                <p className="mt-3 font-display text-lg font-semibold">Are you a creator?</p>
-                <p className="mt-1 text-sm text-white/70">
-                  Showcase your talent and connect with YAAQ World production opportunities.
-                </p>
-                <Link href="/auth/register/creator">
-                  <Button variant="gold" size="sm" className="mt-4 gap-2">
-                    Upgrade to Creator
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+            {ambassadorStatus === "eligible" && (
+              <Card className="bg-yaaq-navy text-white border-none">
+                <CardContent className="p-6 text-center">
+                  <Globe2 className="h-8 w-8 mx-auto text-yaaq-gold" aria-hidden="true" />
+                  <p className="mt-3 font-display text-lg font-semibold">
+                    Represent YAAQ World
+                  </p>
+                  <p className="mt-1 text-sm text-white/70">
+                    Become the official YAAQ World Ambassador at{" "}
+                    {ambassadorInstitution ?? "your institution"}.
+                  </p>
+                  <Link href="/ambassador">
+                    <Button variant="gold" size="sm" className="mt-4 gap-2">
+                      Request to be an Ambassador
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
+            {ambassadorStatus === "pending" && (
+              <Card>
+                <CardContent className="p-6 text-center">
+                  <Globe2 className="h-8 w-8 mx-auto text-yaaq-gold-ink" aria-hidden="true" />
+                  <p className="mt-3 font-display text-lg font-semibold text-foreground">
+                    Ambassador request under review
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Our team will contact you before approval.
+                  </p>
+                  <Link href="/ambassador">
+                    <Button variant="outline" size="sm" className="mt-4">
+                      View request
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            )}
+            {ambassadorStatus === "approved" && (
+              <Card className="bg-yaaq-navy text-white border-none">
+                <CardContent className="p-6 text-center">
+                  <CheckCircle2 className="h-8 w-8 mx-auto text-yaaq-gold" aria-hidden="true" />
+                  <Badge variant="gold" className="mt-3">Ambassador</Badge>
+                  <p className="mt-3 font-display text-lg font-semibold">
+                    You represent YAAQ World
+                  </p>
+                  <p className="mt-1 text-sm text-white/70">
+                    {ambassadorInstitution ?? "Your institution"} — live on our public Team page.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>

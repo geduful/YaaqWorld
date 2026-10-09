@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { TeamDirectoryClient } from "@/components/team/team-directory-client";
+import { AmbassadorsClient } from "@/components/team/ambassadors-client";
 
 export const metadata: Metadata = {
   title: "Our Team",
@@ -49,7 +50,19 @@ export default function TeamPage() {
         </div>
       </section>
 
-      <section className="section-py bg-muted/30" aria-labelledby="join-heading">
+      <section className="section-py bg-muted/30" aria-labelledby="ambassadors-heading">
+        <div className="container-yaaq">
+          <SectionHeader
+            id="ambassadors-heading"
+            tagline="Campus Network"
+            title="YAAQ World Ambassadors"
+            description="Student representatives carrying the YAAQ World name on campuses beyond KTU. Connect with the ambassador at your institution."
+          />
+          <AmbassadorsClient />
+        </div>
+      </section>
+
+      <section className="section-py bg-background" aria-labelledby="join-heading">
         <div className="container-yaaq">
           <div className="max-w-3xl mx-auto text-center">
             <SectionHeader

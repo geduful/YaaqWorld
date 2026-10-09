@@ -23,15 +23,15 @@ const serviceCategories = [
     features: ["Live streaming", "Highlight reels", "Same-day edits", "Photo + video"],
   },
   {
-    id: "brand-activation",
-    title: "Brand Activation",
+    id: "brand-activations",
+    title: "Brand Activations",
     desc: "Creative campus activations, experiential marketing, and youth-focused brand experiences.",
     icon: Target,
     features: ["Experiential design", "Pop-up events", "Brand ambassadors", "Interactive installations"],
   },
   {
-    id: "campus-campaign",
-    title: "Campus Campaign",
+    id: "campus-campaigns",
+    title: "Campus Campaigns",
     desc: "Strategic influencer campaigns leveraging our network of campus creators and student leaders.",
     icon: Users,
     features: ["Creator network", "Campaign strategy", "Content coordination", "Performance tracking"],
@@ -51,8 +51,8 @@ const serviceCategories = [
     features: ["Documentary style", "Promotional videos", "Social media content", "Color grading"],
   },
   {
-    id: "media-partnership",
-    title: "Media Partnership",
+    id: "media-partnerships",
+    title: "Media Partnerships",
     desc: "Official media partnerships for campus events, festivals, pageants, and youth programs.",
     icon: Star,
     features: ["Official media partner", "Content distribution", "Cross-platform promotion", "Press coordination"],
@@ -81,7 +81,8 @@ const processSteps = [
   { step: "05", title: "Delivery", desc: "Polished deliverables optimized for your channels, on time and on brief." },
 ];
 
-export default function BookingPage() {
+export default function BookingPage({ searchParams }: { searchParams: { service?: string } }) {
+  const initialService = searchParams?.service ?? "";
   return (
     <MainLayout>
       <section className="section-py bg-yaaq-navy text-white relative overflow-hidden" aria-labelledby="booking-hero-heading">
@@ -116,7 +117,7 @@ export default function BookingPage() {
                 title="Tell Us About Your Project"
                 description="Fill out the form and our team will reach out within 24 hours to discuss your vision and provide a tailored proposal."
               />
-              <BookingForm />
+              <BookingForm key={initialService || "default"} initialService={initialService} />
             </div>
 
             <div className="animate-in stagger-2 space-y-6">

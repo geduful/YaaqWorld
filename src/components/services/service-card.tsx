@@ -17,6 +17,7 @@ interface ServiceCardProps {
   image?: string;
   category?: string;
   featured?: boolean;
+  ctaLabel?: string;
   className?: string;
 }
 
@@ -29,6 +30,7 @@ export function ServiceCard({
   image,
   category,
   featured = false,
+  ctaLabel,
   className,
 }: ServiceCardProps) {
   return (
@@ -68,7 +70,7 @@ export function ServiceCard({
           href={href}
           className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-yaaq-gold-ink hover:gap-3 transition-all"
         >
-          Book This Service
+          {ctaLabel ?? "Book This Service"}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </CardContent>

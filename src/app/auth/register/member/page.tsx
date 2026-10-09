@@ -19,6 +19,7 @@ import { calculatePasswordStrength, validateEmail, validatePhone, formatPhoneFor
 import { MemberRegistrationData } from "@/types";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { isUuid, loadInstitutions, InstitutionOption } from "@/lib/institutions";
+import { compressImage } from "@/lib/image";
 
 const institutions = [
   { id: "ktu", name: "Koforidua Technical University (KTU)", shortName: "KTU", location: "Koforidua, Eastern Region" },
@@ -264,11 +265,20 @@ export default function MemberRegisterPage() {
         }
 
         if (formData.profilePhoto) {
-          const fileExt = (formData.profilePhoto.name.split(".").pop() || "jpg").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+          // Compress immediately before upload (512px, q0.7).
+          let uploadFile: File | Blob = formData.profilePhoto;
+          let fileExt = (formData.profilePhoto.name.split(".").pop() || "jpg").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+          try {
+            const compressed = await compressImage(formData.profilePhoto, { maxEdge: 512, quality: 0.7 });
+            uploadFile = new File([compressed.blob], `avatar.${compressed.ext}`, { type: compressed.blob.type });
+            fileExt = compressed.ext;
+          } catch {
+            // Fall back to the original file if compression fails.
+          }
           const fileName = `${data.user.id}/avatar.${fileExt}`;
           const { error: uploadError } = await supabase.storage
             .from("avatars")
-            .upload(fileName, formData.profilePhoto, { upsert: true });
+            .upload(fileName, uploadFile, { upsert: true });
 
           if (!uploadError) {
             const { data: { publicUrl } } = supabase.storage

@@ -10,11 +10,11 @@ import { getBrowserClient } from "@/lib/supabase-browser";
 
 const serviceCategories = [
   { value: "event-coverage", label: "Event Coverage" },
-  { value: "brand-activation", label: "Brand Activation" },
-  { value: "campus-campaign", label: "Campus Campaign" },
   { value: "photography", label: "Photography" },
   { value: "videography", label: "Videography" },
-  { value: "media-partnership", label: "Media Partnership" },
+  { value: "brand-activations", label: "Brand Activations" },
+  { value: "media-partnerships", label: "Media Partnerships" },
+  { value: "campus-campaigns", label: "Campus Campaigns" },
   { value: "creative-consulting", label: "Creative Consulting" },
   { value: "other", label: "Other" },
 ];
@@ -31,13 +31,14 @@ interface BookingFormData {
   budget?: string;
 }
 
-export function BookingForm() {
+export function BookingForm({ initialService = "" }: { initialService?: string }) {
+  const preselectedService = serviceCategories.some((c) => c.value === initialService) ? initialService : "";
   const [formData, setFormData] = React.useState<BookingFormData>({
     name: "",
     email: "",
     phone: "",
     organization: "",
-    service: "",
+    service: preselectedService,
     eventDate: "",
     location: "",
     details: "",

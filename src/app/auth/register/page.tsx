@@ -4,11 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Users, Camera, Sparkles, ArrowRight } from "lucide-react";
+import { Users, Sparkles, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const roleOptions: {
-  id: "member" | "creator";
+  id: "member";
   label: string;
   description: string;
   icon: typeof Users;
@@ -29,24 +29,10 @@ const roleOptions: {
     ],
     cta: "Join as Member",
   },
-  {
-    id: "creator",
-    label: "Creator",
-    description: "For photographers, videographers, models, influencers, presenters, designers, editors, and other creative talents who want to connect with YAAQ World opportunities.",
-    icon: Camera,
-    features: [
-      "Showcase your portfolio",
-      "Access casting calls & crew notices",
-      "Connect with production opportunities",
-      "Build your creative profile",
-      "Network with brands & agencies",
-    ],
-    cta: "Join as Creator",
-  },
 ];
 
 export default function RegisterChoicePage() {
-  const [selectedRole, setSelectedRole] = useState<"member" | "creator" | null>(null);
+  const [selectedRole, setSelectedRole] = useState<"member" | null>(null);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -81,7 +67,7 @@ export default function RegisterChoicePage() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2 max-w-xl mx-auto">
             {roleOptions.map((role) => (
               <Card
                 key={role.id}

@@ -27,6 +27,7 @@ import {
   UserCog,
   ScrollText,
   Settings,
+  Globe2,
 } from "lucide-react";
 
 export interface AdminNavItem {
@@ -45,6 +46,7 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { name: "News", href: "/admin/news", icon: <Newspaper className="h-4 w-4" aria-hidden="true" /> },
   { name: "Bookings", href: "/admin/bookings", icon: <CalendarCheck className="h-4 w-4" aria-hidden="true" /> },
   { name: "Opportunities", href: "/admin/opportunities", icon: <Target className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Ambassadors", href: "/admin/ambassadors", icon: <Globe2 className="h-4 w-4" aria-hidden="true" /> },
   { name: "Announcements", href: "/admin/notifications", icon: <Megaphone className="h-4 w-4" aria-hidden="true" /> },
   { name: "Administrators", href: "/admin/administrators", icon: <UserCog className="h-4 w-4" aria-hidden="true" /> },
   { name: "Audit Logs", href: "/admin/audit-logs", icon: <ScrollText className="h-4 w-4" aria-hidden="true" /> },

@@ -70,7 +70,14 @@ const APPLICATION_STYLES: Record<string, { label: string; className: string }> =
   rejected: { label: "Rejected", className: TONE.red },
 };
 
-type StatusKind = "admin" | "invitation" | "announcement" | "account" | "news" | "booking" | "opportunity" | "application";
+const AMBASSADOR_STYLES: Record<string, { label: string; className: string }> = {
+  pending: { label: "Pending", className: TONE.blue },
+  approved: { label: "Approved", className: TONE.green },
+  rejected: { label: "Rejected", className: TONE.red },
+  revoked: { label: "Revoked", className: TONE.amber },
+};
+
+type StatusKind = "admin" | "invitation" | "announcement" | "account" | "news" | "booking" | "opportunity" | "application" | "ambassador";
 
 interface StatusBadgeProps {
   kind: StatusKind;
@@ -88,6 +95,7 @@ export function StatusBadge({ kind, status, className }: StatusBadgeProps) {
     booking: BOOKING_STYLES,
     opportunity: OPPORTUNITY_STYLES,
     application: APPLICATION_STYLES,
+    ambassador: AMBASSADOR_STYLES,
   };
 
   const style = maps[kind][status] ?? { label: status, className: "" };

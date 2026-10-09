@@ -1,4 +1,4 @@
-export type SocialPlatform = "instagram" | "linkedin" | "tiktok";
+export type SocialPlatform = "instagram" | "linkedin" | "tiktok" | "twitter";
 
 export function socialUrl(platform: SocialPlatform, value: string): string | null {
   const v = value.trim();
@@ -12,6 +12,9 @@ export function socialUrl(platform: SocialPlatform, value: string): string | nul
   }
   if (platform === "tiktok") {
     return hasPath ? `https://${bare}` : `https://www.tiktok.com/@${bare}`;
+  }
+  if (platform === "twitter") {
+    return hasPath ? `https://${bare}` : `https://x.com/${bare}`;
   }
   if (platform === "linkedin") {
     return hasPath ? `https://${bare}` : `https://www.linkedin.com/in/${bare}`;

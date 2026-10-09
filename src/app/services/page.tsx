@@ -89,11 +89,12 @@ export default async function ServicesPage() {
                   id={service.slug}
                   title={service.title}
                   description={service.description}
-                  href="/booking"
+                  href={`/booking?service=${service.slug}`}
                   icon={CATEGORY_META[service.category]?.icon}
                   image={service.image_url ?? undefined}
                   category={CATEGORY_META[service.category]?.label ?? service.category}
                   featured={service.is_featured}
+                  ctaLabel={`Book ${service.title}`}
                   className={`animate-in stagger-${Math.min(i + 1, 6)}`}
                 />
               ))}
