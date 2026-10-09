@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { getBrowserClient } from "@/lib/supabase-browser";
 
 const serviceCategories = [
   { value: "event-coverage", label: "Event Coverage" },
@@ -55,6 +55,7 @@ export function BookingForm() {
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     if (!formData.service) newErrors.service = "Please select a service";
     if (!formData.eventDate) newErrors.eventDate = "Event date is required";
+    if (!formData.location.trim()) newErrors.location = "Event location is required";
     if (!formData.details.trim()) newErrors.details = "Please provide event details";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -68,13 +69,23 @@ export function BookingForm() {
     setSubmitStatus("idle");
 
     try {
-      const response = await fetch("/api/booking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      const supabase = getBrowserClient();
+      const { error: insertError } = await supabase.from("bookings").insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        organization: formData.organization.trim() || null,
+        service_category: formData.service,
+        event_date: formData.eventDate,
+        location: formData.location.trim(),
+        details: formData.details.trim(),
+        budget: formData.budget?.trim() || null,
+        status: "new",
       });
 
-      if (response.ok) {
+      if (insertError) {
+        setSubmitStatus("error");
+      } else {
         setSubmitStatus("success");
         setFormData({
           name: "",
@@ -87,8 +98,6 @@ export function BookingForm() {
           details: "",
           budget: "",
         });
-      } else {
-        setSubmitStatus("error");
       }
     } catch {
       setSubmitStatus("error");
@@ -139,6 +148,7 @@ export function BookingForm() {
             placeholder="Your full name"
             required
             autoComplete="name"
+            maxLength={100}
           />
         </div>
         <div>
@@ -153,6 +163,7 @@ export function BookingForm() {
             placeholder="you@example.com"
             required
             autoComplete="email"
+            maxLength={100}
           />
         </div>
         <div>
@@ -167,6 +178,7 @@ export function BookingForm() {
             placeholder="+233 XX XXX XXXX"
             required
             autoComplete="tel"
+            maxLength={20}
           />
         </div>
         <div>
@@ -178,6 +190,7 @@ export function BookingForm() {
             onChange={handleChange}
             placeholder="e.g., KTU SRC, Company Name"
             autoComplete="organization"
+            maxLength={150}
           />
         </div>
         <div className="md:col-span-2">
@@ -218,6 +231,7 @@ export function BookingForm() {
             error={errors.location}
             placeholder="Venue, City"
             required
+            maxLength={200}
           />
         </div>
       </div>
@@ -230,6 +244,7 @@ export function BookingForm() {
           value={formData.budget}
           onChange={handleChange}
           placeholder="e.g., GHS 5,000 - 10,000"
+          maxLength={100}
         />
       </div>
 
@@ -244,6 +259,7 @@ export function BookingForm() {
           placeholder="Describe your event, requirements, expected attendance, and any specific needs..."
           rows={5}
           required
+          maxLength={2000}
         />
       </div>
 

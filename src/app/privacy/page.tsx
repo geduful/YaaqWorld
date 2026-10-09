@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 import { MainLayout } from "@/components/layout/main-layout";
-import { SectionHeader } from "@/components/ui/section-header";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "YAAQ World's privacy policy — how we collect, use, and protect your personal information.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {
@@ -26,7 +26,7 @@ export default function PrivacyPage() {
         <div className="container-yaaq max-w-3xl">
           <div className="prose prose-neutral dark:prose-invert max-w-none">
             <p className="lead text-muted-foreground">
-              YAAQ World ("we", "our", "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us.
+              YAAQ World (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our services, or interact with us.
             </p>
 
             <h2>1. Information We Collect</h2>
@@ -79,7 +79,7 @@ export default function PrivacyPage() {
             <ul>
               <li>Access your personal data</li>
               <li>Rectify inaccurate data</li>
-              <li>Erase your data ("right to be forgotten")</li>
+              <li>Erase your data (&quot;right to be forgotten&quot;)</li>
               <li>Restrict or object to processing</li>
               <li>Data portability</li>
               <li>Withdraw consent at any time</li>
@@ -92,11 +92,11 @@ export default function PrivacyPage() {
             <h2>7. Third-Party Links</h2>
             <p>Our website may contain links to third-party websites (social media, YouTube, etc.). We are not responsible for the privacy practices of these sites. We encourage you to review their privacy policies.</p>
 
-            <h2>8. Children's Privacy</h2>
+            <h2>8. Children&apos;s Privacy</h2>
             <p>Our services are not directed to individuals under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected such information, please contact us immediately.</p>
 
             <h2>9. Changes to This Policy</h2>
-            <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page with an updated "Last updated" date.</p>
+            <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page with an updated &quot;Last updated&quot; date.</p>
 
             <h2>10. Contact Us</h2>
             <p>If you have questions about this Privacy Policy or our data practices, contact us:</p>

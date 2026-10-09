@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { ReactNode } from "react";
+import Image from "next/image";
 import { MainLayout } from "@/components/layout/main-layout";
 import { VideoHero } from "@/components/home/video-hero";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -8,11 +10,31 @@ import { NewsCard } from "@/components/news/news-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { socialIcons } from "@/lib/icons";
+import { getActiveServices, getPublishedMedia, getPublishedNews } from "@/lib/public-content";
+import { categoryLabel, NEWS_CATEGORY_OPTIONS } from "@/lib/content-categories";
+import { Service } from "@/types";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "The Pulse of Ghanaian Campus Culture & Creative Storytelling",
   description:
     "YAAQ World captures the people, moments, events, and stories shaping Ghanaian campus culture through professional media production and creative storytelling. Photography, videography, event coverage, and campus tours.",
+  alternates: { canonical: "/" },
+};
+
+const CATEGORY_ICONS: Record<Service["category"], ReactNode> = {
+  core: <socialIcons.video className="h-6 w-6" />,
+  partnership: <socialIcons.megaphone className="h-6 w-6" />,
+  consulting: <socialIcons.lightbulb className="h-6 w-6" />,
+  content: <socialIcons.star className="h-6 w-6" />,
+};
+
+const CATEGORY_LABELS: Record<Service["category"], string> = {
+  core: "Core Service",
+  partnership: "Partnership",
+  consulting: "Consulting",
+  content: "Content",
 };
 
 const homeStats = [
@@ -22,79 +44,17 @@ const homeStats = [
   { label: "Media Partnerships", value: null, icon: <socialIcons.target className="h-8 w-8" /> },
 ];
 
-const services = [
-  {
-    title: "Event Coverage",
-    description: "Professional coverage of campus events, SRC weeks, pageants, concerts, and youth gatherings with multi-camera setups and live streaming.",
-    href: "/booking",
-    icon: <socialIcons.video className="h-6 w-6" />,
-    category: "Core Service",
-  },
-  {
-    title: "Photography",
-    description: "Editorial and documentary photography capturing authentic campus moments, portraits, lifestyle, and behind-the-scenes stories.",
-    href: "/booking",
-    icon: <socialIcons.camera className="h-6 w-6" />,
-    category: "Core Service",
-  },
-  {
-    title: "Videography",
-    description: "Cinematic video production for documentaries, promotional content, social media, and brand storytelling with professional post-production.",
-    href: "/booking",
-    icon: <socialIcons.video className="h-6 w-6" />,
-    category: "Core Service",
-  },
-  {
-    title: "Campus Storytelling",
-    description: "Documenting the pulse of campus culture through street quizzes, student features, campus tours, and lifestyle content.",
-    href: "/media",
-    icon: <socialIcons.users className="h-6 w-6" />,
-    category: "Content",
-  },
-  {
-    title: "Brand Activations",
-    description: "Creative campus activations, influencer campaigns, and youth-focused brand experiences that resonate with the student demographic.",
-    href: "/booking",
-    icon: <socialIcons.target className="h-6 w-6" />,
-    category: "Partnership",
-  },
-  {
-    title: "Creative Consulting",
-    description: "Strategic creative direction, content strategy, and media consulting for brands and institutions targeting the youth market.",
-    href: "/booking",
-    icon: <socialIcons.star className="h-6 w-6" />,
-    category: "Consulting",
-  },
-];
+export default async function HomePage() {
+  const [services, news, media] = await Promise.all([
+    getActiveServices(),
+    getPublishedNews(),
+    getPublishedMedia(),
+  ]);
 
-const latestNews = [
-  {
-    slug: "ktu-src-week-2024",
-    title: "KTU SRC Week 2024: A Week of Culture, Creativity & Community",
-    excerpt: "We covered the entire SRC Week — from the opening ceremony to the grand finale. Here's our recap of the moments that defined the week.",
-    category: "Campus Events",
-    publishedAt: "2024-03-15",
-    readTime: 5,
-  },
-  {
-    slug: "face-of-ktu-grand-finale",
-    title: "Behind the Lens: Face of KTU Grand Finale",
-    excerpt: "An exclusive look at the preparation, tension, and triumph of the Face of KTU pageant. Our team was there for every moment.",
-    category: "Pageants",
-    publishedAt: "2024-02-28",
-    readTime: 4,
-  },
-  {
-    slug: "campus-tour-ku",
-    title: "Campus Tour: Exploring Koforidua Technical University",
-    excerpt: "Join us as we take you through KTU's iconic spots, hidden gems, and student-favorite locations in our latest campus tour series.",
-    category: "Campus Tours",
-    publishedAt: "2024-02-10",
-    readTime: 3,
-  },
-];
+  const featuredServices = services.slice(0, 6);
+  const latestNews = news.slice(0, 3);
+  const featuredMedia = media.slice(0, 4);
 
-export default function HomePage() {
   return (
     <MainLayout>
       <section className="relative min-h-screen flex items-center justify-center" aria-labelledby="hero-heading">
@@ -113,7 +73,7 @@ export default function HomePage() {
         <div className="relative container-yaaq py-20 lg:py-32">
           <div className="max-w-4xl animate-in stagger-1">
             <span className="inline-block mb-6 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-yaaq-gold bg-yaaq-gold/10 rounded-full">
-              Ghana's Premier Campus Media Brand
+              Ghana&apos;s Premier Campus Media Brand
             </span>
             <h1
               id="hero-heading"
@@ -123,7 +83,7 @@ export default function HomePage() {
             </h1>
             <p className="mt-6 text-lg sm:text-xl text-white/90 max-w-2xl leading-relaxed">
               We capture the people, moments, events, and experiences shaping Ghanaian campus culture.
-              From SRC weeks to street quizzes, campus tours to pageants — we're there for every story.
+              From SRC weeks to street quizzes, campus tours to pageants — we&apos;re there for every story.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
               <Link href="/team">
@@ -163,7 +123,7 @@ export default function HomePage() {
                   <p className="mt-4 text-muted-foreground">
                     Our core activities span campus media, student-life storytelling, photography, videography, lifestyle content,
                     event coverage, campus tours, street quizzes, creative production, media partnerships, and youth event coverage.
-                    We don't just document events — we tell the stories that define a generation.
+                    We don&apos;t just document events — we tell the stories that define a generation.
                   </p>
                 </>
               }
@@ -200,11 +160,34 @@ export default function HomePage() {
               </Link>
             }
           />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, i) => (
-              <ServiceCard key={service.title} {...service} className={`animate-in stagger-${i + 1}`} />
-            ))}
-          </div>
+          {featuredServices.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border py-16 text-center">
+              <p className="font-display text-lg font-semibold text-foreground">
+                Service catalogue being prepared
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                Our services will be listed here shortly. Meanwhile, you can tell us about your
+                project through the booking form.
+              </p>
+              <Link href="/booking" className="mt-6 inline-block">
+                <Button variant="gold">Book our team</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredServices.map((service, i) => (
+                <ServiceCard
+                  key={service.id}
+                  title={service.title}
+                  description={service.short_description || service.description}
+                  href="/booking"
+                  icon={CATEGORY_ICONS[service.category]}
+                  category={CATEGORY_LABELS[service.category]}
+                  className={`animate-in stagger-${Math.min(i + 1, 6)}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -220,12 +203,12 @@ export default function HomePage() {
                 description={
                   <>
                     <p className="text-muted-foreground">
-                      YAAQ World isn't just a media company — we're cultural archivists of the Ghanaian campus experience.
+                      YAAQ World isn&apos;t just a media company — we&apos;re cultural archivists of the Ghanaian campus experience.
                       Every frame we capture, every story we tell, becomes part of the collective memory of a generation.
                     </p>
                     <p className="mt-4 text-muted-foreground">
                       From the electric energy of SRC Week to the quiet anticipation before a pageant crown is placed,
-                      from spontaneous street quiz battles to organized campus tours — we're there with professional equipment
+                      from spontaneous street quiz battles to organized campus tours — we&apos;re there with professional equipment
                       and an intuitive understanding of what makes these moments matter.
                     </p>
                   </>
@@ -289,38 +272,48 @@ export default function HomePage() {
               </Link>
             }
           />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { title: "KTU SRC Week Highlights", category: "Video", type: "video", duration: "3:42" },
-              { title: "Face of KTU 2024", category: "Photography", type: "image" },
-              { title: "Campus Tour: KTU Main Campus", category: "Campus Tours", type: "video", duration: "5:18" },
-              { title: "Street Quiz: Koforidua Edition", category: "Street Quizzes", type: "video", duration: "2:35" },
-            ].map((item, i) => (
-              <div
-                key={item.title}
-                className={`group overflow-hidden rounded-xl bg-muted animate-in stagger-${i + 1}`}
-              >
-                <div className="relative aspect-[16/9] bg-yaaq-navy">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {item.type === "video" && <socialIcons.play className="h-12 w-12 text-white/50" />}
-                    {item.type === "image" && <socialIcons.camera className="h-12 w-12 text-white/50" />}
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
-                    <span className="text-xs text-white/80">{item.category}</span>
-                  </div>
-                  {item.duration && (
-                    <div className="absolute bottom-3 right-3 px-2 py-1 text-xs bg-black/70 text-white rounded">
-                      {item.duration}
+          {featuredMedia.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border py-16 text-center">
+              <p className="font-display text-lg font-semibold text-foreground">
+                No published media yet
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                Our latest photography and video work will appear here as soon as it is published.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredMedia.map((item, i) => (
+                <Link
+                  key={item.id}
+                  href={`/media/${item.slug}`}
+                  className={`group overflow-hidden rounded-xl bg-muted animate-in stagger-${Math.min(i + 1, 4)}`}
+                >
+                  <div className="relative aspect-[16/9] bg-yaaq-navy overflow-hidden">
+                    <Image
+                      src={item.thumbnail_url}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
+                      <span className="text-xs text-white/80">{item.category}</span>
                     </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <p className="font-display text-base font-semibold text-foreground">{item.title}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{item.category}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+                    {item.duration && (
+                      <div className="absolute bottom-3 right-3 px-2 py-1 text-xs bg-black/70 text-white rounded">
+                        {item.duration}
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <p className="font-display text-base font-semibold text-foreground group-hover:text-yaaq-gold transition-colors">{item.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.type === "video" ? "Video" : "Photography"}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -337,11 +330,35 @@ export default function HomePage() {
               </Link>
             }
           />
-          <div className="grid gap-6 md:grid-cols-3">
-            {latestNews.map((article, i) => (
-              <NewsCard key={article.slug} article={article} className={`animate-in stagger-${i + 1}`} />
-            ))}
-          </div>
+          {latestNews.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border py-16 text-center">
+              <p className="font-display text-lg font-semibold text-foreground">
+                No published stories yet
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                New stories will appear here as soon as they are published.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-3">
+              {latestNews.map((article, i) => (
+                <NewsCard
+                  key={article.id}
+                  article={{
+                    slug: article.slug,
+                    title: article.title,
+                    excerpt: article.excerpt,
+                    image: article.featured_image_url ?? undefined,
+                    category: categoryLabel(article.category, NEWS_CATEGORY_OPTIONS),
+                    publishedAt: article.published_at ?? article.created_at,
+                    readTime: article.read_time,
+                    featured: article.featured,
+                  }}
+                  className={`animate-in stagger-${Math.min(i + 1, 3)}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -356,7 +373,7 @@ export default function HomePage() {
                 <Link href="/booking">
                   <Button size="lg" variant="gold" className="w-full sm:w-auto gap-2">
                     Book Our Media Team
-<socialIcons.arrowRight className="h-5 w-5" />
+                    <socialIcons.arrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
                 <Link href="/team">

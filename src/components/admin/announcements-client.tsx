@@ -59,7 +59,8 @@ export function AnnouncementsClient({ canManage }: AnnouncementsClientProps) {
     const { data, error: queryError } = await supabase
       .from("announcements")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(500);
 
     if (queryError) {
       setError(getDbErrorMessage(queryError));

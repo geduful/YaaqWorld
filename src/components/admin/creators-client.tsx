@@ -35,7 +35,8 @@ export function CreatorsClient({ canManage }: CreatorsClientProps) {
     const { data, error: queryError } = await supabase
       .from("creators")
       .select("is_public, profile:profiles(*)")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(500);
 
     if (queryError) {
       setError(getDbErrorMessage(queryError));
@@ -139,7 +140,7 @@ export function CreatorsClient({ canManage }: CreatorsClientProps) {
       ) : (
         <div className="rounded-xl border bg-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <th scope="col" className="px-4 py-3 font-medium">Creator</th>

@@ -1,16 +1,21 @@
 import { Metadata } from "next";
 import { MainLayout } from "@/components/layout/main-layout";
-import { SectionHeader } from "@/components/ui/section-header";
 import { Badge } from "@/components/ui/badge";
 import { MediaHubClient } from "@/components/media/media-hub-client";
+import { getPublishedMedia } from "@/lib/public-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Media Hub",
   description:
     "Explore YAAQ World's media hub — campus tours, SRC events, awards & pageants, street quizzes, behind the scenes, photography, and video content from Ghanaian campus culture.",
+  alternates: { canonical: "/media" },
 };
 
-export default function MediaPage() {
+export default async function MediaPage() {
+  const items = await getPublishedMedia();
+
   return (
     <MainLayout>
       <section className="section-py bg-yaaq-navy text-white relative overflow-hidden" aria-labelledby="media-hero-heading">
@@ -33,17 +38,7 @@ export default function MediaPage() {
         </div>
       </section>
 
-      <section className="section-py bg-background" aria-labelledby="media-filter-heading">
-        <div className="container-yaaq">
-          <SectionHeader
-            id="media-filter-heading"
-            align="left"
-            title="Browse by Category"
-            description="Filter our media library by content type or category."
-          />
-          <MediaHubClient />
-        </div>
-      </section>
+      <MediaHubClient items={items} />
     </MainLayout>
   );
 }

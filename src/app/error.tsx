@@ -24,7 +24,7 @@ export default function Error({
           <AlertTriangle className="mx-auto mb-4 h-16 w-16 text-destructive" />
           <h1 className="font-display text-3xl font-bold text-foreground">Something went wrong</h1>
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            We encountered an unexpected error. Our team has been notified.
+            We encountered an unexpected error. Please try again, or return home and retry.
           </p>
           {error.digest && (
             <p className="mt-2 text-xs text-muted-foreground font-mono">Error ID: {error.digest}</p>

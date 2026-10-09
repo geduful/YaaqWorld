@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bell, Inbox, CheckCheck, Megaphone, Briefcase, Users, Info } from "lucide-react";
+import { Bell, Inbox, CheckCheck, Megaphone, Briefcase, Users, Info, Trash2 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
 import { Notification } from "@/types";
 
@@ -80,6 +80,18 @@ export default function NotificationsPage() {
     }
   };
 
+  const deleteNotification = async (id: string) => {
+    const { error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user?.id);
+
+    if (!error) {
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    }
+  };
+
   const unreadNotifications = notifications.filter((n) => !n.read);
   const readNotifications = notifications.filter((n) => n.read);
   const isCreator = profile?.role === "creator";
@@ -105,7 +117,7 @@ export default function NotificationsPage() {
   return (
     <DashboardShell variant={isCreator ? "creator" : "member"}>
       <div className="space-y-6 max-w-3xl">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold text-foreground">Notifications</h1>
             <p className="mt-1 text-muted-foreground">
@@ -115,7 +127,7 @@ export default function NotificationsPage() {
             </p>
           </div>
           {unreadNotifications.length > 0 && (
-            <Button variant="outline" size="sm" onClick={markAllAsRead} className="gap-2">
+            <Button variant="outline" size="sm" onClick={markAllAsRead} className="gap-2 self-start sm:self-auto">
               <CheckCheck className="h-4 w-4" />
               Mark all read
             </Button>
@@ -149,10 +161,19 @@ export default function NotificationsPage() {
                 {filteredNotifications.map((notification) => (
                   <Card
                     key={notification.id}
-                    className={`transition-all cursor-pointer ${
-                      !notification.read ? "border-l-4 border-l-yaaq-gold bg-yaaq-gold/5" : ""
+                    className={`transition-all ${
+                      !notification.read ? "border-l-4 border-l-yaaq-gold bg-yaaq-gold/5 cursor-pointer" : ""
                     }`}
                     onClick={() => !notification.read && markAsRead(notification.id)}
+                    role={notification.read ? undefined : "button"}
+                    tabIndex={notification.read ? undefined : 0}
+                    onKeyDown={(e) => {
+                      if (!notification.read && (e.key === "Enter" || e.key === " ")) {
+                        e.preventDefault();
+                        markAsRead(notification.id);
+                      }
+                    }}
+                    aria-label={notification.read ? undefined : `Mark as read: ${notification.title}`}
                   >
                     <CardContent className="p-4 flex items-start gap-3">
                       <div
@@ -179,6 +200,17 @@ export default function NotificationsPage() {
                           <Badge variant="gold" className="mt-2 text-xs">New</Badge>
                         )}
                       </div>
+                      <button
+                        className="shrink-0 rounded-lg p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(notification.id);
+                        }}
+                        aria-label={`Delete notification: ${notification.title}`}
+                        title="Delete notification"
+                      >
+                        <Trash2 className="h-4 w-4" aria-hidden="true" />
+                      </button>
                     </CardContent>
                   </Card>
                 ))}

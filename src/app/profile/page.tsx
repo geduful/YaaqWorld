@@ -22,6 +22,7 @@ import {
   Shield,
 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { safeHttpUrl } from "@/lib/content";
 import { Creator, Institution } from "@/types";
 
 export default function ProfilePage() {
@@ -255,10 +256,12 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Portfolio</p>
-                  {creatorData.portfolio_url ? (
-                    <a href={creatorData.portfolio_url} target="_blank" rel="noopener noreferrer" className="text-sm text-yaaq-gold hover:underline inline-flex items-center gap-1">
+                  {safeHttpUrl(creatorData.portfolio_url) ? (
+                    <a href={safeHttpUrl(creatorData.portfolio_url) as string} target="_blank" rel="noopener noreferrer" className="text-sm text-yaaq-gold hover:underline inline-flex items-center gap-1">
                       View Portfolio <ExternalLink className="h-3 w-3" />
                     </a>
+                  ) : creatorData.portfolio_url ? (
+                    <span className="text-sm text-muted-foreground">Invalid link</span>
                   ) : (
                     <span className="text-sm text-muted-foreground">Not added</span>
                   )}

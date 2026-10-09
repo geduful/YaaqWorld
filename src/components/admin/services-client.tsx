@@ -81,7 +81,8 @@ export function ServicesClient({ canManage }: ServicesClientProps) {
       .from("services")
       .select("*")
       .order("display_order", { ascending: true })
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .limit(500);
 
     if (queryError) {
       setError(getDbErrorMessage(queryError));
@@ -253,7 +254,7 @@ export function ServicesClient({ canManage }: ServicesClientProps) {
       ) : (
         <div className="rounded-xl border bg-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <th scope="col" className="px-4 py-3 font-medium">Service</th>

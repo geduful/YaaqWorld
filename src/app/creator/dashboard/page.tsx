@@ -25,6 +25,7 @@ import {
   Clock,
 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
+import { safeHttpUrl } from "@/lib/content";
 import { Notification, Creator } from "@/types";
 
 function getGreeting(): string {
@@ -222,11 +223,11 @@ export default function CreatorDashboardPage() {
                       {creatorData?.availability?.replace("_", " ") || "Not set"}
                     </span>
                   </div>
-                  {creatorData?.portfolio_url && (
+                  {safeHttpUrl(creatorData?.portfolio_url) && (
                     <div className="flex items-center gap-2">
                       <LinkIcon className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                       <a
-                        href={creatorData.portfolio_url}
+                        href={safeHttpUrl(creatorData?.portfolio_url) as string}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-yaaq-gold hover:underline truncate"

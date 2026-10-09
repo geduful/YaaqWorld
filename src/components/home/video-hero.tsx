@@ -37,6 +37,7 @@ export function VideoHero({ src, poster, fallback, className }: VideoHeroProps) 
           muted
           loop
           playsInline
+          preload="metadata"
           poster={poster}
           onError={() => setHasError(true)}
           className="absolute inset-0 h-full w-full object-cover opacity-40"

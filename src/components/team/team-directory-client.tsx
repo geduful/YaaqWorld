@@ -2,14 +2,12 @@
 
 import * as React from "react";
 import { TeamCard } from "@/components/team/team-card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
 import { getBrowserClient } from "@/lib/supabase-browser";
-import { Users, Plus, Filter } from "lucide-react";
+import { Users } from "lucide-react";
 
 const departments = [
   { id: "executive", label: "Executive Board" },
@@ -113,7 +111,8 @@ export function TeamDirectoryClient() {
         )
         .eq("is_active", true)
         .order("display_order", { ascending: true })
-        .order("created_at", { ascending: true });
+        .order("created_at", { ascending: true })
+        .limit(100);
       if (!error && data) {
         setMembers((data as TeamRow[]).map(toMember));
       }

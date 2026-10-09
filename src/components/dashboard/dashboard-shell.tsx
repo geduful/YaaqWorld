@@ -80,6 +80,12 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
       ? pathname === href
       : pathname.startsWith(href);
 
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
+    setMobileMenuOpen(false);
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
@@ -143,8 +149,10 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
           <nav
             id="dashboard-menu"
             className={cn(
-              "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-border",
-              mobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+              "md:hidden transition-all duration-300 ease-in-out border-t border-border overscroll-contain",
+              mobileMenuOpen
+                ? "max-h-[calc(100dvh-4rem)] opacity-100 overflow-y-auto"
+                : "max-h-0 opacity-0 overflow-hidden"
             )}
             aria-label="Dashboard navigation"
           >

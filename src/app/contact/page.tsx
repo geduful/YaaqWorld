@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Contact Us",
   description:
     "Get in touch with YAAQ World for bookings, partnerships, media inquiries, or to join our team. Email, phone, WhatsApp, and social media contacts.",
+  alternates: { canonical: "/contact" },
 };
 
 const contactInfo = {
@@ -103,11 +104,11 @@ export default function ContactPage() {
               id="contact-hero-heading"
               className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-balance"
             >
-              Let's Start a Conversation
+              Let&apos;s Start a Conversation
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-2xl leading-relaxed">
               Have a project in mind? Want to partner with us? Looking to join the team?
-              We'd love to hear from you.
+              We&apos;d love to hear from you.
             </p>
           </div>
         </div>

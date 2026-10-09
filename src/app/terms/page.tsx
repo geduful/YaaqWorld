@@ -4,6 +4,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 export const metadata: Metadata = {
   title: "Terms of Use",
   description: "YAAQ World's terms of use — the terms and conditions governing your use of our website and services.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {
@@ -25,7 +26,7 @@ export default function TermsPage() {
         <div className="container-yaaq max-w-3xl">
           <div className="prose prose-neutral dark:prose-invert max-w-none">
             <p className="lead text-muted-foreground">
-              These Terms of Use ("Terms") govern your access to and use of the YAAQ World website ("Website") and our media production services ("Services"). By accessing or using our Website or Services, you agree to be bound by these Terms.
+              These Terms of Use (&quot;Terms&quot;) govern your access to and use of the YAAQ World website (&quot;Website&quot;) and our media production services (&quot;Services&quot;). By accessing or using our Website or Services, you agree to be bound by these Terms.
             </p>
 
             <h2>1. Acceptance of Terms</h2>
@@ -77,7 +78,7 @@ export default function TermsPage() {
             </ul>
 
             <h2>8. Limitation of Liability</h2>
-            <p>YAAQ World's total liability for any claim arising from our Services shall not exceed the total fees paid for that project. We are not liable for indirect, incidental, or consequential damages. We are not responsible for equipment failure, weather, venue restrictions, or circumstances beyond our reasonable control.</p>
+            <p>YAAQ World&apos;s total liability for any claim arising from our Services shall not exceed the total fees paid for that project. We are not liable for indirect, incidental, or consequential damages. We are not responsible for equipment failure, weather, venue restrictions, or circumstances beyond our reasonable control.</p>
 
             <h2>9. Indemnification</h2>
             <p>You agree to indemnify and hold YAAQ World harmless from any claims, damages, or expenses arising from your use of our Services, your breach of these Terms, or any third-party claims related to your event or content.</p>

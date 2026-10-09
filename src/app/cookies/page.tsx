@@ -4,6 +4,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description: "YAAQ World's cookie policy — how we use cookies and similar tracking technologies on our website.",
+  alternates: { canonical: "/cookies" },
 };
 
 export default function CookiesPage() {
@@ -25,7 +26,7 @@ export default function CookiesPage() {
         <div className="container-yaaq max-w-3xl">
           <div className="prose prose-neutral dark:prose-invert max-w-none">
             <p className="lead text-muted-foreground">
-              This Cookie Policy explains how YAAQ World ("we", "our", "us") uses cookies and similar technologies on our website.
+              This Cookie Policy explains how YAAQ World (&quot;we&quot;, &quot;our&quot;, &quot;us&quot;) uses cookies and similar technologies on our website.
             </p>
 
             <h2>What Are Cookies?</h2>

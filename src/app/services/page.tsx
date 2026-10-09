@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { ReactNode } from "react";
 import { MainLayout } from "@/components/layout/main-layout";
 import { SectionHeader } from "@/components/ui/section-header";
 import { ServiceCard } from "@/components/services/service-card";
@@ -7,87 +8,24 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { socialIcons } from "@/lib/icons";
+import { getActiveServices } from "@/lib/public-content";
+import { Service } from "@/types";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Services",
   description:
     "Professional media production services by YAAQ World — event coverage, photography, videography, brand activations, campus campaigns, media partnerships, and creative consulting for Ghanaian campus culture.",
+  alternates: { canonical: "/services" },
 };
 
-const serviceCategories = [
-  {
-    id: "event-coverage",
-    title: "Event Coverage",
-    description:
-      "Comprehensive multi-camera coverage of campus events, SRC weeks, pageants, concerts, conferences, and youth gatherings. Includes live streaming, highlight reels, and same-day edits.",
-    icon: <socialIcons.video className="h-6 w-6" />,
-    features: ["Multi-camera setup", "Live streaming", "Highlight reels", "Same-day edits", "Photo + video packages"],
-    cta: "Book Event Coverage",
-  },
-  {
-    id: "photography",
-    title: "Photography",
-    description:
-      "Editorial and documentary photography capturing authentic campus moments, portraits, lifestyle, behind-the-scenes, and event documentation with professional post-processing.",
-    icon: <socialIcons.camera className="h-6 w-6" />,
-    features: ["Event photography", "Portraits & headshots", "Lifestyle & candid", "Behind-the-scenes", "Professional retouching"],
-    cta: "Book Photography",
-  },
-  {
-    id: "videography",
-    title: "Videography",
-    description:
-      "Cinematic video production for documentaries, promotional content, social media campaigns, brand storytelling, and campus culture features with full post-production.",
-    icon: <socialIcons.video className="h-6 w-6" />,
-    features: ["Documentary style", "Promotional videos", "Social media content", "Brand storytelling", "Color grading & sound design"],
-    cta: "Book Videography",
-  },
-  {
-    id: "brand-activations",
-    title: "Brand Activations",
-    description:
-      "Creative campus activations, experiential marketing, pop-up events, and youth-focused brand experiences designed to engage the student demographic authentically.",
-    icon: <socialIcons.target className="h-6 w-6" />,
-    features: ["Experiential activations", "Pop-up experiences", "Product sampling", "Interactive installations", "Brand ambassadors"],
-    cta: "Plan Activation",
-  },
-  {
-    id: "campus-campaigns",
-    title: "Campus Influencer Campaigns",
-    description:
-      "Strategic influencer marketing leveraging our network of campus creators, micro-influencers, and student leaders for authentic brand advocacy.",
-    icon: <socialIcons.users className="h-6 w-6" />,
-    features: ["Creator network access", "Campaign strategy", "Content coordination", "Performance tracking", "Authentic storytelling"],
-    cta: "Launch Campaign",
-  },
-  {
-    id: "media-partnerships",
-    title: "Media Partnerships",
-    description:
-      "Official media partnerships for campus events, festivals, pageants, and youth programs. We provide end-to-end media production and distribution.",
-    icon: <socialIcons.megaphone className="h-6 w-6" />,
-    features: ["Official media partner", "Content distribution", "Cross-platform promotion", "Archival documentation", "Press coordination"],
-    cta: "Partner With Us",
-  },
-  {
-    id: "creative-consulting",
-    title: "Creative Consulting",
-    description:
-      "Strategic creative direction, content strategy, media consulting, and youth culture insights for brands and institutions targeting the Gen Z demographic.",
-    icon: <socialIcons.lightbulb className="h-6 w-6" />,
-    features: ["Creative strategy", "Content planning", "Youth insights", "Brand positioning", "Workshop facilitation"],
-    cta: "Get Consulting",
-  },
-  {
-    id: "creative-production",
-    title: "Creative Content Production",
-    description:
-      "End-to-end creative production for original formats — street quizzes, campus tours, docu-series, student features, and signature YAAQ World content.",
-    icon: <socialIcons.star className="h-6 w-6" />,
-    features: ["Original formats", "Series development", "Script to screen", "Talent casting", "Distribution strategy"],
-    cta: "Produce Content",
-  },
-];
+const CATEGORY_META: Record<Service["category"], { label: string; icon: ReactNode }> = {
+  core: { label: "Core Service", icon: <socialIcons.video className="h-6 w-6" /> },
+  partnership: { label: "Partnership", icon: <socialIcons.megaphone className="h-6 w-6" /> },
+  consulting: { label: "Consulting", icon: <socialIcons.lightbulb className="h-6 w-6" /> },
+  content: { label: "Content", icon: <socialIcons.star className="h-6 w-6" /> },
+};
 
 const processSteps = [
   { step: "01", title: "Discovery", desc: "We understand your goals, audience, and vision through a detailed consultation." },
@@ -96,7 +34,9 @@ const processSteps = [
   { step: "04", title: "Delivery", desc: "Polished deliverables optimized for your channels, on time and on brief." },
 ];
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const services = await getActiveServices();
+
   return (
     <MainLayout>
       <section className="section-py bg-yaaq-navy text-white relative overflow-hidden" aria-labelledby="services-hero-heading">
@@ -125,22 +65,39 @@ export default function ServicesPage() {
           <SectionHeader
             id="services-list-heading"
             tagline="What We Offer"
-            title="Our Service Categories"
+            title="Our Services"
             description="Each service is delivered with professional standards and a deep understanding of campus culture."
           />
-          <div className="grid gap-6 lg:grid-cols-2">
-            {serviceCategories.map((service, i) => (
-              <ServiceCard
-                key={service.id}
-                title={service.title}
-                description={service.description}
-                href="/booking"
-                icon={service.icon}
-                category="Core Service"
-                className={`animate-in stagger-${i + 1}`}
-              />
-            ))}
-          </div>
+          {services.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border py-16 text-center">
+              <p className="font-display text-lg font-semibold text-foreground">
+                Service catalogue being prepared
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                Our services will be listed here shortly. Meanwhile, you can tell us about your
+                project through the booking form.
+              </p>
+              <Link href="/booking" className="mt-6 inline-block">
+                <Button variant="gold">Book our team</Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid gap-6 lg:grid-cols-2">
+              {services.map((service, i) => (
+                <ServiceCard
+                  key={service.id}
+                  title={service.title}
+                  description={service.description}
+                  href="/booking"
+                  icon={CATEGORY_META[service.category]?.icon}
+                  image={service.image_url ?? undefined}
+                  category={CATEGORY_META[service.category]?.label ?? service.category}
+                  featured={service.is_featured}
+                  className={`animate-in stagger-${Math.min(i + 1, 6)}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -166,61 +123,17 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="section-py bg-yaaq-navy text-white" aria-labelledby="featured-heading">
-        <div className="container-yaaq">
-          <SectionHeader
-            id="featured-heading"
-            align="left"
-            tagline="Featured Service"
-            title="Event Coverage — Our Flagship Service"
-            description={
-              <>
-                <p className="text-white/80">
-                  Our most requested service — comprehensive event coverage for campus festivals, SRC weeks, pageants,
-                  concerts, and youth gatherings. We bring broadcast-quality production to student events.
-                </p>
-                <ul className="mt-6 space-y-3 text-white/70">
-                  {[
-                    "Multi-camera live switching",
-                    "Professional audio capture",
-                    "Live streaming to multiple platforms",
-                    "Same-day highlight reel delivery",
-                    "Full event documentary edit",
-                    "Photography + videography bundles",
-                    "Drone aerial coverage (where permitted)",
-                    "Post-event content packages",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-yaaq-gold/20 text-yaaq-gold text-xs">✓</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            }
-            action={
-              <Link href="/booking">
-                <Button size="lg" variant="gold" className="gap-2">
-                  Book Event Coverage
-                  <socialIcons.arrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
-            }
-          />
-        </div>
-      </section>
-
-      <section className="section-py bg-background" aria-labelledby="custom-heading">
+      <section className="section-py bg-yaaq-navy text-white" aria-labelledby="cta-heading">
         <div className="container-yaaq text-center">
           <SectionHeader
-            id="custom-heading"
+            id="cta-heading"
             tagline="Custom Solutions"
             title="Need Something Unique?"
-            description="Every project is different. If you don't see exactly what you need, let's talk about a custom solution tailored to your goals."
+            description="Every project is different. Tell us about your goals and we'll shape a package that fits."
             action={
               <Link href="/booking">
                 <Button size="lg" variant="gold" className="gap-2">
-                  Discuss Custom Project
+                  Discuss Your Project
                   <socialIcons.arrowRight className="h-5 w-5" />
                 </Button>
               </Link>

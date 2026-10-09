@@ -1,6 +1,7 @@
 "use client";
 
-import { Play, Image as ImageIcon, Video as VideoIcon } from "lucide-react";
+import Image from "next/image";
+import { Play } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -27,11 +28,12 @@ export function MediaCard({ item, className, onClick }: MediaCardProps) {
   return (
     <Card className={cn("group overflow-hidden cursor-pointer", className)} onClick={onClick} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && onClick?.()}>
       <div className="relative aspect-[16/9] overflow-hidden">
-        <img
+        <Image
           src={item.thumbnail}
           alt={item.title}
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         {isVideo && (

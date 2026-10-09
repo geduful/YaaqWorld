@@ -105,7 +105,8 @@ export function TeamClient({ canManage }: TeamClientProps) {
       .from("team_members")
       .select("*")
       .order("display_order", { ascending: true })
-      .order("created_at", { ascending: true });
+      .order("created_at", { ascending: true })
+      .limit(500);
 
     if (queryError) {
       setError(getDbErrorMessage(queryError));

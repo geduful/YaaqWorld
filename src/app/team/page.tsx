@@ -4,13 +4,14 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Users, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { TeamDirectoryClient } from "@/components/team/team-directory-client";
 
 export const metadata: Metadata = {
   title: "Our Team",
   description:
     "Meet the YAAQ World team — the Executive Board and our Editorial, Creative & Design, Digital & Engagement, and Operations departments.",
+  alternates: { canonical: "/team" },
 };
 
 export default function TeamPage() {

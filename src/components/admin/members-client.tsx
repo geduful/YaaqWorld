@@ -38,8 +38,9 @@ export function MembersClient({ canManage }: MembersClientProps) {
         .from("profiles")
         .select("*")
         .eq("role", "member")
-        .order("created_at", { ascending: false }),
-      supabase.from("team_members").select("profile_id").not("profile_id", "is", "null"),
+        .order("created_at", { ascending: false })
+        .limit(500),
+      supabase.from("team_members").select("profile_id").not("profile_id", "is", "null").limit(500),
     ]);
 
     if (profilesResult.error) {
@@ -156,7 +157,7 @@ export function MembersClient({ canManage }: MembersClientProps) {
       ) : (
         <div className="rounded-xl border bg-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <th scope="col" className="px-4 py-3 font-medium">Member</th>

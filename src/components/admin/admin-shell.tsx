@@ -19,6 +19,10 @@ import {
   Star,
   LayoutGrid,
   Briefcase,
+  Film,
+  Newspaper,
+  CalendarCheck,
+  Target,
   Megaphone,
   UserCog,
   ScrollText,
@@ -37,6 +41,10 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { name: "Creators", href: "/admin/creators", icon: <Star className="h-4 w-4" aria-hidden="true" /> },
   { name: "Team", href: "/admin/team", icon: <LayoutGrid className="h-4 w-4" aria-hidden="true" /> },
   { name: "Services", href: "/admin/services", icon: <Briefcase className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Media", href: "/admin/media", icon: <Film className="h-4 w-4" aria-hidden="true" /> },
+  { name: "News", href: "/admin/news", icon: <Newspaper className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Bookings", href: "/admin/bookings", icon: <CalendarCheck className="h-4 w-4" aria-hidden="true" /> },
+  { name: "Opportunities", href: "/admin/opportunities", icon: <Target className="h-4 w-4" aria-hidden="true" /> },
   { name: "Announcements", href: "/admin/notifications", icon: <Megaphone className="h-4 w-4" aria-hidden="true" /> },
   { name: "Administrators", href: "/admin/administrators", icon: <UserCog className="h-4 w-4" aria-hidden="true" /> },
   { name: "Audit Logs", href: "/admin/audit-logs", icon: <ScrollText className="h-4 w-4" aria-hidden="true" /> },
@@ -84,6 +92,12 @@ export function AdminShell({ children, visibleNav, isSuperAdmin, adminName }: Ad
   };
 
   const isActive = (href: string) => (href === "/admin" ? pathname === href : pathname.startsWith(href));
+
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
+    setMobileMenuOpen(false);
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -157,10 +171,12 @@ export function AdminShell({ children, visibleNav, isSuperAdmin, adminName }: Ad
 
           <nav
             id="admin-menu"
-            className={cn(
-              "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-white/10",
-              mobileMenuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0",
-            )}
+          className={cn(
+            "md:hidden transition-all duration-300 ease-in-out border-t border-white/10 overscroll-contain",
+            mobileMenuOpen
+              ? "max-h-[calc(100dvh-4rem)] opacity-100 overflow-y-auto"
+              : "max-h-0 opacity-0 overflow-hidden",
+          )}
             aria-label="Admin navigation"
           >
             <div className="py-3 space-y-1">

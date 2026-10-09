@@ -4,14 +4,14 @@ import { SectionHeader } from "@/components/ui/section-header";
 import { BookingForm } from "@/components/booking/booking-form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Users, Camera, Video, Target, Star, Clock, Check } from "lucide-react";
-import { socialIcons } from "@/lib/icons";
+import { Users, Camera, Video, Target, Star, Check } from "lucide-react";
 import { BookingCTAClient } from "@/components/booking/booking-cta-client";
 
 export const metadata: Metadata = {
   title: "Book Our Media Team",
   description:
     "Book YAAQ World's professional media team for your campus event, brand activation, photography, videography, or creative project. Event coverage, campus campaigns, brand activations, and more.",
+  alternates: { canonical: "/booking" },
 };
 
 const serviceCategories = [
@@ -95,7 +95,7 @@ export default function BookingPage() {
               id="booking-hero-heading"
               className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-balance"
             >
-              Let's Create Something Memorable
+              Let&apos;s Create Something Memorable
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-2xl leading-relaxed">
               From campus festivals to brand campaigns, we bring professional media production

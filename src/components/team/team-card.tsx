@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -44,17 +44,16 @@ const departmentColors = {
 };
 
 export function TeamCard({ member, className }: TeamCardProps) {
-  const Icon = member.socials?.[0] ? socialIcons[member.socials[0].platform] : null;
-
   return (
     <Card className={cn("group overflow-hidden text-center", className)}>
       <div className="relative aspect-square overflow-hidden">
         {member.image ? (
-          <img
+          <Image
             src={member.image}
             alt={`${member.name} portrait`}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center bg-muted">

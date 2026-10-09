@@ -162,7 +162,7 @@ export interface Booking extends BaseEntity {
   location: string;
   details: string;
   budget: string | null;
-  status: "pending" | "contacted" | "quoted" | "confirmed" | "completed" | "cancelled";
+  status: "new" | "pending" | "contacted" | "quoted" | "confirmed" | "completed" | "cancelled" | "declined";
   assigned_to: string | null; // References profiles.id
   notes: string | null;
   quoted_amount: number | null;
@@ -170,12 +170,36 @@ export interface Booking extends BaseEntity {
   deposit_amount: number | null;
 }
 
+// Creator opportunities (casting calls, crew recruitment, production roles)
+export interface CreatorOpportunity extends BaseEntity {
+  title: string;
+  slug: string;
+  type: "casting" | "crew" | "production" | "other";
+  description: string;
+  requirements: string | null;
+  location: string | null;
+  compensation: string | null;
+  deadline: string | null;
+  status: "draft" | "open" | "closed" | "archived";
+  published_at: string | null;
+  apply_url: string | null;
+  created_by: string | null;
+}
+
+export interface OpportunityApplication extends BaseEntity {
+  opportunity_id: string;
+  applicant_id: string;
+  cover_note: string | null;
+  portfolio_url: string | null;
+  status: "submitted" | "shortlisted" | "accepted" | "rejected";
+}
+
 // Notifications
 export interface Notification extends BaseEntity {
   user_id: string; // References profiles.id
   title: string;
   message: string;
-  type: "info" | "success" | "warning" | "error" | "booking" | "system";
+  type: "announcement" | "opportunity" | "casting" | "crew" | "booking" | "system" | "info" | "success" | "warning" | "error";
   read: boolean;
   action_url: string | null;
   metadata: Record<string, unknown> | null;
@@ -203,6 +227,8 @@ export type PermissionKey =
   | "news.manage"
   | "bookings.view"
   | "bookings.manage"
+  | "opportunities.view"
+  | "opportunities.manage"
   | "notifications.view"
   | "notifications.manage"
   | "administrators.view"

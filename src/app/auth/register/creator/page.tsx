@@ -301,8 +301,14 @@ export default function CreatorRegisterPage() {
       if (error) {
         if (error.message.includes("already registered") || error.message.includes("already exists")) {
           setSubmitError("An account with this email already exists. Try signing in instead.");
+        } else if (error.message.includes("Password should be")) {
+          setSubmitError("Please choose a stronger password (at least 8 characters).");
+        } else if (error.message.includes("rate limit") || error.message.includes("Security purposes")) {
+          setSubmitError("Too many attempts. Please wait a moment and try again.");
+        } else if (error.message.includes("valid email")) {
+          setSubmitError("Please enter a valid email address.");
         } else {
-          setSubmitError(error.message);
+          setSubmitError("Registration failed. Please try again.");
         }
         return;
       }
@@ -326,8 +332,8 @@ export default function CreatorRegisterPage() {
         if (profileError) console.error("Profile creation error:", profileError);
 
         if (formData.profilePhoto) {
-          const fileExt = formData.profilePhoto.name.split(".").pop();
-          const fileName = `${data.user.id}.${fileExt}`;
+          const fileExt = (formData.profilePhoto.name.split(".").pop() || "jpg").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+          const fileName = `${data.user.id}/avatar.${fileExt}`;
           const { error: uploadError } = await supabase.storage
             .from("avatars")
             .upload(fileName, formData.profilePhoto, { upsert: true });

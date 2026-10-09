@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { MainLayout } from "@/components/layout/main-layout";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Home, Search, ArrowLeft } from "lucide-react";
+import { Home, Search } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Page Not Found",
@@ -18,8 +18,8 @@ export default function NotFound() {
           <h1 className="font-display text-9xl font-bold text-yaaq-gold/20">404</h1>
           <h2 className="mt-4 font-display text-3xl font-bold text-foreground">Page Not Found</h2>
           <p className="mt-4 text-muted-foreground leading-relaxed">
-            Sorry, we couldn't find the page you're looking for. It might have been moved
-            or doesn't exist.
+            Sorry, we couldn&apos;t find the page you&apos;re looking for. It might have been moved
+            or doesn&apos;t exist.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/">

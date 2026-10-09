@@ -1,101 +1,41 @@
 import { Metadata } from "next";
+import Link from "next/link";
 import { MainLayout } from "@/components/layout/main-layout";
 import { SectionHeader } from "@/components/ui/section-header";
 import { NewsCard } from "@/components/news/news-card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { socialIcons } from "@/lib/icons";
+import { categoryLabel, NEWS_CATEGORY_OPTIONS } from "@/lib/content-categories";
+import { getPublishedNews } from "@/lib/public-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "News & Stories",
   description:
     "Latest news, campus stories, event coverage, announcements, and behind-the-scenes insights from YAAQ World. Stay updated with Ghanaian campus culture.",
+  alternates: { canonical: "/news" },
 };
 
-const mockNews = [
-  {
-    slug: "ktu-src-week-2024-recap",
-    title: "KTU SRC Week 2024: A Week of Culture, Creativity & Community",
-    excerpt:
-      "We covered the entire SRC Week — from the opening ceremony to the grand finale. Here's our recap of the moments that defined the week, the performances that moved us, and the stories that emerged.",
-    image: "/images/news/src-week-2024.jpg",
-    category: "Campus Events",
-    publishedAt: "2024-03-20",
-    readTime: 8,
-    featured: true,
-  },
-  {
-    slug: "face-of-ktu-grand-finale-behind-lens",
-    title: "Behind the Lens: Face of KTU Grand Finale",
-    excerpt:
-      "An exclusive look at the preparation, tension, and triumph of the Face of KTU pageant. Our team was there for every moment — from rehearsals to the crowning.",
-    image: "/images/news/face-of-ktu-bts.jpg",
-    category: "Pageants",
-    publishedAt: "2024-02-28",
-    readTime: 6,
-  },
-  {
-    slug: "campus-tour-ktu-main-campus",
-    title: "Campus Tour: Exploring Koforidua Technical University",
-    excerpt:
-      "Join us as we take you through KTU's iconic spots, hidden gems, and student-favorite locations in our latest campus tour series.",
-    image: "/images/news/ktu-campus-tour.jpg",
-    category: "Campus Tours",
-    publishedAt: "2024-02-10",
-    readTime: 4,
-  },
-  {
-    slug: "street-quiz-koforidua-edition",
-    title: "Street Quiz: Koforidua Edition — Knowledge Meets Culture",
-    excerpt:
-      "Our hit street quiz format hits the streets of Koforidua. Watch students test their knowledge, win prizes, and represent their halls.",
-    image: "/images/news/street-quiz.jpg",
-    category: "Street Quizzes",
-    publishedAt: "2024-01-25",
-    readTime: 3,
-  },
-  {
-    slug: "yaaq-world-joins-yaaqmiin-enterprise",
-    title: "YAAQ World Officially Becomes Subsidiary of YAAQMIIN Enterprise",
-    excerpt:
-      "We're excited to announce our formal integration into the YAAQMIIN Enterprise ecosystem, expanding our capabilities in commercial photography, digital consulting, and creative masterclasses.",
-    category: "Announcements",
-    publishedAt: "2024-01-15",
-    readTime: 3,
-  },
-  {
-    slug: "freshers-welcome-concert-2023",
-    title: "KTU Freshers Welcome Concert 2023 — The Aftermovie",
-    excerpt:
-      "Relive the energy of the biggest welcome event of the academic year. Performances, crowd reactions, and the start of a new journey for freshers.",
-    image: "/images/news/freshers-2023.jpg",
-    category: "Campus Events",
-    publishedAt: "2023-09-12",
-    readTime: 5,
-  },
-  {
-    slug: "campus-lifestyle-student-leaders",
-    title: "Campus Lifestyle: Portraits of Student Leadership",
-    excerpt:
-      "A photo series celebrating the student leaders shaping campus culture — SRC executives, hall presidents, club heads, and change makers.",
-    image: "/images/news/student-leaders.jpg",
-    category: "Photography",
-    publishedAt: "2023-11-05",
-    readTime: 4,
-  },
-  {
-    slug: "behind-scenes-src-week-prep",
-    title: "Behind the Scenes: Preparing for SRC Week Coverage",
-    excerpt:
-      "What goes into covering a week-long campus festival? Our production team shares the planning, gear, and coordination behind the scenes.",
-    category: "Behind the Scenes",
-    publishedAt: "2024-03-18",
-    readTime: 4,
-  },
-];
+interface NewsPageProps {
+  searchParams: { category?: string };
+}
 
-export default function NewsPage() {
+export default async function NewsPage({ searchParams }: NewsPageProps) {
+  const articles = await getPublishedNews();
+  const activeCategory = searchParams.category?.trim() || null;
+
+  const visibleArticles = activeCategory
+    ? articles.filter((article) => article.category === activeCategory)
+    : articles;
+
+  const categoryCounts = new Map<string, number>();
+  for (const article of articles) {
+    categoryCounts.set(article.category, (categoryCounts.get(article.category) ?? 0) + 1);
+  }
+  const categories = Array.from(categoryCounts.entries()).sort((a, b) => b[1] - a[1]);
+
   return (
     <MainLayout>
       <section className="section-py bg-yaaq-navy text-white relative overflow-hidden" aria-labelledby="news-hero-heading">
@@ -120,78 +60,96 @@ export default function NewsPage() {
 
       <section className="section-py bg-background" aria-labelledby="news-grid-heading">
         <div className="container-yaaq">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8">
+          <SectionHeader
+            id="news-grid-heading"
+            align="left"
+            tagline={activeCategory ? categoryLabel(activeCategory, NEWS_CATEGORY_OPTIONS) : "All Stories"}
+            title={activeCategory ? "Filtered Articles" : "Latest Articles"}
+            description={
+              activeCategory
+                ? `Stories filed under ${categoryLabel(activeCategory, NEWS_CATEGORY_OPTIONS)}.`
+                : "Browse our latest coverage of campus events, culture, and community."
+            }
+            action={
+              activeCategory ? (
+                <Link href="/news">
+                  <Button variant="outline" size="sm">
+                    Clear filter
+                  </Button>
+                </Link>
+              ) : undefined
+            }
+          />
+
+          {visibleArticles.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border py-16 text-center">
+              <p className="font-display text-lg font-semibold text-foreground">
+                {activeCategory ? "No articles in this category yet" : "No published stories yet"}
+              </p>
+              <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                {activeCategory
+                  ? "Try another category, or check back soon for new coverage."
+                  : "New stories will appear here as soon as they are published."}
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+              {visibleArticles.map((article, i) => (
+                <NewsCard
+                  key={article.id}
+                  article={{
+                    slug: article.slug,
+                    title: article.title,
+                    excerpt: article.excerpt,
+                    image: article.featured_image_url ?? undefined,
+                    category: categoryLabel(article.category, NEWS_CATEGORY_OPTIONS),
+                    publishedAt: article.published_at ?? article.created_at,
+                    readTime: article.read_time,
+                    featured: article.featured,
+                  }}
+                  className={`animate-in stagger-${Math.min(i + 1, 6)}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {categories.length > 0 && (
+        <section className="section-py bg-muted/30" aria-labelledby="categories-heading">
+          <div className="container-yaaq">
             <SectionHeader
-              id="news-grid-heading"
-              align="left"
-              tagline="All Stories"
-              title="Latest Articles"
-              description="Browse our latest coverage of campus events, culture, and community."
+              id="categories-heading"
+              tagline="Categories"
+              title="Browse by Topic"
+              description="Explore stories organized by category."
             />
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="gap-2">
-                <socialIcons.filter className="h-4 w-4" />
-                Filter
-              </Button>
-              <Button variant="outline" size="sm" className="gap-2">
-                <socialIcons.search className="h-4 w-4" />
-                Search
-              </Button>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {categories.map(([value, count], i) => (
+                <Link
+                  key={value}
+                  href={`/news?category=${encodeURIComponent(value)}`}
+                  className={`p-5 rounded-xl bg-card border border-border hover:border-yaaq-gold/50 transition-colors group animate-in stagger-${Math.min(i + 1, 6)}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
+                      <socialIcons.bookOpen className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground group-hover:text-yaaq-gold transition-colors">
+                        {categoryLabel(value, NEWS_CATEGORY_OPTIONS)}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {count} {count === 1 ? "article" : "articles"}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
-
-          <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
-            {mockNews.map((article, i) => (
-              <NewsCard key={article.slug} article={article} className={`animate-in stagger-${i + 1}`} />
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Button variant="outline" size="lg">
-              Load More Stories
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-py bg-muted/30" aria-labelledby="categories-heading">
-        <div className="container-yaaq">
-          <SectionHeader
-            id="categories-heading"
-            tagline="Categories"
-            title="Browse by Topic"
-            description="Explore stories organized by category."
-          />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { name: "Campus Events", count: 12, icon: socialIcons.calendar },
-              { name: "Pageants", count: 5, icon: socialIcons.award },
-              { name: "Campus Tours", count: 8, icon: socialIcons.mapPinIcon },
-              { name: "Street Quizzes", count: 6, icon: socialIcons.helpCircle },
-              { name: "Behind the Scenes", count: 4, icon: socialIcons.video },
-              { name: "Photography", count: 10, icon: socialIcons.image },
-              { name: "Announcements", count: 3, icon: socialIcons.megaphone },
-              { name: "Student Features", count: 7, icon: socialIcons.users },
-            ].map((cat, i) => (
-              <Link
-                key={cat.name}
-                href={`/news?category=${cat.name.toLowerCase().replace(" ", "-")}`}
-                className={`p-5 rounded-xl bg-card border border-border hover:border-yaaq-gold/50 transition-colors group animate-in stagger-${i + 1}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yaaq-gold/10 text-yaaq-gold">
-                    <cat.icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-foreground group-hover:text-yaaq-gold transition-colors">{cat.name}</p>
-                    <p className="text-sm text-muted-foreground">{cat.count} articles</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="section-py bg-yaaq-navy text-white" aria-labelledby="newsletter-heading">
         <div className="container-yaaq text-center">

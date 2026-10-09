@@ -1,10 +1,16 @@
 import { ReactNode } from "react";
+import type { Metadata } from "next";
 import { requireAdminAccess } from "@/lib/admin-server";
 import { ADMIN_ROUTE_PERMISSIONS, hasPermission } from "@/lib/permissions";
 import { AdminShell } from "@/components/admin/admin-shell";
 
 // Admin areas are personalized and permission-gated: always render dynamically.
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Admin",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   const context = await requireAdminAccess();

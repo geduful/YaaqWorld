@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,11 +29,12 @@ export function NewsCard({ article, className }: NewsCardProps) {
     <Card className={cn("group overflow-hidden flex flex-col h-full", article.featured && "lg:col-span-2 lg:row-span-2", className)}>
       {article.image && (
         <Link href={`/news/${article.slug}`} className="relative aspect-[16/9] overflow-hidden">
-          <img
+          <Image
             src={article.image}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <Badge variant="gold" className="absolute top-4 left-4">
             {article.category}

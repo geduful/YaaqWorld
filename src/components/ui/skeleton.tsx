@@ -50,12 +50,19 @@ export function SkeletonCard({ className, ...props }: SkeletonProps) {
   );
 }
 
+const SKELETON_GRID_COLUMNS: Record<number, string> = {
+  1: "",
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-2 lg:grid-cols-3",
+  4: "sm:grid-cols-2 lg:grid-cols-4",
+};
+
 export function SkeletonGrid({ count = 6, columns = 3, className, ...props }: { count?: number; columns?: number } & Omit<SkeletonProps, "variant">) {
   return (
     <div
       className={cn(
         "grid gap-6",
-        `sm:grid-cols-2 lg:grid-cols-${columns}`,
+        SKELETON_GRID_COLUMNS[columns] ?? SKELETON_GRID_COLUMNS[3],
         className,
       )}
       {...props}

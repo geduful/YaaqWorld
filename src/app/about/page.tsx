@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "About YAAQ World",
   description:
     "Learn about YAAQ World — Ghana's premier campus media production and creative storytelling brand. Our story, mission, vision, and the team behind the lens.",
+  alternates: { canonical: "/about" },
 };
 
 const values = [
@@ -48,7 +49,7 @@ export default function AboutPage() {
               The Story Behind the Lens
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-2xl leading-relaxed">
-              From a campus passion project to Ghana's leading student media brand — this is our journey.
+              From a campus passion project to Ghana&apos;s leading student media brand — this is our journey.
             </p>
           </div>
         </div>
@@ -77,7 +78,7 @@ export default function AboutPage() {
                     </p>
                     <p className="mt-4 text-muted-foreground">
                       Our work spans photography, videography, lifestyle content, event coverage, creative production,
-                      media partnerships, and youth event coverage. We don't just record events — we preserve culture.
+                      media partnerships, and youth event coverage. We don&apos;t just record events — we preserve culture.
                     </p>
                   </>
                 }
@@ -204,7 +205,7 @@ export default function AboutPage() {
                   <h3 className="font-display text-2xl font-bold text-foreground">Mr. Abdul-Mumin</h3>
                   <p className="mt-4 text-muted-foreground leading-relaxed">
                     Official biography and professional background to be provided. This section is structured to receive
-                    the approved biography, professional journey, and leadership philosophy of YAAQ World's founder.
+                    the approved biography, professional journey, and leadership philosophy of YAAQ World&apos;s founder.
                   </p>
                   <div className="mt-6 flex gap-4">
                     <a href="#" className="text-muted-foreground hover:text-yaaq-gold transition-colors" aria-label="Instagram">

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, Bell, LayoutDashboard, LogOut, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -142,6 +142,13 @@ export function Header() {
   const [scrolled, setScrolled] = React.useState(false);
   const { user, profile, loading, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  const [lastPathname, setLastPathname] = React.useState(pathname);
+  if (lastPathname !== pathname) {
+    setLastPathname(pathname);
+    setMobileMenuOpen(false);
+  }
 
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -245,8 +252,10 @@ export function Header() {
         <div
           id="mobile-menu"
           className={cn(
-            "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-t border-border bg-background",
-            mobileMenuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0",
+            "md:hidden transition-all duration-300 ease-in-out border-t border-border bg-background overscroll-contain",
+            mobileMenuOpen
+              ? "max-h-[calc(100dvh-4rem)] opacity-100 overflow-y-auto"
+              : "max-h-0 opacity-0 overflow-hidden",
           )}
           role="navigation"
           aria-label="Mobile navigation"

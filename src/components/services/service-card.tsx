@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,11 +33,12 @@ export function ServiceCard({
     <Card className={cn("group overflow-hidden transition-all duration-300 hover:shadow-xl", featured && "lg:col-span-2", className)}>
       {image && (
         <div className="relative aspect-[16/9] overflow-hidden">
-          <img
+          <Image
             src={image}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {category && (
             <Badge variant="gold" className="absolute top-4 left-4">
