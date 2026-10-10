@@ -84,7 +84,7 @@ export default function AmbassadorRequestPage() {
 
   if (loading || isLoading) {
     return (
-      <DashboardShell variant="member">
+      <DashboardShell>
         <div className="space-y-6">
           <Skeleton className="h-10 w-64" />
           <Skeleton className="h-96" />
@@ -125,6 +125,10 @@ export default function AmbassadorRequestPage() {
     }
     if (!phone.trim()) {
       setFormError("Please add your phone / WhatsApp number.");
+      return;
+    }
+    if (message.trim().length < 20) {
+      setFormError("Please tell us why you want to be an ambassador (at least 20 characters).");
       return;
     }
     if (!profile.institution_id) {
@@ -171,7 +175,7 @@ export default function AmbassadorRequestPage() {
         instagram: instagram.trim() || null,
         tiktok: tiktok.trim() || null,
         twitter: twitter.trim() || null,
-        message: message.trim() || null,
+        message: message.trim(),
         status: "pending",
       });
       if (insertError) {
@@ -199,7 +203,7 @@ export default function AmbassadorRequestPage() {
   if (submitSuccess || (existingRequest && existingRequest.status !== "rejected")) {
     const status = submitSuccess ? "pending" : existingRequest?.status;
     return (
-      <DashboardShell variant="member">
+      <DashboardShell>
         <div className="max-w-2xl mx-auto space-y-6">
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
@@ -258,7 +262,7 @@ export default function AmbassadorRequestPage() {
 
   if (existingRequest?.status === "rejected") {
     return (
-      <DashboardShell variant="member">
+      <DashboardShell>
         <div className="max-w-2xl mx-auto space-y-6">
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
@@ -288,7 +292,7 @@ export default function AmbassadorRequestPage() {
 
   if (!eligible) {
     return (
-      <DashboardShell variant="member">
+      <DashboardShell>
         <div className="max-w-2xl mx-auto space-y-6">
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
@@ -315,7 +319,7 @@ export default function AmbassadorRequestPage() {
   // ---- Request form ---------------------------------------------------------
 
   return (
-    <DashboardShell variant="member">
+    <DashboardShell>
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
@@ -428,7 +432,7 @@ export default function AmbassadorRequestPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="ambassadorMessage">Why do you want to be an ambassador? (optional)</Label>
+                <Label htmlFor="ambassadorMessage">Why do you want to be an ambassador? *</Label>
                 <Textarea
                   id="ambassadorMessage"
                   value={message}
@@ -436,7 +440,11 @@ export default function AmbassadorRequestPage() {
                   placeholder="Tell us about your campus, your network, and how you'd grow YAAQ World there..."
                   rows={4}
                   maxLength={1000}
+                  required
                 />
+                <p className="text-xs text-muted-foreground">
+                  Minimum 20 characters. This helps admins evaluate your request.
+                </p>
               </div>
 
               <Button type="submit" size="lg" className="w-full sm:w-auto gap-2" isLoading={submitting}>

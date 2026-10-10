@@ -13,7 +13,7 @@ export interface Profile extends BaseEntity {
   id: string; // References auth.users.id
   full_name: string | null;
   avatar_url: string | null;
-  role: "member" | "creator" | "admin" | "super_admin";
+  role: "member" | "admin" | "super_admin";
   department: "executive" | "production" | "talent" | "digital" | null;
   bio: string | null;
   moniker: string | null;

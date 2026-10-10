@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   Menu,
   X,
@@ -14,7 +13,6 @@ import {
   User,
   Bell,
   LogOut,
-  Briefcase,
   Home,
   Settings,
   ShieldCheck,
@@ -24,33 +22,23 @@ import { isAdminRole } from "@/lib/permissions";
 
 interface DashboardShellProps {
   children: ReactNode;
-  variant?: "member" | "creator";
 }
 
-export function DashboardShell({ children, variant = "member" }: DashboardShellProps) {
+export function DashboardShell({ children }: DashboardShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { profile, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
 
-  const isCreator = variant === "creator" || profile?.role === "creator";
   const showAdminLink = isAdminRole(profile?.role);
 
-  const navItems = isCreator
-    ? [
-        { name: "Dashboard", href: "/creator/dashboard", icon: LayoutDashboard },
-        { name: "My Profile", href: "/profile", icon: User },
-        { name: "Opportunities", href: "/creator/opportunities", icon: Briefcase },
-        { name: "Notifications", href: "/notifications", icon: Bell },
-        ...(showAdminLink ? [{ name: "Admin", href: "/admin", icon: ShieldCheck }] : []),
-      ]
-    : [
-        { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-        { name: "My Profile", href: "/profile", icon: User },
-        { name: "Notifications", href: "/notifications", icon: Bell },
-        ...(showAdminLink ? [{ name: "Admin", href: "/admin", icon: ShieldCheck }] : []),
-      ];
+  const navItems = [
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "My Profile", href: "/profile", icon: User },
+    { name: "Notifications", href: "/notifications", icon: Bell },
+    ...(showAdminLink ? [{ name: "Admin", href: "/admin", icon: ShieldCheck }] : []),
+  ];
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -76,7 +64,7 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
   };
 
   const isActive = (href: string) =>
-    href === "/dashboard" || href === "/creator/dashboard"
+    href === "/dashboard"
       ? pathname === href
       : pathname.startsWith(href);
 
@@ -106,9 +94,6 @@ export function DashboardShell({ children, variant = "member" }: DashboardShellP
                   YAAQ<span className="text-yaaq-gold">World</span>
                 </span>
               </Link>
-              {isCreator && (
-                <Badge variant="gold" className="hidden sm:inline-flex">Creator</Badge>
-              )}
             </div>
 
             <div className="hidden md:flex items-center gap-3">

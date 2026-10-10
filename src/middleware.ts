@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/dashboard", "/profile", "/notifications", "/creator", "/admin"];
+const protectedRoutes = ["/dashboard", "/profile", "/notifications", "/admin"];
 const authRoutes = ["/auth/login", "/auth/register", "/auth/forgot-password"];
 
 // SameSite=Lax + Secure(prod). NOT httpOnly: the @supabase/ssr browser client
@@ -71,22 +71,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (pathname.startsWith("/creator") && user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    // Fail closed when the profile row is missing.
-    if (!profile || !["creator", "admin", "super_admin"].includes(profile.role)) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/dashboard";
-      url.search = "";
-      return NextResponse.redirect(url);
-    }
-  }
-
   if (pathname.startsWith("/admin") && user) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -98,21 +82,6 @@ export async function middleware(request: NextRequest) {
     if (!profile || !["admin", "super_admin"].includes(profile.role)) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard";
-      url.search = "";
-      return NextResponse.redirect(url);
-    }
-  }
-
-  if (pathname === "/dashboard" && user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (profile?.role === "creator") {
-      const url = request.nextUrl.clone();
-      url.pathname = "/creator/dashboard";
       url.search = "";
       return NextResponse.redirect(url);
     }

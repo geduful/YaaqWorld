@@ -38,7 +38,6 @@ interface AnnouncementsClientProps {
 const AUDIENCES: { value: AnnouncementAudience; label: string }[] = [
   { value: "all", label: "Everyone" },
   { value: "members", label: "Members only" },
-  { value: "creators", label: "Creators only" },
 ];
 
 export function AnnouncementsClient({ canManage }: AnnouncementsClientProps) {

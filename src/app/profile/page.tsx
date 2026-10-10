@@ -21,14 +21,12 @@ import {
   Shield,
 } from "lucide-react";
 import { getBrowserClient } from "@/lib/supabase-browser";
-import { safeHttpUrl } from "@/lib/content";
 import { socialUrl } from "@/lib/social-links";
 import { TikTok, WhatsApp } from "@/lib/brand-icons";
-import { Creator, Institution } from "@/types";
+import { Institution } from "@/types";
 
 export default function ProfilePage() {
   const { profile, loading, user } = useAuth();
-  const [creatorData, setCreatorData] = useState<Creator | null>(null);
   const [institution, setInstitution] = useState<Institution | null>(null);
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -37,14 +35,10 @@ export default function ProfilePage() {
     const supabase = getBrowserClient();
 
     const fetchData = async () => {
-      const [creatorResult, institutionResult] = await Promise.all([
-        supabase.from("creators").select("*").eq("profile_id", user.id).single(),
-        profile?.institution_id
-          ? supabase.from("institutions").select("*").eq("id", profile.institution_id).single()
-          : Promise.resolve({ data: null, error: null }),
-      ]);
+      const institutionResult = profile?.institution_id
+        ? await supabase.from("institutions").select("*").eq("id", profile.institution_id).single()
+        : { data: null, error: null };
 
-      if (creatorResult.data) setCreatorData(creatorResult.data as Creator);
       if (institutionResult.data) setInstitution(institutionResult.data as Institution);
       setDataLoading(false);
     };
@@ -63,8 +57,6 @@ export default function ProfilePage() {
     );
   }
 
-  const isCreator = profile?.role === "creator";
-
   const getInitials = () => {
     if (profile?.full_name) {
       return profile.full_name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
@@ -78,7 +70,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <DashboardShell variant={isCreator ? "creator" : "member"}>
+    <DashboardShell>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="font-display text-2xl font-bold text-foreground">My Profile</h1>
@@ -246,56 +238,11 @@ export default function ProfilePage() {
               )}
 
               <div className="pt-3 border-t">
-                <ProfileCompletion profile={profile} isCreator={isCreator} creatorData={creatorData} />
+                <ProfileCompletion profile={profile} />
               </div>
             </CardContent>
           </Card>
         </div>
-
-        {isCreator && creatorData && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Creator Profile</CardTitle>
-              <CardDescription>Your creative details</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {creatorData.bio && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Bio</p>
-                  <p className="text-sm text-foreground">{creatorData.bio}</p>
-                </div>
-              )}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Availability</p>
-                  <Badge variant="secondary" className="capitalize">{creatorData.availability?.replace("_", " ") || "Not set"}</Badge>
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">Portfolio</p>
-                  {safeHttpUrl(creatorData.portfolio_url) ? (
-                    <a href={safeHttpUrl(creatorData.portfolio_url) as string} target="_blank" rel="noopener noreferrer" className="text-sm text-yaaq-gold-ink hover:underline inline-flex items-center gap-1">
-                      View Portfolio <ExternalLink className="h-3 w-3" />
-                    </a>
-                  ) : creatorData.portfolio_url ? (
-                    <span className="text-sm text-muted-foreground">Invalid link</span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">Not added</span>
-                  )}
-                </div>
-              </div>
-              {creatorData.skills && creatorData.skills.length > 0 && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2">Skills</p>
-                  <div className="flex flex-wrap gap-2">
-                    {creatorData.skills.map((skill) => (
-                      <Badge key={skill} variant="secondary">{skill}</Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
       </div>
     </DashboardShell>
   );

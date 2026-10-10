@@ -4,20 +4,9 @@ import { Profile } from "@/types";
 
 interface ProfileCompletionProps {
   profile: Profile | null;
-  isCreator?: boolean;
-  creatorData?: {
-    bio?: string | null;
-    portfolio_url?: string | null;
-    skills?: string[];
-    availability?: string | null;
-  } | null;
 }
 
-export function getProfileCompletion(
-  profile: Profile | null,
-  isCreator = false,
-  creatorData?: ProfileCompletionProps["creatorData"]
-): { percent: number; missing: string[] } {
+export function getProfileCompletion(profile: Profile | null): { percent: number; missing: string[] } {
   if (!profile) return { percent: 0, missing: ["Profile"] };
 
   const checks: { label: string; done: boolean }[] = [
@@ -29,13 +18,6 @@ export function getProfileCompletion(
     { label: "Bio", done: !!profile.bio },
   ];
 
-  if (isCreator) {
-    checks.push({ label: "Creator bio", done: !!creatorData?.bio });
-    checks.push({ label: "Portfolio link", done: !!creatorData?.portfolio_url });
-    checks.push({ label: "Skills", done: (creatorData?.skills?.length || 0) > 0 });
-    checks.push({ label: "Availability", done: !!creatorData?.availability });
-  }
-
   const done = checks.filter((c) => c.done).length;
   const missing = checks.filter((c) => !c.done).map((c) => c.label);
 
@@ -45,8 +27,8 @@ export function getProfileCompletion(
   };
 }
 
-export function ProfileCompletion({ profile, isCreator = false, creatorData }: ProfileCompletionProps) {
-  const { percent, missing } = getProfileCompletion(profile, isCreator, creatorData);
+export function ProfileCompletion({ profile }: ProfileCompletionProps) {
+  const { percent, missing } = getProfileCompletion(profile);
 
   return (
     <div className="space-y-2">

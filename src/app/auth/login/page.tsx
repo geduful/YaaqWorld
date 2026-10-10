@@ -66,19 +66,7 @@ function LoginContent() {
       }
 
       if (data.user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", data.user.id)
-          .single();
-
-        const role = profile?.role || "member";
-        let dest = redirectTo;
-        if (redirectTo === "/dashboard") {
-          if (role === "creator") dest = "/creator/dashboard";
-          else if (role === "admin" || role === "super_admin") dest = "/dashboard";
-          else dest = "/dashboard";
-        }
+        const dest = redirectTo;
         router.push(dest);
         router.refresh();
       }

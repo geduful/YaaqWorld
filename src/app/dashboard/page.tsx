@@ -57,21 +57,28 @@ export default function MemberDashboardPage() {
     };
 
     const checkAmbassador = async () => {
-      if (!profile?.institution_id) return;
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("institution_id")
+        .eq("id", user.id)
+        .single();
+
+      const institutionId = prof?.institution_id as string | null | undefined;
+      if (!institutionId) return;
 
       const { data: ktuRow } = await supabase
         .from("institutions")
-        .select("id, name")
+        .select("id")
         .eq("short_name", "KTU")
         .maybeSingle();
 
       // KTU members never see the ambassador card — YAAQ World is based there.
-      if (ktuRow && profile.institution_id === ktuRow.id) return;
+      if (ktuRow && institutionId === ktuRow.id) return;
 
       const { data: inst } = await supabase
         .from("institutions")
         .select("name")
-        .eq("id", profile.institution_id)
+        .eq("id", institutionId)
         .maybeSingle();
       setAmbassadorInstitution(inst?.name ?? null);
 
@@ -107,7 +114,7 @@ export default function MemberDashboardPage() {
     fetchNotifications();
     checkTeamLink();
     checkAmbassador();
-  }, [user, profile]);
+  }, [user]);
 
   if (loading) {
     return (
@@ -131,7 +138,7 @@ export default function MemberDashboardPage() {
   ];
 
   return (
-    <DashboardShell variant="member">
+    <DashboardShell>
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -150,6 +157,30 @@ export default function MemberDashboardPage() {
             <Badge variant="secondary" className="self-start sm:self-auto capitalize">{profile.role}</Badge>
           )}
         </div>
+
+        {ambassadorStatus === "eligible" && (
+          <Card className="bg-yaaq-navy text-white border-none">
+            <CardContent className="p-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <div className="flex-shrink-0">
+                <Globe2 className="h-10 w-10 text-yaaq-gold" aria-hidden="true" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-display text-lg font-semibold">
+                  Represent YAAQ World at {ambassadorInstitution ?? "your institution"}
+                </p>
+                <p className="mt-1 text-sm text-white/70">
+                  Become the official YAAQ World Ambassador for your institution and lead our community there.
+                </p>
+              </div>
+              <Link href="/ambassador" className="flex-shrink-0">
+                <Button variant="gold" size="sm" className="gap-2 w-full sm:w-auto">
+                  Request to be an Ambassador
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {quickActions.map((action) => (
@@ -281,26 +312,6 @@ export default function MemberDashboardPage() {
               </CardContent>
             </Card>
 
-            {ambassadorStatus === "eligible" && (
-              <Card className="bg-yaaq-navy text-white border-none">
-                <CardContent className="p-6 text-center">
-                  <Globe2 className="h-8 w-8 mx-auto text-yaaq-gold" aria-hidden="true" />
-                  <p className="mt-3 font-display text-lg font-semibold">
-                    Represent YAAQ World
-                  </p>
-                  <p className="mt-1 text-sm text-white/70">
-                    Become the official YAAQ World Ambassador at{" "}
-                    {ambassadorInstitution ?? "your institution"}.
-                  </p>
-                  <Link href="/ambassador">
-                    <Button variant="gold" size="sm" className="mt-4 gap-2">
-                      Request to be an Ambassador
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            )}
             {ambassadorStatus === "pending" && (
               <Card>
                 <CardContent className="p-6 text-center">

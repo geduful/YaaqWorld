@@ -22,7 +22,7 @@ const typeIcons: Record<string, React.ReactNode> = {
 };
 
 export default function NotificationsPage() {
-  const { user, profile, loading } = useAuth();
+  const { user, loading } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
@@ -94,7 +94,6 @@ export default function NotificationsPage() {
 
   const unreadNotifications = notifications.filter((n) => !n.read);
   const readNotifications = notifications.filter((n) => n.read);
-  const isCreator = profile?.role === "creator";
 
   const filteredNotifications =
     activeTab === "all"
@@ -115,7 +114,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <DashboardShell variant={isCreator ? "creator" : "member"}>
+    <DashboardShell>
       <div className="space-y-6 max-w-3xl">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>

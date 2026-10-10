@@ -266,10 +266,8 @@ export default function ProfileEditPage() {
     return "U";
   };
 
-  const isCreator = profile?.role === "creator";
-
   return (
-    <DashboardShell variant={isCreator ? "creator" : "member"}>
+    <DashboardShell>
       <div className="space-y-6 max-w-2xl">
         <div>
           <h1 className="font-display text-2xl font-bold text-foreground">Edit Profile</h1>

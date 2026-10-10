@@ -46,8 +46,7 @@ function UserMenu() {
     router.refresh();
   };
 
-  const isCreator = profile?.role === "creator";
-  const dashboardHref = isCreator ? "/creator/dashboard" : "/dashboard";
+  const dashboardHref = "/dashboard";
 
   const getInitials = () => {
     if (profile?.full_name) {
@@ -195,8 +194,7 @@ export function Header() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen]);
 
-  const isCreator = profile?.role === "creator";
-  const dashboardHref = isCreator ? "/creator/dashboard" : "/dashboard";
+  const dashboardHref = "/dashboard";
 
   const handleSignOut = async () => {
     setMobileMenuOpen(false);
